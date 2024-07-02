@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "standard",
+    "plugin:tailwindcss/recommended",
+    "prettier"
+  ],
+  "globals": {
+    "google": "readonly"
+  },
+  "rules": {
+    "tailwindcss/no-custom-classname": "off"
+  }
+}

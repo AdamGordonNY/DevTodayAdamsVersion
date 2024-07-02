@@ -1,0 +1,280 @@
+/* CLERK */
+.cl-providerIcon__github {
+  @apply invert;
+}
+.cl-rootBox {
+  @apply inline h-fit p-0 w-fit;
+}
+.cl-userButtonBox {
+  @apply flex-row-reverse;
+}
+.cl-userButtonOuterIdentifier {
+  @apply text-dark-800 text-[16px] font-medium leading-[24px];
+}
+.cl-userButtonPopoverCard {
+  @apply bg-white-100 dark:bg-dark-800 w-fit;
+}
+.cl-userPreview {
+  @apply hidden;
+}
+.cl-userButtonPopoverActions {
+  @apply hidden;
+}
+.cl-userButtonPopoverActionButtonText {
+  @apply text-dark-800 text-[14px] font-medium leading-[20px];
+}
+.cl-userButtonOuterIdentifier {
+  @apply text-dark-800 dark:text-white-200 text-[16px] font-medium leading-[24px];
+}
+
+/* TINY_MCE */
+.tox-tinymce {
+  @apply dark:border-dark-border dark:bg-dark-800 bg-white-100 !important;
+}
+.tox-editor-header {
+  @apply dark:bg-dark-800 bg-white-100 shadow-none mx-2  !important;
+}
+.tox-menu {
+  @apply dark:bg-dark-800 bg-white-100 dark:border-white-400 mt-2 !important;
+}
+.tox-collection__item {
+  @apply dark:text-white-300 !important;
+}
+.tox-toolbar__group {
+  @apply pl-2 pr-2 border-none !important;
+}
+.tox-tbtn {
+  @apply cursor-pointer bg-transparent !important;
+}
+.tox-tbtn--enabled {
+  @apply dark:bg-dark-800 bg-white-100 border-none !important;
+}
+.tox-tbtn:hover {
+  @apply dark:bg-dark-700 border-none !important;
+}
+.tox-tbtn svg {
+  @apply dark:fill-white-300 fill-dark-800 !important;
+}
+.tox-toolbar-overlord {
+  background-color: transparent !important;
+  @apply border-none !important;
+}
+.tox-toolbar__primary {
+  @apply dark:bg-dark-800 bg-white-100 gap-x-4 flex justify-between !important;
+  background-image: none !important;
+}
+.tox-statusbar {
+  display: none !important;
+}
+.tox-dialog {
+  @apply dark:bg-dark-700 border-none !important;
+}
+.tox-dialog__header {
+  @apply dark:bg-dark-700 dark:text-white-300 !important;
+}
+.tox-button--icon {
+  @apply dark:text-white-300 !important;
+}
+.tox-dialog__footer {
+  @apply dark:bg-dark-700 dark:text-white-300 !important;
+  .tox-button {
+    @apply bg-primary-500 border-none !important;
+  }
+}
+.tox-dialog-wrap__backdrop {
+  @apply opacity-30 !important;
+}
+
+/* GOOGLEMAP */
+.gm-style-iw {
+  @apply dark:bg-dark-700 px-4 pb-4 pt-2 !important;
+}
+.gm-style-iw-d {
+  @apply dark:bg-dark-700 overflow-hidden !important;
+}
+.gm-style-iw-chr button {
+  @apply m-0 p-0  !important;
+}
+.gm-style-iw-chr button::after {
+  @apply m-0 p-0  !important;
+}
+.gm-style-iw-chr span {
+  @apply size-4 text-white-100 !important;
+}
+.gm-style-iw-tc::after {
+  @apply dark:bg-dark-700 !important;
+}
+.gm-ui-hover-effect {
+  @apply size-5 focus:outline-none  !important;
+}
+.gm-ui-hover-effect span {
+  @apply dark:bg-white-100 size-5 m-0 !important;
+}
+
+/* GOOGLEMAP_AUTOCOMPLETE */
+.pac-container {
+  @apply dark:bg-dark-800 border shadow-none border-white-border dark:border-dark-border !important;
+}
+.pac-item {
+  @apply border-0 dark:text-white-300 text-white-400 dark:hover:bg-dark-700 hover:bg-white-200 px-2 !important;
+}
+.pac-item-query {
+  @apply dark:text-white-300 text-dark-700 !important;
+}
+.pac-matched {
+  @apply dark:text-white-200 text-dark-800 !important;
+}
+.pac-icon {
+  @apply stroke-rose-500 fill-rose-600 text-rose-500;
+}
+
+/* REACT_DATEPICKER */
+.react-datepicker {
+  @apply dark:bg-dark-800 dark:border-dark-border border-white-border border dark:text-white-300 text-white-400 !important;
+}
+.react-datepicker__triangle {
+  @apply stroke-none dark:fill-dark-800 fill-white-100 text-white-border dark:text-dark-700 !important;
+}
+.react-datepicker__header {
+  @apply dark:bg-dark-800 bg-white-100  dark:border-b-dark-border border-b-white-border border-b border-r-0  !important;
+}
+.react-datepicker__time-container {
+  @apply border-l dark:border-l-dark-border border-l-white-border !important;
+}
+.react-datepicker__current-month {
+  @apply dark:text-white-200 text-dark-700 font-medium text-[14px] !important;
+}
+.react-datepicker__day-name {
+  @apply dark:text-white-200 text-dark-700 !important;
+}
+.react-datepicker__day {
+  @apply dark:text-white-300 text-white-400 hover:bg-primary-500 hover:text-white-100 !important;
+}
+.react-datepicker__day--disabled {
+  @apply opacity-35 hover:bg-transparent dark:hover:text-white-300 hover:text-white-400 !important;
+}
+.react-datepicker__day--selected {
+  @apply text-white-100 bg-primary-500 !important;
+}
+.react-datepicker__day--keyboard-selected {
+  @apply text-white-100 bg-primary-500 !important;
+}
+
+.react-datepicker__time-list::-webkit-scrollbar {
+  @apply w-3 dark:bg-[#2c3042] bg-[#f8fafc];
+}
+.react-datepicker__time-list::-webkit-scrollbar-track {
+  @apply dark:bg-[#2c3042] bg-[#f6f7f9] pr-2 !important;
+}
+.react-datepicker__time-list::-webkit-scrollbar-thumb {
+  @apply dark:bg-[#393e4f] bg-[#d9dee5] rounded-md;
+}
+
+.react-datepicker__time-list-item {
+  @apply dark:bg-dark-800 hover:bg-primary-500 hover:text-white-100 !important;
+}
+.react-datepicker__time-list-item--disabled {
+  @apply dark:text-[#c5d0e658] hover:text-[#CCCCCC] hover:bg-white-100 dark:hover:text-[#c5d0e658] dark:hover:bg-dark-800  !important;
+}
+.react-datepicker__time-list-item--selected {
+  @apply text-white-100 bg-primary-500 !important;
+}
+.react-datepicker-time__header {
+  @apply dark:text-white-200 text-dark-700 font-medium text-[14px] !important;
+}
+
+.react-datepicker__view-calendar-icon {
+  display: flex !important;
+  align-items: center !important;
+  border-radius: 0.25rem /* 4px */ !important;
+}
+/* Audio Control Overrides  */
+audio {
+  @apply w-[80%] h-8 rounded-xl;
+}
+audio::-webkit-media-controls-enclosure {
+  @apply w-[80%] h-8 bg-white-100 dark:bg-dark-700 text-white-400 rounded-xl;
+}
+audio::-webkit-media-controls-panel {
+  @apply w-[80%] h-8 bg-white-100 dark:bg-dark-700 text-white-400 rounded-xl;
+}
+
+[role="presentation"] {
+  @apply cursor-pointer;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100px;
+  height: 6px;
+  background: #e0e0e0; /* Background track color */
+  border-radius: 5px;
+  outline: none;
+  padding: 0;
+  margin: 0;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #825ef6; /* Thumb color (primary-500) */
+  cursor: pointer;
+  border-radius: 50%;
+  margin-top: -4.5px;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background: #825ef6;
+  cursor: pointer;
+  border-radius: 50%;
+  margin-top: -4.5px;
+}
+
+.volume-slider::-ms-thumb {
+  width: 15px;
+  height: 15px;
+  background: #825ef6;
+  cursor: pointer;
+  border-radius: 50%;
+  margin-top: 0px;
+}
+
+.volume-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: #825ef6;
+  border-radius: 5px;
+}
+
+.volume-slider::-moz-range-track {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: #825ef6;
+  border-radius: 5px;
+}
+
+.volume-slider::-ms-track {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+.volume-slider::-ms-fill-lower {
+  background: #825ef6;
+  border-radius: 5px;
+}
+
+.volume-slider::-ms-fill-upper {
+  background: #e0e0e0;
+  border-radius: 5px;
+}
