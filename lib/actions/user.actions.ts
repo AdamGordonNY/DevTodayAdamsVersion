@@ -247,7 +247,7 @@ export const _getUserWithContent = async (slug: number | string) => {
         name: group.name,
         about: group.about,
         coverImage: group.coverImage,
-        members: group.members.slice(0, 4), // Take first 4 members
+        members: group.members.slice(0, 4),
         createdAt: group.createdAt,
         memberCount: group._count.members,
       })),
@@ -256,16 +256,15 @@ export const _getUserWithContent = async (slug: number | string) => {
         name: group.name,
         about: group.about,
         coverImage: group.coverImage,
-        members: group.members.slice(0, 4), // Take first 4 members
+        members: group.members.slice(0, 4),
         createdAt: group.createdAt,
         memberCount: group._count.members,
       })),
     ];
 
-    // Create the userWithContent object
     const userWithContent: UserWithProfileContent = {
       ...user,
-      clerkID: user.clerkID ?? "", // Ensure clerkID is always of type string
+      clerkID: user.clerkID ?? "",
       posts: user.posts.map((post) => ({
         ...post,
         commentCount: post._count.comment,
@@ -278,7 +277,7 @@ export const _getUserWithContent = async (slug: number | string) => {
         ...meetup,
         commentCount: meetup._count.comment,
       })),
-      groups, // Assign the combined groups array
+      groups,
       goals: user.goal,
       SocialMedia: user.SocialMedia as SocialMedia[],
       followers: user.followers,
