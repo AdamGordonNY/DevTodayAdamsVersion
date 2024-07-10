@@ -47,7 +47,7 @@ const Content = ({ onChange, body = "" }: { onChange: any; body?: string }) => {
     <Editor
       id="editor_body"
       key={theme}
-      apiKey="91tfu23es3ds7f3oxa0tfujm9otbwas6fvtv714eitd41uln"
+      apiKey="2799b9gk2hf8hje8k7kp1bri4nhcuw8jj5w4b49drfj6pg9a"
       init={{
         menubar: false,
         content_style: `body {
