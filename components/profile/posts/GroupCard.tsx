@@ -2,11 +2,11 @@ import React from "react";
 
 import ContainedImage from "@/components/shared/ContainedImage";
 import GroupAvatars from "./GroupAvatars";
-import CurvedArrows from "@/components/ui/icons/CurvedArrows";
 
 import Link from "next/link";
 import MotionDiv from "@/components/shared/MotionDiv";
 import { GroupCardContent } from "@/lib/types";
+import { ShareButton } from "@/components/shared/SocialMediaShare";
 interface GroupCardProps {
   group: GroupCardContent;
 
@@ -100,12 +100,9 @@ const GroupCard = ({ group, userCount, profile }: GroupCardProps) => {
             </MotionDiv>
           )}
         </MotionDiv>
-        <MotionDiv
-          className="flex size-[30px] items-center justify-center rounded-full bg-white-200 dark:bg-dark-700"
-          whileHover={{ rotate: 30 }}
-        >
-          <CurvedArrows className="ml-[3px] fill-white-400 dark:fill-white-300" />
-        </MotionDiv>
+        <div className="flex size-[30px] items-center justify-center rounded-full bg-white-200 dark:bg-dark-700">
+          <ShareButton contentType="group" />
+        </div>
       </div>
     </MotionDiv>
   );
