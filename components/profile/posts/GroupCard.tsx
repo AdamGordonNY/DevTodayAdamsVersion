@@ -9,7 +9,6 @@ import { GroupCardContent } from "@/lib/types";
 import { ShareButton } from "@/components/shared/SocialMediaShare";
 interface GroupCardProps {
   group: GroupCardContent;
-
   userCount?: number;
   profile: {
     id?: number | null;
@@ -39,19 +38,18 @@ const GroupCard = ({ group, userCount, profile }: GroupCardProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="flex h-[330px] break-inside-avoid-column flex-wrap rounded-[16px] bg-white-100 p-5 dark:bg-dark-800"
+      whileHover={{ scale: 1.03 }}
+      className="mb-4 flex h-[330px] break-inside-avoid-column flex-wrap rounded-[16px] bg-white-100 p-5  dark:bg-dark-800"
     >
-      <div className="flex w-full flex-col">
-        <MotionDiv whileHover={{ scale: 1.03 }}>
-          <Link href={`/groups/${group.id}`}>
-            <ContainedImage
-              src={group?.coverImage!}
-              alt="group image"
-              height={150}
-              className="h-[150px] w-full rounded-[8px] object-contain"
-            />
-          </Link>
-        </MotionDiv>
+      <Link href={`/groups/${group.id}`} className="flex w-full flex-col">
+        <div>
+          <ContainedImage
+            src={group?.coverImage!}
+            alt="group image"
+            height={150}
+            className="h-[150px] w-full rounded-[8px] object-contain"
+          />
+        </div>
         <div className="justify-start">
           <div className="paragraph-1-bold line-clamp-1 text-left capitalize text-dark-800 dark:text-white-100">
             <span className="text-left">{group?.name}</span>
@@ -61,7 +59,7 @@ const GroupCard = ({ group, userCount, profile }: GroupCardProps) => {
             <span>{group?.about}</span>
           </div>
         </div>
-      </div>
+      </Link>
 
       <div className="flex w-full flex-1 flex-row items-center justify-between">
         <MotionDiv
@@ -100,7 +98,7 @@ const GroupCard = ({ group, userCount, profile }: GroupCardProps) => {
             </MotionDiv>
           )}
         </MotionDiv>
-        <div className="flex size-[30px] items-center justify-center rounded-full bg-white-200 dark:bg-dark-700">
+        <div className="flex size-[30px] items-center justify-center  rounded-full bg-white-200 dark:bg-dark-700">
           <ShareButton params={{ id: String(group.id) }} />
         </div>
       </div>

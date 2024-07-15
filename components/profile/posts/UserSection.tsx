@@ -1,7 +1,7 @@
 import { getTimeDifference } from "@/lib/utils";
 import React from "react";
 import ContainedImage from "@/components/shared/ContainedImage";
-import MotionDiv from "@/components/shared/MotionDiv";
+
 const UserSection = ({
   username,
   createdAt,
@@ -12,10 +12,7 @@ const UserSection = ({
   image: string;
 }) => {
   return (
-    <MotionDiv
-      whileHover={{ scale: 1.1, originX: 0.0 }}
-      className="flex items-center align-middle"
-    >
+    <div className="flex items-center align-middle">
       <ContainedImage
         src={image!}
         alt="avatar"
@@ -30,8 +27,8 @@ const UserSection = ({
         <p className="paragraph-3-regular text-dark-400 whitespace-nowrap dark:text-white-200">
           {getTimeDifference(createdAt!)}
         </p>
-      </div>{" "}
-    </MotionDiv>
+      </div>
+    </div>
   );
 };
 

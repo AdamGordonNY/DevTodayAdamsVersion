@@ -13,7 +13,7 @@ interface MeetupCardProps {
 
 const MeetupCard = ({ meetup, index = 1 }: MeetupCardProps) => {
   return (
-    <>
+    <Link href={`/meetups/${meetup?.id}`}>
       {meetup && (
         <MotionDiv
           initial={{
@@ -68,7 +68,7 @@ const MeetupCard = ({ meetup, index = 1 }: MeetupCardProps) => {
           </div>
         </MotionDiv>
       )}
-    </>
+    </Link>
   );
 };
 

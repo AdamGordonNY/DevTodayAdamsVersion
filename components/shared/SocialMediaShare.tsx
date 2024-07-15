@@ -38,7 +38,7 @@ export const ShareButton = ({ params }: { params: { id?: string } }) => {
   const pathsToExcludeId = ["/groups", "/profile"];
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
   const defaultUrl = pathsToExcludeId.includes(pathname)
-    ? `${baseUrl}{pathname}/${params.id ?? ""}`.replace(/\/$/, "")
+    ? `${baseUrl}${pathname}/${params.id ?? ""}`.replace(/\/$/, "")
     : `${baseUrl}${pathname}`;
 
   const paths = ["/groups", "/posts", "/podcasts", "/meetups", "/profile"];
@@ -72,10 +72,10 @@ export const ShareButton = ({ params }: { params: { id?: string } }) => {
             }
           : undefined
       }
-      className="flex flex-col items-center justify-center gap-x-2.5 active:scale-110"
+      className="flex flex-col items-center justify-center gap-x-2.5 gap-y-1.5 active:scale-110"
       key={site}
     >
-      <div className="flex size-16 h-[90px] flex-col items-center justify-center gap-y-1.5 rounded-2xl bg-white-400 dark:bg-dark-700">
+      <div className="flex size-16 h-[90px] flex-col items-center justify-center   rounded-2xl bg-white-400 dark:bg-dark-700">
         <Image
           alt={site}
           src={
@@ -107,14 +107,14 @@ export const ShareButton = ({ params }: { params: { id?: string } }) => {
           {paths.includes(pathname) ? (
             <button
               type="button"
-              className="paragraph-3-medium flex items-center justify-center gap-x-2 rounded-full bg-[#C5D0E666] p-2.5  dark:bg-dark-700"
+              className="paragraph-3-medium flex items-center justify-center gap-x-2 rounded-full bg-[#C5D0E666] p-2.5 active:scale-110  dark:bg-dark-700"
             >
               <Share size={14} fill="fill-dark-700 dark:fill-white-300" />
             </button>
           ) : (
             <button
               type="button"
-              className="paragraph-3-medium flex items-center justify-center gap-x-2 rounded bg-[#C5D0E666] p-2.5  dark:bg-dark-700"
+              className="paragraph-3-medium flex items-center justify-center gap-x-2 rounded bg-[#C5D0E666] p-2.5 active:scale-110  dark:bg-dark-700"
             >
               <Share size={14} fill="fill-dark-700 dark:fill-white-300" />
 
@@ -123,9 +123,9 @@ export const ShareButton = ({ params }: { params: { id?: string } }) => {
           )}
         </DialogTrigger>
 
-        <DialogContent className="z-50 flex h-[337px] flex-col justify-between gap-x-6 gap-y-[30px] rounded-2xl  bg-white-100 p-5 max-md:w-[90%] md:w-[450px]  dark:bg-dark-800">
+        <DialogContent className="z-50 flex h-[337px] flex-col justify-between gap-x-6 gap-y-[30px] rounded-2xl border-0  bg-white-100 px-10 max-md:w-[90%] md:w-[450px]  dark:bg-dark-800">
           {/* {Header } */}
-          <DialogHeader className="heading-1-medium flex w-full flex-row justify-between p-5  text-dark-800 dark:text-white-200">
+          <DialogHeader className="heading-1-medium flex w-full flex-row justify-between p-0  text-dark-800 dark:text-white-200">
             <h1 className="dark:text-white-200">Share With </h1>
             <DialogClose asChild>
               <button type="button" className="bg-transparent">
@@ -135,8 +135,8 @@ export const ShareButton = ({ params }: { params: { id?: string } }) => {
           </DialogHeader>
 
           {/* {Site buttons} */}
-          <div className="flex w-full justify-between">
-            <div className="flex h-[90px] w-full justify-around gap-x-9">
+          <div className="flex w-full justify-between gap-y-[10px]">
+            <div className="flex h-[90px] w-full justify-between gap-x-9">
               {sites && sites.map((site) => renderSiteButton(site))}
             </div>
           </div>
