@@ -23,13 +23,16 @@ import copy from "@/public/icons/copy.svg";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-export const ShareButton = () => {
+export const ShareButton = ({ params }: { params: { id?: string } }) => {
   const sites = ["linkedin", "facebook", "twitter", "email"];
   const pathname = usePathname();
 
   const [isCopied, copyToClipboard] = useCopyToClipboard();
-
-  const defaultUrl = `https://adam-gordon.info${pathname}`;
+  console.log(params);
+  const defaultUrl =
+    params.id !== undefined
+      ? `https://adam-gordon.info${pathname}/` + params.id
+      : `https://adam-gordon.info${pathname}`;
   const paths = ["/groups", "/posts", "/podcasts", "/meetups", "/users"];
   const getShareLink = (site: string) => {
     switch (site) {
@@ -137,7 +140,7 @@ export const ShareButton = () => {
               <Input
                 value={isCopied || defaultUrl}
                 readOnly
-                className="paragraph-3-medium flex w-full rounded-none bg-white-200 py-3 text-dark-900 ring-0 focus:border-0 focus:ring-0 dark:bg-dark-700 dark:text-white-200"
+                className="paragraph-3-medium flex w-full rounded-none border-0 bg-white-200 py-3 text-dark-900 ring-0 focus:border-0 focus:ring-0 dark:bg-dark-700 dark:text-white-200"
               />{" "}
               <Button
                 onClick={() => copyToClipboard(defaultUrl)}

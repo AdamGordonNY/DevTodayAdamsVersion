@@ -56,7 +56,7 @@ const ContentLeftSidebar = ({
         </div>
       </section>
 
-      <ShareButton />
+      <ShareButton params={{ id: String(content.id) }} />
 
       <div className="paragraph-2-medium flex rounded-lg bg-white-100 p-4 text-center text-white-400 max-md-b:hidden dark:bg-dark-800">
         <p>
