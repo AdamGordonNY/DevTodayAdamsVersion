@@ -1,10 +1,13 @@
 "use server";
 import prisma from "@/db";
 import { ContentCategoryEnum, ContentMetrics } from "../types.d";
-import { incrementPostLikes } from "./post.actions";
-import { incrementPodcastLikes } from "./podcast.actions";
+import { incrementPostLikes, incrementPostViews } from "./post.actions";
+import {
+  incrementPodcastLikes,
+  incrementPodcastViews,
+} from "./podcast.actions";
 import { incrementCommentLikes } from "./comment.actions";
-import { incrementMeetupLikes } from "./meetup.actions";
+import { incrementMeetupLikes, incrementMeetupViews } from "./meetup.actions";
 import { LikedContent } from "./shared.types";
 import { unstable_cache as cache, revalidateTag } from "next/cache";
 export async function _getTopFiveContent({ userId }: { userId: number }) {
@@ -264,47 +267,24 @@ export const incrementViews = async ({
   contentType,
 }: {
   id: number;
-  contentType: ContentCategoryEnum;
+  contentType: string;
 }) => {
-  const where = { id: Number(id) };
-
   try {
     let updatedContent;
-    switch (contentType.toString().toLowerCase()) {
+    switch (contentType) {
       case "post":
-        updatedContent = await prisma.post.update({
-          where,
-          data: {
-            views: {
-              increment: 1,
-            },
-          },
-        });
+        updatedContent = await incrementPostViews(id);
         break;
       case "podcast":
-        updatedContent = await prisma.podcast.update({
-          where,
-          data: {
-            views: {
-              increment: 1,
-            },
-          },
-        });
+        updatedContent = await incrementPodcastViews(id);
         break;
       case "meetup":
-        updatedContent = await prisma.meetup.update({
-          where,
-          data: {
-            views: {
-              increment: 1,
-            },
-          },
-        });
+        updatedContent = await incrementMeetupViews(id);
         break;
       default:
-        throw new Error(`Unsupported content type: ${contentType}`);
+        throw new Error("Invalid content type");
     }
-
+    console.log(updatedContent);
     return updatedContent;
   } catch (error) {
     console.error("Error incrementing views:", error);

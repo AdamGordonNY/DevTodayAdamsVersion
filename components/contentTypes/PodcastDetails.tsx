@@ -4,6 +4,10 @@
 import { Podcast } from "@prisma/client";
 import PlayCard from "./PlayCard";
 import ContentMenu from "./ContentMenu";
+import { useDebounceCallback } from "usehooks-ts";
+import { incrementViews } from "@/lib/actions/content.actions";
+
+import { useEffect } from "react";
 
 const PodcastDetails = ({
   podcast,
@@ -13,7 +17,10 @@ const PodcastDetails = ({
   isAuthor: boolean;
 }) => {
   const { title, audio, tags, body, image, userId, id } = podcast;
-
+  const debouncedIncrementViews = useDebounceCallback(incrementViews, 60000);
+  useEffect(() => {
+    debouncedIncrementViews({ id, contentType: "podcast" });
+  }, [id, debouncedIncrementViews]);
   return (
     <section className="flex w-full flex-1 flex-col space-y-5">
       <PlayCard title={title} image={image!} audio={audio} userId={userId} />

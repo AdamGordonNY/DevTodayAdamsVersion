@@ -66,7 +66,26 @@ export async function incrementPodcastLikes(id: number, increase: boolean) {
     };
   }
 }
-
+export async function incrementPodcastViews(id: number) {
+  try {
+    const podcast = await prisma.podcast.update({
+      where: {
+        id,
+      },
+      data: {
+        views: {
+          increment: 1,
+        },
+      },
+    });
+    return podcast.views;
+  } catch (error) {
+    console.error("Error incrementing podcast views:", error);
+    return {
+      error: "An unexpected error occurred while updating podcast views.",
+    };
+  }
+}
 export async function getDynamicPodcasts(
   page: number,
   type: "newest" | "popular" | "following",

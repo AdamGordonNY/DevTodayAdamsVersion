@@ -234,3 +234,21 @@ export async function incrementMeetupLikes(id: number, increase: boolean) {
     };
   }
 }
+export async function incrementMeetupViews(id: number) {
+  try {
+    const meetup = await prisma.meetup.update({
+      where: { id },
+      data: {
+        views: {
+          increment: 1,
+        },
+      },
+    });
+    return meetup.views;
+  } catch (error) {
+    console.error("Error incrementing meetup views:", error);
+    throw new Error(
+      "An unexpected error occurred while incrementing meetup views."
+    );
+  }
+}

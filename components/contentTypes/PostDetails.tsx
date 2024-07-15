@@ -5,7 +5,9 @@ import { ContentType } from "@/lib/types.d";
 import { ImagePlaceholder } from "../ui";
 import { Separator } from "../ui/separator";
 import ContentMenu from "./ContentMenu";
-
+import { incrementViews } from "@/lib/actions/content.actions";
+import { useEffect } from "react";
+import { useDebounceCallback } from "usehooks-ts";
 const PostDetails = ({
   post,
   isAuthor,
@@ -14,7 +16,10 @@ const PostDetails = ({
   isAuthor: boolean;
 }) => {
   const { tags, body, title, image, id } = post;
-
+  const debouncedIncrementViews = useDebounceCallback(incrementViews, 60000);
+  useEffect(() => {
+    debouncedIncrementViews({ id, contentType: "post" });
+  }, [id, debouncedIncrementViews]);
   return (
     <section className="flex w-full flex-col gap-y-6">
       <section className="flex flex-col gap-y-6">

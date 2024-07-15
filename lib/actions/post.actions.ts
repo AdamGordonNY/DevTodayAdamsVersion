@@ -187,6 +187,28 @@ export async function incrementPostLikes(postId: number, increase: boolean) {
     );
   }
 }
+export async function incrementPostViews(postId: number) {
+  if (!postId) {
+    throw new Error("Post ID is required.");
+  }
+
+  try {
+    const post = await prisma.post.update({
+      where: { id: postId },
+      data: {
+        views: {
+          increment: 1,
+        },
+      },
+    });
+    return post.views;
+  } catch (error) {
+    console.error("Error incrementing post views:", error);
+    throw new Error(
+      "An unexpected error occurred while incrementing post views."
+    );
+  }
+}
 export async function getDynamicPosts(
   page: number,
   type: "popular" | "newest" | "following" | undefined,
