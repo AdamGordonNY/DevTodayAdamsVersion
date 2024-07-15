@@ -30,7 +30,7 @@ export const ShareButton = () => {
   const [isCopied, copyToClipboard] = useCopyToClipboard();
 
   const defaultUrl = `https://adam-gordon.info${pathname}`;
-
+  const paths = ["/groups", "/posts", "/podcasts", "/meetups", "/users"];
   const getShareLink = (site: string) => {
     switch (site) {
       case "linkedin":
@@ -64,7 +64,7 @@ export const ShareButton = () => {
       className="flex flex-col items-center justify-center gap-x-2.5"
       key={site}
     >
-      <div className="flex size-16 h-[90px] flex-col items-center justify-center rounded-2xl dark:bg-dark-700">
+      <div className="flex size-16 h-[90px] flex-col items-center justify-center rounded-2xl bg-white-400 dark:bg-dark-700">
         <Image
           alt={site}
           src={
@@ -80,10 +80,10 @@ export const ShareButton = () => {
           }
           width={site === "linkedin" ? 64 : 24}
           height={site === "linkedin" ? 64 : 24}
-          className="size-6 place-self-center dark:fill-white-200 dark:stroke-dark-700"
+          className="size-6 place-self-center fill-dark-700 stroke-white-400  dark:fill-white-200 dark:stroke-dark-700"
         />
       </div>
-      <span className="paragraph-3-medium capitalize text-white-200">
+      <span className="paragraph-3-medium capitalize text-dark-900 dark:text-white-200">
         {site}
       </span>
     </Link>
@@ -93,18 +93,28 @@ export const ShareButton = () => {
     <>
       <Dialog modal>
         <DialogTrigger asChild>
-          <button
-            type="button"
-            className="paragraph-3-medium flex items-center justify-center gap-x-2 rounded bg-[#C5D0E666] p-2.5  dark:bg-dark-700"
-          >
-            <Share size={14} fill="fill-dark-700 dark:fill-white-300" />
-            <p className="text-dark-700 dark:text-white-300">Share Post</p>
-          </button>
+          {paths.includes(pathname) ? (
+            <button
+              type="button"
+              className="paragraph-3-medium flex items-center justify-center gap-x-2 rounded-full bg-[#C5D0E666] p-2.5  dark:bg-dark-700"
+            >
+              <Share size={14} fill="fill-dark-700 dark:fill-white-300" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="paragraph-3-medium flex items-center justify-center gap-x-2 rounded bg-[#C5D0E666] p-2.5  dark:bg-dark-700"
+            >
+              <Share size={14} fill="fill-dark-700 dark:fill-white-300" />
+
+              <p className="text-dark-700 dark:text-white-300">Share Post</p>
+            </button>
+          )}
         </DialogTrigger>
         <div className="flex w-full ">
-          <DialogContent className="z-50 flex h-[337px] flex-col justify-between gap-x-6  rounded-2xl bg-dark-800 max-md:w-[90%]  md:w-[450px]">
+          <DialogContent className="z-50 flex h-[337px] flex-col justify-between gap-x-6 rounded-2xl bg-white-100 px-6  py-3.5 max-md:w-[90%] md:w-[450px]  dark:bg-dark-800">
             {/* {Header } */}
-            <DialogHeader className="heading-1-medium flex w-full flex-row justify-between  px-6 py-3.5 text-white-200">
+            <DialogHeader className="heading-1-medium flex w-full flex-row justify-between   text-dark-800 dark:text-white-200">
               <h1 className="dark:text-white-200">Share With </h1>
               <DialogClose asChild className="">
                 <button type="button" className="bg-transparent">
@@ -115,19 +125,19 @@ export const ShareButton = () => {
 
             {/* {Site buttons} */}
             <div className="flex w-full justify-between">
-              <div className="flex w-full justify-around">
+              <div className="flex h-[90px] w-full justify-around gap-x-9">
                 {sites && sites.map((site) => renderSiteButton(site))}
               </div>
             </div>
-            <span className="paragraph-4-regular items-center place-self-center dark:text-white-400">
+            <span className="paragraph-4-regular items-center place-self-center text-dark-900 dark:text-white-400">
               Or share with Link
             </span>
             {/* {Bottom Row} */}
-            <div className="flex w-full align-bottom ">
+            <div className="flex w-full rounded-md bg-white-200  align-bottom  text-dark-900 ring-0 dark:bg-dark-700 dark:text-white-200 ">
               <Input
                 value={isCopied || defaultUrl}
                 readOnly
-                className="flex w-full py-3"
+                className="paragraph-3-medium flex w-full rounded-none bg-white-200 py-3 text-dark-900 ring-0 focus:border-0 focus:ring-0 dark:bg-dark-700 dark:text-white-200"
               />{" "}
               <Button
                 onClick={() => copyToClipboard(defaultUrl)}
@@ -136,7 +146,7 @@ export const ShareButton = () => {
                 <Image
                   src={clipboard}
                   alt="copy"
-                  className="size-4 fill-purple-500"
+                  className="size-4 stroke-purple-500 dark:fill-purple-500"
                 />
               </Button>
             </div>
