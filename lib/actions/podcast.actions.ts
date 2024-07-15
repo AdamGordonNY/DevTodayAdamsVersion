@@ -4,6 +4,8 @@ import prisma from "@/db";
 import { auth } from "@clerk/nextjs/server";
 import { Podcast } from "@prisma/client";
 import { IPodcastSchema } from "../validations/podcast.validations";
+// eslint-disable-next-line camelcase
+import { unstable_cache } from "next/cache";
 
 export async function getPodcastById(id: string) {
   try {
@@ -66,7 +68,7 @@ export async function incrementPodcastLikes(id: number, increase: boolean) {
     };
   }
 }
-export async function incrementPodcastViews(id: number) {
+export async function _incrementPodcastViews(id: number) {
   try {
     const podcast = await prisma.podcast.update({
       where: {
@@ -86,6 +88,14 @@ export async function incrementPodcastViews(id: number) {
     };
   }
 }
+export const incrementPodcastViews = unstable_cache(
+  _incrementPodcastViews,
+  ["incrementPodcastViews"],
+  {
+    tags: ["views"],
+    revalidate: 1,
+  }
+);
 export async function getDynamicPodcasts(
   page: number,
   type: "newest" | "popular" | "following",

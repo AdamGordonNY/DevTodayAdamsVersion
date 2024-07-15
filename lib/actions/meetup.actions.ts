@@ -234,7 +234,7 @@ export async function incrementMeetupLikes(id: number, increase: boolean) {
     };
   }
 }
-export async function incrementMeetupViews(id: number) {
+export async function _incrementMeetupViews(id: number) {
   try {
     const meetup = await prisma.meetup.update({
       where: { id },
@@ -252,3 +252,11 @@ export async function incrementMeetupViews(id: number) {
     );
   }
 }
+export const incrementMeetupViews = unstable_cache(
+  _incrementMeetupViews,
+  ["incrementMeetupViews"],
+  {
+    tags: ["views"],
+    revalidate: 1,
+  }
+);

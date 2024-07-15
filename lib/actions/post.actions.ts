@@ -187,7 +187,7 @@ export async function incrementPostLikes(postId: number, increase: boolean) {
     );
   }
 }
-export async function incrementPostViews(postId: number) {
+export async function _incrementPostViews(postId: number) {
   if (!postId) {
     throw new Error("Post ID is required.");
   }
@@ -209,6 +209,14 @@ export async function incrementPostViews(postId: number) {
     );
   }
 }
+export const incrementPostViews = unstable_cache(
+  _incrementPostViews,
+  ["incrementPostViews"],
+  {
+    tags: ["views"],
+    revalidate: 1,
+  }
+);
 export async function getDynamicPosts(
   page: number,
   type: "popular" | "newest" | "following" | undefined,
