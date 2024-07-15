@@ -1,6 +1,6 @@
 "use client";
 import { X } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 import { useCopyToClipboard } from "usehooks-ts";
 import { Share } from "../ui";
@@ -26,14 +26,22 @@ import Link from "next/link";
 export const ShareButton = ({ params }: { params: { id?: string } }) => {
   const sites = ["linkedin", "facebook", "twitter", "email"];
   const pathname = usePathname();
-
+  const [open, setOpen] = useState(false);
   const [isCopied, copyToClipboard] = useCopyToClipboard();
-  console.log(params);
-  const defaultUrl =
-    params.id !== undefined
-      ? `https://adam-gordon.info${pathname}/` + params.id
-      : `https://adam-gordon.info${pathname}`;
-  const paths = ["/groups", "/posts", "/podcasts", "/meetups", "/users"];
+  const [isClicked, setIsClicked] = useState(false);
+
+  const handleCopyClick = () => {
+    copyToClipboard(defaultUrl);
+    setIsClicked(true);
+    if (isClicked) setTimeout(() => setIsClicked(false), 300);
+  };
+  const pathsToExcludeId = ["/groups", "/profile"];
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const defaultUrl = pathsToExcludeId.includes(pathname)
+    ? `${baseUrl}{pathname}/${params.id ?? ""}`.replace(/\/$/, "")
+    : `${baseUrl}${pathname}`;
+
+  const paths = ["/groups", "/posts", "/podcasts", "/meetups", "/profile"];
   const getShareLink = (site: string) => {
     switch (site) {
       case "linkedin":
@@ -64,10 +72,10 @@ export const ShareButton = ({ params }: { params: { id?: string } }) => {
             }
           : undefined
       }
-      className="flex flex-col items-center justify-center gap-x-2.5"
+      className="flex flex-col items-center justify-center gap-x-2.5 active:scale-110"
       key={site}
     >
-      <div className="flex size-16 h-[90px] flex-col items-center justify-center rounded-2xl bg-white-400 dark:bg-dark-700">
+      <div className="flex size-16 h-[90px] flex-col items-center justify-center gap-y-1.5 rounded-2xl bg-white-400 dark:bg-dark-700">
         <Image
           alt={site}
           src={
@@ -94,7 +102,7 @@ export const ShareButton = ({ params }: { params: { id?: string } }) => {
 
   return (
     <>
-      <Dialog modal>
+      <Dialog modal open={open} onOpenChange={() => setOpen(!open)}>
         <DialogTrigger asChild>
           {paths.includes(pathname) ? (
             <button
@@ -114,47 +122,43 @@ export const ShareButton = ({ params }: { params: { id?: string } }) => {
             </button>
           )}
         </DialogTrigger>
-        <div className="flex w-full ">
-          <DialogContent className="z-50 flex h-[337px] flex-col justify-between gap-x-6 rounded-2xl bg-white-100 px-6  py-3.5 max-md:w-[90%] md:w-[450px]  dark:bg-dark-800">
-            {/* {Header } */}
-            <DialogHeader className="heading-1-medium flex w-full flex-row justify-between   text-dark-800 dark:text-white-200">
-              <h1 className="dark:text-white-200">Share With </h1>
-              <DialogClose asChild className="">
-                <button type="button" className="bg-transparent">
-                  <X className="stroke-dark-800 dark:stroke-white-100" />
-                </button>
-              </DialogClose>
-            </DialogHeader>
 
-            {/* {Site buttons} */}
-            <div className="flex w-full justify-between">
-              <div className="flex h-[90px] w-full justify-around gap-x-9">
-                {sites && sites.map((site) => renderSiteButton(site))}
-              </div>
+        <DialogContent className="z-50 flex h-[337px] flex-col justify-between gap-x-6 gap-y-[30px] rounded-2xl  bg-white-100 p-5 max-md:w-[90%] md:w-[450px]  dark:bg-dark-800">
+          {/* {Header } */}
+          <DialogHeader className="heading-1-medium flex w-full flex-row justify-between p-5  text-dark-800 dark:text-white-200">
+            <h1 className="dark:text-white-200">Share With </h1>
+            <DialogClose asChild>
+              <button type="button" className="bg-transparent">
+                <X className="stroke-dark-800 dark:stroke-white-100" />
+              </button>
+            </DialogClose>
+          </DialogHeader>
+
+          {/* {Site buttons} */}
+          <div className="flex w-full justify-between">
+            <div className="flex h-[90px] w-full justify-around gap-x-9">
+              {sites && sites.map((site) => renderSiteButton(site))}
             </div>
-            <span className="paragraph-4-regular items-center place-self-center text-dark-900 dark:text-white-400">
-              Or share with Link
-            </span>
-            {/* {Bottom Row} */}
-            <div className="flex w-full rounded-md bg-white-200  align-bottom  text-dark-900 ring-0 dark:bg-dark-700 dark:text-white-200 ">
-              <Input
-                value={isCopied || defaultUrl}
-                readOnly
-                className="paragraph-3-medium flex w-full rounded-none border-0 bg-white-200 py-3 text-dark-900 ring-0 focus:border-0 focus:ring-0 dark:bg-dark-700 dark:text-white-200"
-              />{" "}
-              <Button
-                onClick={() => copyToClipboard(defaultUrl)}
-                className="bg-transparent"
-              >
-                <Image
-                  src={clipboard}
-                  alt="copy"
-                  className="size-4 stroke-purple-500 dark:fill-purple-500"
-                />
-              </Button>
-            </div>
-          </DialogContent>
-        </div>
+          </div>
+          <span className="paragraph-4-regular items-center place-self-center text-dark-900 dark:text-white-400">
+            Or share with Link
+          </span>
+          {/* {Bottom Row} */}
+          <div className="flex w-full rounded-md bg-white-200  align-bottom  text-dark-900 ring-0 dark:bg-dark-700 dark:text-white-200 ">
+            <Input
+              value={isCopied || defaultUrl}
+              readOnly
+              className="paragraph-3-medium flex w-full rounded-none border-0 bg-white-200 py-3 text-dark-900 ring-0 focus:border-0 focus:ring-0 dark:bg-dark-700 dark:text-white-200"
+            />{" "}
+            <Button onClick={handleCopyClick} className="bg-transparent">
+              <Image
+                src={clipboard}
+                alt="copy"
+                className="size-4 stroke-purple-500 active:scale-110 dark:fill-purple-500"
+              />
+            </Button>
+          </div>
+        </DialogContent>
       </Dialog>
     </>
   );
