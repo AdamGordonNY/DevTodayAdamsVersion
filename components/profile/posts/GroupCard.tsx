@@ -101,7 +101,7 @@ const GroupCard = ({ group, userCount, profile }: GroupCardProps) => {
           )}
         </MotionDiv>
         <div className="flex size-[30px] items-center justify-center rounded-full bg-white-200 dark:bg-dark-700">
-          <ShareButton contentType="group" />
+          <ShareButton />
         </div>
       </div>
     </MotionDiv>
