@@ -33,7 +33,7 @@ const MeetupDetails = ({
     ? format(new Date(endTime), "p")
     : "No date found";
   const meetupDateAndTime = `${meetupStartDate} • ${meetupStartTime} - ${meetupEndTime}`;
-  const debouncedIncrementViews = useDebounceCallback(incrementViews, 60000);
+  const debouncedIncrementViews = useDebounceCallback(incrementViews, 30000);
   useEffect(() => {
     debouncedIncrementViews({ id, contentType: "meetup" });
   }, [id, debouncedIncrementViews]);

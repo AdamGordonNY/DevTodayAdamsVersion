@@ -16,7 +16,7 @@ const PostDetails = ({
   isAuthor: boolean;
 }) => {
   const { tags, body, title, image, id } = post;
-  const debouncedIncrementViews = useDebounceCallback(incrementViews, 60000);
+  const debouncedIncrementViews = useDebounceCallback(incrementViews, 30000);
   useEffect(() => {
     debouncedIncrementViews({ id, contentType: "post" });
   }, [id, debouncedIncrementViews]);

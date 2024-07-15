@@ -17,7 +17,7 @@ const PodcastDetails = ({
   isAuthor: boolean;
 }) => {
   const { title, audio, tags, body, image, userId, id } = podcast;
-  const debouncedIncrementViews = useDebounceCallback(incrementViews, 60000);
+  const debouncedIncrementViews = useDebounceCallback(incrementViews, 30000);
   useEffect(() => {
     debouncedIncrementViews({ id, contentType: "podcast" });
   }, [id, debouncedIncrementViews]);
