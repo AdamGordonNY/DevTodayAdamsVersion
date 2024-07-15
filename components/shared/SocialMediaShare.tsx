@@ -3,12 +3,13 @@ import { X } from "lucide-react";
 import React from "react";
 
 import { useCopyToClipboard } from "usehooks-ts";
-import CurvedArrows from "../ui/icons/CurvedArrows";
+import { Share } from "../ui";
 import {
   DialogClose,
   Dialog,
   DialogContent,
   DialogTrigger,
+  DialogHeader,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -19,32 +20,31 @@ import fb from "@/public/icons/fa-brands_facebook.svg";
 import linkedIn from "@/public/icons/li_fill.svg";
 import twitter from "@/public/icons/twitter.svg";
 import copy from "@/public/icons/copy.svg";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 export const ShareButton = () => {
   const sites = ["linkedin", "facebook", "twitter", "email"];
   const pathname = usePathname();
-  const { contentId } = useParams();
-  // getter , setter
+
   const [isCopied, copyToClipboard] = useCopyToClipboard();
-  const shareUrl = `https://adam-gordon.info/groups/${contentId}`;
-  const defaultUrl = `https://adam-gordon.info/${pathname}`;
+
+  const defaultUrl = `https://adam-gordon.info${pathname}`;
 
   const getShareLink = (site: string) => {
     switch (site) {
       case "linkedin":
-        return `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareUrl)}`;
+        return `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(defaultUrl)}`;
       case "facebook":
-        return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+        return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(defaultUrl)}`;
       case "twitter":
-        return `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=Check%20this%20out!`;
+        return `https://twitter.com/intent/tweet?url=${encodeURIComponent(defaultUrl)}&text=Check%20this%20out!`;
       case "email":
-        return `mailto:?subject=Check%20this%20out!&body=${encodeURIComponent(shareUrl)}`;
+        return `mailto:?subject=Check%20this%20out!&body=${encodeURIComponent(defaultUrl).toString()}`;
       case "copyLink":
-        return shareUrl || defaultUrl;
+        return defaultUrl;
       default:
-        return "";
+        return "https://adam-gordon.info";
     }
   };
 
@@ -93,24 +93,26 @@ export const ShareButton = () => {
     <>
       <Dialog modal>
         <DialogTrigger asChild>
-          <Button className="size-4 rounded-full bg-white-400">
-            <CurvedArrows className="ml-[3px] fill-white-400 dark:fill-white-300" />
-          </Button>
+          <button
+            type="button"
+            className="paragraph-3-medium flex items-center justify-center gap-x-2 rounded bg-[#C5D0E666] p-2.5  dark:bg-dark-700"
+          >
+            <Share size={14} fill="fill-dark-700 dark:fill-white-300" />
+            <p className="text-dark-700 dark:text-white-300">Share Post</p>
+          </button>
         </DialogTrigger>
-        <div className="flex ">
-          <DialogContent className="z-50 flex h-[337px] w-[450px] flex-col  justify-between gap-x-6 rounded-2xl  bg-dark-800">
+        <div className="flex w-full ">
+          <DialogContent className="z-50 flex h-[337px] flex-col justify-between gap-x-6  rounded-2xl bg-dark-800 max-md:w-[90%]  md:w-[450px]">
             {/* {Header } */}
-            <div className="heading-1-medium flex w-full flex-col  justify-between  px-6 py-3.5 text-white-200">
-              <div className="flex w-full justify-between">
-                {" "}
-                <h1 className="dark:text-white-200">Share With </h1>
-                <DialogClose asChild>
-                  <Button className="bg-transparent">
-                    <X className="stroke-dark-800 dark:stroke-white-100" />
-                  </Button>
-                </DialogClose>
-              </div>
-            </div>
+            <DialogHeader className="heading-1-medium flex w-full flex-row justify-between  px-6 py-3.5 text-white-200">
+              <h1 className="dark:text-white-200">Share With </h1>
+              <DialogClose asChild className="">
+                <button type="button" className="bg-transparent">
+                  <X className="stroke-dark-800 dark:stroke-white-100" />
+                </button>
+              </DialogClose>
+            </DialogHeader>
+
             {/* {Site buttons} */}
             <div className="flex w-full justify-between">
               <div className="flex w-full justify-around">
@@ -122,9 +124,13 @@ export const ShareButton = () => {
             </span>
             {/* {Bottom Row} */}
             <div className="flex w-full align-bottom ">
-              <Input value={shareUrl!} readOnly className="flex w-full py-3" />{" "}
+              <Input
+                value={isCopied || defaultUrl}
+                readOnly
+                className="flex w-full py-3"
+              />{" "}
               <Button
-                onClick={() => copyToClipboard(shareUrl)}
+                onClick={() => copyToClipboard(defaultUrl)}
                 className="bg-transparent"
               >
                 <Image

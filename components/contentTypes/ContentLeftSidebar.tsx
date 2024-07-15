@@ -2,9 +2,9 @@ import { format as formatDate } from "date-fns";
 import Link from "next/link";
 
 import { ContentCategoryEnum, ContentType } from "@/lib/types.d";
-import { Comment, Eye, Share } from "../ui";
+import { Comment, Eye } from "../ui";
 import LikeButton from "../shared/LikeButton";
-
+import ShareButton from "../shared/SocialMediaShare";
 const ContentLeftSidebar = ({
   content,
   contentCategory,
@@ -56,13 +56,7 @@ const ContentLeftSidebar = ({
         </div>
       </section>
 
-      <button
-        type="button"
-        className="paragraph-3-medium flex items-center justify-center gap-x-2 rounded bg-[#C5D0E666] p-2.5 max-md-b:hidden dark:bg-dark-700"
-      >
-        <Share size={14} fill="fill-dark-700 dark:fill-white-300" />
-        <p className="text-dark-700 dark:text-white-300">Share Post</p>
-      </button>
+      <ShareButton />
 
       <div className="paragraph-2-medium flex rounded-lg bg-white-100 p-4 text-center text-white-400 max-md-b:hidden dark:bg-dark-800">
         <p>
