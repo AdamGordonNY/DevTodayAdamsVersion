@@ -19,7 +19,7 @@ interface PostCardProps {
 
 const PostCard = ({ post, userData, index = 1 }: PostCardProps) => {
   return (
-    <>
+    <Link href={`/posts/${post?.id}`}>
       {post && (
         <MotionDiv
           initial={{
@@ -32,7 +32,7 @@ const PostCard = ({ post, userData, index = 1 }: PostCardProps) => {
           className={`min-h-[200px] gap-x-5 gap-y-2.5 rounded-[16px]  bg-white-100 p-5 text-dark-800     dark:bg-dark-800 dark:text-white-100`}
         >
           <MotionDiv
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.01 }}
             className="min-size-[50px] float-left"
           >
             <Link href={`/posts/${post.id}`}>
@@ -99,7 +99,7 @@ const PostCard = ({ post, userData, index = 1 }: PostCardProps) => {
           </section>
         </MotionDiv>
       )}
-    </>
+    </Link>
   );
 };
 

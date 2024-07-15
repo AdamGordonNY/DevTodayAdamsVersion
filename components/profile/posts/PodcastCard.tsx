@@ -19,12 +19,16 @@ interface PodcastCardProps {
 const PodcastCard = ({ podcast, user, index = 1 }: PodcastCardProps) => {
   return (
     <MotionDiv
-      initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
+      whileHover={{ scale: 1.03 }}
       className="relative flex h-[260px] break-inside-avoid-column flex-col justify-between rounded-[16px] bg-white-100 p-5 dark:bg-dark-800"
     >
-      <div className="flex w-full flex-col justify-between gap-y-2">
+      <Link
+        href={`/podcasts/${podcast?.id}`}
+        className="flex w-full flex-col justify-between gap-y-2"
+      >
         <div className="flex flex-row items-start">
           <MotionDiv whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.9 }}>
             <Link href={`/podcasts/${podcast?.id!}`}>
@@ -57,7 +61,7 @@ const PodcastCard = ({ podcast, user, index = 1 }: PodcastCardProps) => {
           {podcast?.tags &&
             podcast.tags.map((tag, idx) => <ContentTags key={idx} tag={tag} />)}
         </div>
-      </div>
+      </Link>
 
       <Link href={`/profile/${user.id}`} className="justify-self-end">
         <UserSection
