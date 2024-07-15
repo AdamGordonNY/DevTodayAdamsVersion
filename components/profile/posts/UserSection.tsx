@@ -27,7 +27,7 @@ const UserSection = ({
         <p className="paragraph-3-regular text-dark-400 whitespace-nowrap dark:text-white-200">
           {getTimeDifference(createdAt!)}
         </p>
-      </div>{" "}
+      </div>
     </div>
   );
 };
