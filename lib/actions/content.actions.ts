@@ -259,3 +259,55 @@ export async function updateContentLikes({
     };
   }
 }
+export const incrementViews = async ({
+  id,
+  contentType,
+}: {
+  id: number;
+  contentType: ContentCategoryEnum;
+}) => {
+  const where = { id: Number(id) };
+
+  try {
+    let updatedContent;
+    switch (contentType.toString().toLowerCase()) {
+      case "post":
+        updatedContent = await prisma.post.update({
+          where,
+          data: {
+            views: {
+              increment: 1,
+            },
+          },
+        });
+        break;
+      case "podcast":
+        updatedContent = await prisma.podcast.update({
+          where,
+          data: {
+            views: {
+              increment: 1,
+            },
+          },
+        });
+        break;
+      case "meetup":
+        updatedContent = await prisma.meetup.update({
+          where,
+          data: {
+            views: {
+              increment: 1,
+            },
+          },
+        });
+        break;
+      default:
+        throw new Error(`Unsupported content type: ${contentType}`);
+    }
+
+    return updatedContent;
+  } catch (error) {
+    console.error("Error incrementing views:", error);
+    throw error;
+  }
+};
