@@ -8,6 +8,7 @@ import { auth } from "@clerk/nextjs";
 
 import { TopRankGroups } from "./shared.types.d";
 import { IGroupSchema } from "../validations/group.validations";
+import { getUserIdWithClerkID } from "./user.actions";
 
 export async function createGroup(data: any, authorId: number) {
   try {
@@ -92,13 +93,28 @@ export async function updateGroup(data: IGroupSchema, groupId: number) {
 
 export async function deleteGroup(id: number) {
   try {
-    const group = await prisma.group.delete({
-      where: {
-        id,
-      },
+    const { userId } = await getUserIdWithClerkID();
+
+    const group = await prisma.group.findUnique({
+      where: { id },
+      select: { admins: { select: { id: true } } },
     });
-    console.log("group", group);
-    return group;
+
+    if (!group) {
+      throw new Error("Group not found.");
+    }
+
+    const isAdmin = group.admins.some((admin) => admin.id === userId);
+
+    if (!isAdmin) {
+      throw new Error("You are not an admin of this group.");
+    }
+
+    const deletedGroup = await prisma.group.delete({
+      where: { id },
+    });
+
+    return deletedGroup;
   } catch (error) {
     console.error("Error deleting group:", error);
     throw new Error("An unexpected error occurred while deleting group.");

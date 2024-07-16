@@ -183,7 +183,7 @@ export async function getDynamicMeetups(
     const meetups = await prisma.meetup.findMany({
       orderBy: {
         ...(type === "popular" && { likes: "desc" }),
-        ...(type === "newest" && { startTime: "desc" }),
+        ...(type === "newest" && { createdAt: "desc" }),
       },
       skip,
       take: pageSize || 4,
