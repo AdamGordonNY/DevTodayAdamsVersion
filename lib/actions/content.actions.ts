@@ -274,12 +274,15 @@ export const incrementViews = async ({
     switch (contentType) {
       case "post":
         updatedContent = await incrementPostViews(id);
+        revalidateTag("views");
         break;
       case "podcast":
         updatedContent = await incrementPodcastViews(id);
+        revalidateTag("views");
         break;
       case "meetup":
         updatedContent = await incrementMeetupViews(id);
+        revalidateTag("views");
         break;
       default:
         throw new Error("Invalid content type");
