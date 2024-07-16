@@ -9,6 +9,10 @@ import { ImagePlaceholder } from "../ui";
 import { Separator } from "../ui/separator";
 import ContentMenu from "./ContentMenu";
 import GoogleMap from "@/components/shared/GoogleMap";
+import { useDebounceCallback } from "usehooks-ts";
+import { incrementViews } from "@/lib/actions/content.actions";
+
+import { useEffect } from "react";
 
 const MeetupDetails = ({
   meetup,
@@ -29,7 +33,10 @@ const MeetupDetails = ({
     ? format(new Date(endTime), "p")
     : "No date found";
   const meetupDateAndTime = `${meetupStartDate} • ${meetupStartTime} - ${meetupEndTime}`;
-
+  const debouncedIncrementViews = useDebounceCallback(incrementViews, 30000);
+  useEffect(() => {
+    debouncedIncrementViews({ id, contentType: "meetup" });
+  }, [id, debouncedIncrementViews]);
   return (
     <section className="flex w-full flex-col gap-y-6">
       <section className="flex flex-col gap-y-6">

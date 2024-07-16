@@ -1,10 +1,13 @@
 "use server";
 import prisma from "@/db";
 import { ContentCategoryEnum, ContentMetrics } from "../types.d";
-import { incrementPostLikes } from "./post.actions";
-import { incrementPodcastLikes } from "./podcast.actions";
+import { incrementPostLikes, incrementPostViews } from "./post.actions";
+import {
+  incrementPodcastLikes,
+  incrementPodcastViews,
+} from "./podcast.actions";
 import { incrementCommentLikes } from "./comment.actions";
-import { incrementMeetupLikes } from "./meetup.actions";
+import { incrementMeetupLikes, incrementMeetupViews } from "./meetup.actions";
 import { LikedContent } from "./shared.types";
 import { unstable_cache as cache, revalidateTag } from "next/cache";
 export async function _getTopFiveContent({ userId }: { userId: number }) {
@@ -259,3 +262,32 @@ export async function updateContentLikes({
     };
   }
 }
+export const incrementViews = async ({
+  id,
+  contentType,
+}: {
+  id: number;
+  contentType: string;
+}) => {
+  try {
+    let updatedContent;
+    switch (contentType) {
+      case "post":
+        updatedContent = await incrementPostViews(id);
+        break;
+      case "podcast":
+        updatedContent = await incrementPodcastViews(id);
+        break;
+      case "meetup":
+        updatedContent = await incrementMeetupViews(id);
+        break;
+      default:
+        throw new Error("Invalid content type");
+    }
+    console.log(updatedContent);
+    return updatedContent;
+  } catch (error) {
+    console.error("Error incrementing views:", error);
+    throw error;
+  }
+};
