@@ -195,7 +195,7 @@ export async function _getGroupById(id: string) {
 }
 
 export const getGroupById = unstable_cache(_getGroupById, ["_getGroupById"], {
-  tags: ["getGroupById", "commentPages", "likes"],
+  tags: ["getGroupById", "commentPages", "likes", "views", "User"],
   revalidate: 1,
 });
 
@@ -525,6 +525,7 @@ export async function addOrRemoveGroupUser(groupId: number, userId: number) {
     });
 
     revalidateTag("getGroupById");
+    revalidateTag("User");
     return { group, error: null };
   } catch (error) {
     console.error("Error adding user:", error);
@@ -533,3 +534,67 @@ export async function addOrRemoveGroupUser(groupId: number, userId: number) {
     };
   }
 }
+export const checkIfAdmin = async (groupId: number) => {
+  try {
+    const { userId } = await getUserIdWithClerkID();
+    if (userId) {
+      const existingAdmin = await prisma.group.findUnique({
+        where: {
+          id: groupId,
+          admins: {
+            some: {
+              id: userId,
+            },
+          },
+        },
+      });
+      if (existingAdmin) {
+        return { isAdmin: true, error: null };
+      } else {
+        return { isAdmin: false, error: "User is not an admin." };
+      }
+    } else {
+      return { isAdmin: false, error: "User is not an admin." };
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error("An unexpected error occurred while checking admin.");
+  }
+};
+export const _toggleAdmin = async (groupId: number, targetUserId: number) => {
+  try {
+    const { isAdmin } = await checkIfAdmin(groupId);
+    if (isAdmin) {
+      const makeAdmin = await prisma.group.update({
+        where: {
+          id: groupId,
+        },
+        data: {
+          admins: {
+            connect: {
+              id: targetUserId,
+            },
+          },
+        },
+      });
+      if (!makeAdmin) {
+        return {
+          ok: false,
+          error: null,
+          message: "User could not be made an admin.",
+        };
+      }
+      return {
+        ok: true,
+        error: null,
+        message: "User has been made an admin.",
+      };
+    }
+  } catch (error) {
+    console.error("Error toggling admin:", error);
+    throw new Error("An unexpected error occurred while toggling admin.");
+  }
+};
+export const toggleAdmin = unstable_cache(_toggleAdmin, ["_toggleAdmin"], {
+  tags: ["toggleAdmin", "User", "groupInfo"],
+});

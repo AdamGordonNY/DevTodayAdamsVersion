@@ -23,6 +23,39 @@ If your project has a lot of features, list them here.
 - Content Creation Platform — DevToday provides users with tools and resources to create and share content easily, allowing knowledge sharing and expression within the community.
 - Content Interaction Features — The app encourages engagement through likes, follows, and even communicating with other like-minded people through the content’s comment section.
 - Community Building — DevToday allows users to create groups of like-minded individuals, professionals, and enthusiasts in the tech space.
+- Authentication with Clerk (or Next Auth)
+- Onboarding
+- Sort & Filters
+- Collection & Pagination
+- Global Command Search
+- Image Uploads
+- Profile Management
+- Follows, Views, Likes
+- Interactive map
+- Audio Player
+- Notification
+- Social media share (Metatags)
+- Top & popular lists
+- Content preview
+- Content Management CRUD (3 post types)
+- Group Management (CRUD)
+- Comment Thread
+- Light & Dark mode
+
+## Components
+
+1. Language - [Typescript](https://www.typescriptlang.org/)
+2. **Framework -** [Next.js](https://nextjs.org/)
+3. **Libraries:**
+   - Authentication - [Clerk](https://clerk.com/) or [Next Auth](https://next-auth.js.org/)
+   - Styling - [Tailwindcss](https://tailwindcss.com/) with [Shadcn](https://ui.shadcn.com/) _or your favorite UX library_
+   - Media Management - [Uploadthing](https://uploadthing.com/) or [Next Cloudinary](https://next.cloudinary.dev/)
+   - Rich text editor - WYSIWYG editor - TinyMCE
+   - Rich text parser - [html-react-parser](https://www.npmjs.com/package/html-react-parser)
+   - Date picker - [react-datepicker](https://reactdatepicker.com/)
+   - Database - [Mongodb](https://www.mongodb.com/) + [Mongoose](https://mongoosejs.com/docs/) or [Postgres](https://www.postgresql.org/) **+** [Prisma](https://www.prisma.io/)
+   - Validation - [zod](https://zod.dev/)
+   - Interactive map - [@vis.gl/react-google-maps](<[https://react-leaflet.js.org/](https://visgl.github.io/react-google-maps/)>) _or other libraries you wish to use_
 
 ## 🛠️ Setup Project
 
@@ -133,6 +166,7 @@ Furthermore, I utilized certain third-party assets that require attribution. Fin
 If I followed tutorials during development, I'd include the links to those as well.
 
 👩 Darshin Von Parijs <br>
+Github: @DDVVPP
 
 ## 📞 Contact Me
 

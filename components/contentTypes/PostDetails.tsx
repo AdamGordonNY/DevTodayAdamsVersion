@@ -8,7 +8,6 @@ import ContentMenu from "./ContentMenu";
 import { incrementViews } from "@/lib/actions/content.actions";
 import { useEffect } from "react";
 import { useDebounceCallback } from "usehooks-ts";
-import { HTMLReactParserOptions } from "html-react-parser";
 const PostDetails = ({
   post,
   isAuthor,

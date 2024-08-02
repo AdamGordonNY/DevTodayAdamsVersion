@@ -9,8 +9,15 @@ import {
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { TripleDot } from "../ui";
 import ConfirmationModal from "../shared/ConfirmationModal";
+import { checkIfAdmin, toggleAdmin } from "@/lib/actions/group.actions";
 
-const GroupMembersMenu = ({ memberId }: { memberId: number }) => {
+const GroupMembersMenu = ({
+  memberId,
+  groupId,
+}: {
+  memberId: number;
+  groupId: number;
+}) => {
   const [isSubmitting, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
 
@@ -26,7 +33,22 @@ const GroupMembersMenu = ({ memberId }: { memberId: number }) => {
       setOpen(false);
     }
   };
-
+  const handleToggleAdmin = async () => {
+    try {
+      startTransition(async () => {
+        const isAdmin = await checkIfAdmin(memberId);
+        if (!isAdmin) {
+          const newAdmin = await toggleAdmin(groupId, memberId);
+          newAdmin?.ok
+            ? toast.success(`User is now an admin`)
+            : toast.error(`Unable to assign admin role`);
+        }
+      });
+    } catch (error) {
+      console.log("error in catch", error);
+      toast.error(`Unable to delete `);
+    }
+  };
   return (
     <>
       <DropdownMenu>
@@ -40,7 +62,7 @@ const GroupMembersMenu = ({ memberId }: { memberId: number }) => {
         >
           <div
             className="relative flex cursor-pointer items-center gap-x-3 p-3 hover:rounded hover:bg-white-200 hover:p-3 dark:hover:bg-dark-800"
-            onClick={() => console.log("clicked")}
+            onClick={() => handleToggleAdmin()}
           >
             <p className="paragraph-3-medium text-dark-700 dark:text-white-200">
               Assign Admin Role
