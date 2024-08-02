@@ -577,6 +577,7 @@ export const _toggleAdmin = async (groupId: number, targetUserId: number) => {
           },
         },
       });
+      console.log("makeAdmin", makeAdmin);
       if (!makeAdmin) {
         return {
           ok: false,
@@ -596,5 +597,5 @@ export const _toggleAdmin = async (groupId: number, targetUserId: number) => {
   }
 };
 export const toggleAdmin = unstable_cache(_toggleAdmin, ["_toggleAdmin"], {
-  tags: ["toggleAdmin", "User", "groupInfo"],
+  tags: ["toggleAdmin", "User", "getGroupById"],
 });
