@@ -18,11 +18,13 @@ const GroupMembersCard = ({
   loggedInUser,
   isLoggedInUserAdmin = false,
   isMemberAdmin = false,
+  groupId,
 }: {
   member: User;
   loggedInUser: GroupLoggedInUser;
   isLoggedInUserAdmin?: boolean;
   isMemberAdmin?: boolean;
+  groupId: number;
 }) => {
   const { following, clerkID } = loggedInUser;
   const [pending, startTransition] = useTransition();
@@ -106,7 +108,7 @@ const GroupMembersCard = ({
               ease: "linear",
             }}
           >
-            <GroupMembersMenu memberId={member.id} />
+            <GroupMembersMenu memberId={member.id} groupId={groupId} />
           </MotionDiv>
         )}
       </div>

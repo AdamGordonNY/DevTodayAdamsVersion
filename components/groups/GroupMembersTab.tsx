@@ -8,11 +8,13 @@ const GroupMembersTab = ({
   loggedInUser,
   isLoggedInUserAdmin,
   isMemberAdmin = false,
+  groupId,
 }: {
   member: User;
   loggedInUser: GroupLoggedInUser;
   isLoggedInUserAdmin: boolean;
   isMemberAdmin?: boolean;
+  groupId: number;
 }) => {
   return (
     <div className="rounded-lg p-4 dark:bg-dark-800">
@@ -21,6 +23,7 @@ const GroupMembersTab = ({
         loggedInUser={loggedInUser}
         isLoggedInUserAdmin={isLoggedInUserAdmin}
         isMemberAdmin={isMemberAdmin}
+        groupId={groupId}
       />
     </div>
   );

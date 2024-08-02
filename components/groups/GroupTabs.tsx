@@ -88,6 +88,7 @@ const GroupTabs = ({
             <div key={index} className="rounded-[16px]">
               <GroupMembersTab
                 member={member}
+                groupId={group.id}
                 loggedInUser={user as GroupLoggedInUser}
                 isLoggedInUserAdmin={isAdmin}
                 isMemberAdmin={member.isAdmin}
