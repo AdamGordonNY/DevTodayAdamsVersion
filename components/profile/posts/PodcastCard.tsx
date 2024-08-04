@@ -25,10 +25,7 @@ const PodcastCard = ({ podcast, user, index = 1 }: PodcastCardProps) => {
       whileHover={{ scale: 1.03 }}
       className="relative flex h-[260px] break-inside-avoid-column flex-col justify-between rounded-[16px] bg-white-100 p-5 dark:bg-dark-800"
     >
-      <Link
-        href={`/podcasts/${podcast?.id}`}
-        className="flex w-full flex-col justify-between gap-y-2"
-      >
+      <div className="flex w-full flex-col justify-between gap-y-2">
         <div className="flex flex-row items-start">
           <MotionDiv whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.9 }}>
             <Link href={`/podcasts/${podcast?.id!}`}>
@@ -61,13 +58,13 @@ const PodcastCard = ({ podcast, user, index = 1 }: PodcastCardProps) => {
           {podcast?.tags &&
             podcast.tags.map((tag, idx) => <ContentTags key={idx} tag={tag} />)}
         </div>
-      </Link>
+      </div>
 
       <Link href={`/profile/${user.id}`} className="justify-self-end">
         <UserSection
           image={user.image!}
           username={user?.username!}
-          createdAt={user.createdAt!}
+          createdAt={podcast?.createdAt!}
         />
       </Link>
     </MotionDiv>

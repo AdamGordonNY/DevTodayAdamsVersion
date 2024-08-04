@@ -19,7 +19,7 @@ const ProfileContent = ({
   content: UserWithProfileContent;
 }) => {
   const [tabValue, setTabValue] = React.useState<string>("posts");
-  console.log(content);
+  console.log({ content });
   return (
     <>
       <Tabs
@@ -45,15 +45,17 @@ const ProfileContent = ({
           className="mt-5 w-full space-y-2.5 bg-white-200 dark:bg-dark-900"
         >
           {content.posts?.map((post: any, index: number) => (
-            <PostCard
-              key={index}
-              userData={content}
-              post={{
-                ...post,
-                commentCount: post.commentCount,
-                tags: post.tags,
-              }}
-            />
+            <div key={index}>
+              <PostCard
+                key={index}
+                userData={content}
+                post={{
+                  ...post,
+                  commentCount: post.commentCount,
+                  tags: post.tags,
+                }}
+              />
+            </div>
           ))}
         </TabsContent>
         <TabsContent

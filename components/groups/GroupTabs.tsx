@@ -48,7 +48,7 @@ const GroupTabs = ({
         </TabsList>
       </div>
 
-      <TabsContent value="Posts" className="mt-5 flex w-full flex-col gap-y-5 ">
+      <TabsContent value="Posts" className="mt-4 flex w-full flex-col gap-y-5 ">
         {group.posts?.map((post: any, index: number) => (
           <PostCard
             key={index}
@@ -61,13 +61,19 @@ const GroupTabs = ({
           />
         ))}
       </TabsContent>
-      <TabsContent value="Meetups" className="mt-5 w-full space-y-2.5 ">
+      <TabsContent
+        value="Meetups"
+        className="mt-4 flex w-full flex-col gap-y-5 "
+      >
         {group.meetups?.map((meetup: any, index: number) => (
           <MeetupCard key={index} meetup={meetup} />
         ))}
       </TabsContent>
-      <TabsContent value="Podcasts" className="mt-5 w-full space-y-2.5 ">
-        <div className=" grid grid-flow-row grid-cols-2 grid-rows-2 gap-5 max-lg:flex max-lg:flex-col ">
+      <TabsContent
+        value="Podcasts"
+        className="mt-4 flex w-full flex-col gap-y-5 "
+      >
+        <div className="columns-2 space-y-4 max-lg:mt-4 max-lg:columns-1">
           {group.podcasts?.map((podcast: any, index: number) => (
             <div
               key={index}
@@ -81,7 +87,7 @@ const GroupTabs = ({
 
       <TabsContent
         value="Members"
-        className="mt-5 w-full space-y-2.5 bg-white-200 dark:bg-dark-900"
+        className="mt-4 w-full space-y-2.5 bg-white-200 dark:bg-dark-900"
       >
         <div className=" grid grid-flow-row grid-rows-2 gap-5 max-lg:flex max-lg:flex-col xl:grid-cols-2 ">
           {allMembers?.map((member: MemberIsAdmin, index: any) => (

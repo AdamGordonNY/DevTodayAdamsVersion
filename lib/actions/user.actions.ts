@@ -177,6 +177,7 @@ export const getMostRecentPosts = async (slug: number | string) => {
 export const _getUserWithContent = async (slug: number | string) => {
   try {
     const where = typeof slug === "number" ? { id: slug } : { clerkID: slug };
+
     const user = await prisma.user.findUnique({
       where,
       include: {
@@ -195,42 +196,25 @@ export const _getUserWithContent = async (slug: number | string) => {
           take: 3,
           include: { _count: { select: { comment: true } } },
         },
-        adminGroups: {
+        groups: {
           select: {
             id: true,
             name: true,
             about: true,
             coverImage: true,
             members: {
-              select: {
-                id: true,
-                image: true,
-              },
-              take: 4, // Include only the first 4 members
+              select: { id: true, image: true },
+              take: 4,
+            },
+            admins: {
+              select: { id: true, image: true },
+              take: 4,
             },
             createdAt: true,
-            _count: { select: { members: true } },
+            _count: { select: { members: true, admins: true } },
           },
         },
-        memberGroups: {
-          select: {
-            id: true,
-            name: true,
-            about: true,
-            coverImage: true,
-            members: {
-              select: {
-                id: true,
-                image: true,
-              },
-              take: 4, // Include only the first 4 members
-            },
-            createdAt: true,
-            _count: { select: { members: true } },
-          },
-          orderBy: { createdAt: "asc" },
-          take: 4,
-        },
+
         SocialMedia: true,
         followers: true,
         following: true,
@@ -240,27 +224,6 @@ export const _getUserWithContent = async (slug: number | string) => {
     if (!user) {
       return { user: null, error: "User not found" };
     }
-
-    const groups = [
-      ...user.adminGroups.map((group) => ({
-        id: group.id,
-        name: group.name,
-        about: group.about,
-        coverImage: group.coverImage,
-        members: group.members.slice(0, 4),
-        createdAt: group.createdAt,
-        memberCount: group._count.members,
-      })),
-      ...user.memberGroups.map((group) => ({
-        id: group.id,
-        name: group.name,
-        about: group.about,
-        coverImage: group.coverImage,
-        members: group.members.slice(0, 4),
-        createdAt: group.createdAt,
-        memberCount: group._count.members,
-      })),
-    ];
 
     const userWithContent: UserWithProfileContent = {
       ...user,
@@ -277,7 +240,10 @@ export const _getUserWithContent = async (slug: number | string) => {
         ...meetup,
         commentCount: meetup._count.comment,
       })),
-      groups,
+      groups: user.groups.map((group) => ({
+        ...group,
+        memberCount: group._count.members + group._count.admins,
+      })),
       goals: user.goal,
       SocialMedia: user.SocialMedia as SocialMedia[],
       followers: user.followers,
@@ -290,7 +256,6 @@ export const _getUserWithContent = async (slug: number | string) => {
     return { user: null, error: "There was an error fetching the user." };
   }
 };
-
 export const getUserWithContent = cache(
   _getUserWithContent,
   ["getUserWithContent"],

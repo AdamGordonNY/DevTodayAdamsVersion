@@ -68,6 +68,7 @@ export interface ProfileGroup {
     id: number;
     image: string | null;
   }[];
+
   createdAt: Date;
   memberCount: number;
 }
