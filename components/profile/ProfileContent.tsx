@@ -19,7 +19,7 @@ const ProfileContent = ({
   content: UserWithProfileContent;
 }) => {
   const [tabValue, setTabValue] = React.useState<string>("posts");
-  console.log(content);
+
   return (
     <>
       <Tabs
@@ -42,23 +42,25 @@ const ProfileContent = ({
         </div>
         <TabsContent
           value="posts"
-          className="mt-5 w-full space-y-2.5 bg-white-200 dark:bg-dark-900"
+          className="mt-5 w-full space-y-5 bg-white-200 dark:bg-dark-900"
         >
           {content.posts?.map((post: any, index: number) => (
-            <PostCard
-              key={index}
-              userData={content}
-              post={{
-                ...post,
-                commentCount: post.commentCount,
-                tags: post.tags,
-              }}
-            />
+            <div key={index}>
+              <PostCard
+                key={index}
+                userData={content}
+                post={{
+                  ...post,
+                  commentCount: post.commentCount,
+                  tags: post.tags,
+                }}
+              />
+            </div>
           ))}
         </TabsContent>
         <TabsContent
           value="meetups"
-          className="mt-5 w-full space-y-2.5 bg-white-200 dark:bg-dark-900"
+          className="mt-5 w-full space-y-5 bg-white-200 dark:bg-dark-900"
         >
           {content.meetups?.map((meetup: any, index: number) => (
             <MeetupCard key={index} meetup={meetup} />
@@ -66,7 +68,7 @@ const ProfileContent = ({
         </TabsContent>
         <TabsContent
           value="podcasts"
-          className="mt-5 w-full space-y-2.5 bg-white-200 dark:bg-dark-900"
+          className="mt-5 w-full space-y-5 bg-white-200 dark:bg-dark-900"
         >
           <div className=" columns-2  gap-x-5 space-y-5 max-md:columns-1">
             {content.podcasts?.map((podcast: any, index: number) => (
@@ -77,7 +79,7 @@ const ProfileContent = ({
 
         <TabsContent
           value="groups"
-          className="mt-5 w-full space-y-2.5 bg-white-200 dark:bg-dark-900"
+          className="mt-5 w-full space-y-5 bg-white-200 dark:bg-dark-900"
         >
           <div className="columns-2  gap-x-5 space-y-5 max-md:columns-1 ">
             {content.groups?.slice(0, 4).map((group: any, index: any) => (

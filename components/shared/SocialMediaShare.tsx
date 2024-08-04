@@ -114,11 +114,9 @@ export const ShareButton = ({ params }: { params: { id?: string } }) => {
           ) : (
             <button
               type="button"
-              className="paragraph-3-medium flex items-center justify-center gap-x-2 rounded bg-[#C5D0E666] p-2.5 active:scale-110  dark:bg-dark-700"
+              className="paragraph-3-medium flex items-center justify-center gap-x-2 rounded-full bg-[#C5D0E666] p-2.5 active:scale-110  dark:bg-dark-700"
             >
               <Share size={14} fill="fill-dark-700 dark:fill-white-300" />
-
-              <p className="text-dark-700 dark:text-white-300">Share Post</p>
             </button>
           )}
         </DialogTrigger>

@@ -97,7 +97,13 @@ const EditProfile = ({ user }: EditProfileProps) => {
           });
         }
       });
-    } catch (error) {}
+    } catch (error) {
+      toast({
+        title: "Error updating profile",
+        variant: "destructive",
+        type: "foreground",
+      });
+    }
   };
 
   return (
