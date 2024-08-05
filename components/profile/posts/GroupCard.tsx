@@ -17,22 +17,16 @@ interface GroupCardProps {
 }
 
 const GroupCard = ({ group, userCount, profile }: GroupCardProps) => {
-  const userArray = (group.users || []).slice(0, 4).map((user) => {
+  const combinedUsers = [...group.admins, ...group.members];
+  const userArray = combinedUsers.slice(0, 4).map((user) => {
     return {
-      id: user?.id!,
-      image: user?.image!,
+      id: user.id,
+      image: user.image,
     };
   });
+
   const count = userCount! - userArray.length;
-  if (userArray.length === 0) {
-    profile.map((user) => {
-      userArray.push({
-        id: user?.id!,
-        image: user?.image!,
-      });
-      return null;
-    });
-  }
+
   return (
     <MotionDiv
       initial={{ opacity: 0 }}
@@ -86,7 +80,7 @@ const GroupCard = ({ group, userCount, profile }: GroupCardProps) => {
               <GroupAvatars members={[user]} count={0} />
             </MotionDiv>
           ))}
-          {count > 0 && (
+          {combinedUsers.length > 4 && count > 0 && (
             <MotionDiv
               className="paragraph-4-regular flex size-[30px] items-center justify-center rounded-full bg-primary-100 dark:bg-dark-700 dark:text-white-100"
               variants={{
