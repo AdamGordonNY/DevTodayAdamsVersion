@@ -284,43 +284,15 @@ export async function getDynamicGroups(
         skip,
         take: pageSize,
         include: {
-          _count: { select: { posts: true } },
-          admins: { select: { id: true, image: true } },
-          members: { select: { id: true, image: true } },
-        },
-      });
-      const totalPages = Math.ceil(groupIds.length / pageSize);
-      return {
-        groups: groups.map((group) => ({
-          ...group,
-          postCount: group._count.posts,
-          users: [
-            ...group.admins.map((admin) => ({
-              id: admin.id,
-              image: admin.image,
-              role: "admin",
-            })),
-            ...group.members.map((member) => ({
-              id: member.id,
-              image: member.image,
-              role: "member",
-            })),
-          ],
-          userCount: group.admins.length + group.members.length,
-        })),
-        totalPages,
-        error: null,
-      };
-    }
-    if (type === "popular") {
-      groups = await prisma.group.findMany({
-        orderBy: {
-          posts: { _count: "desc" },
-        },
-        skip,
-        take: pageSize,
-        include: {
-          _count: { select: { posts: true } },
+          _count: {
+            select: {
+              posts: true,
+              podcasts: true,
+              meetups: true,
+              members: true,
+              admins: true,
+            },
+          },
           admins: { select: { id: true, image: true } },
           members: { select: { id: true, image: true } },
         },
@@ -348,19 +320,74 @@ export async function getDynamicGroups(
         error: null,
       };
     }
-    if (type === "newest") {
+
+    if (type === "popular") {
       groups = await prisma.group.findMany({
         orderBy: {
-          ...(type === "newest" && { createdAt: "desc" }),
+          posts: { _count: "desc" },
         },
         skip,
         take: pageSize,
         include: {
-          _count: { select: { posts: true } },
+          _count: {
+            select: {
+              posts: true,
+              podcasts: true,
+              meetups: true,
+              members: true,
+              admins: true,
+            },
+          },
           admins: { select: { id: true, image: true } },
           members: { select: { id: true, image: true } },
         },
       });
+
+      return {
+        groups: groups.map((group) => ({
+          ...group,
+          postCount: group._count.posts,
+          users: [
+            ...group.admins.map((admin) => ({
+              id: admin.id,
+              image: admin.image,
+              role: "admin",
+            })),
+            ...group.members.map((member) => ({
+              id: member.id,
+              image: member.image,
+              role: "member",
+            })),
+          ],
+          userCount: group.admins.length + group.members.length,
+        })),
+        totalPages,
+        error: null,
+      };
+    }
+
+    if (type === "newest") {
+      groups = await prisma.group.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        skip,
+        take: pageSize,
+        include: {
+          _count: {
+            select: {
+              posts: true,
+              podcasts: true,
+              meetups: true,
+              members: true,
+              admins: true,
+            },
+          },
+          admins: { select: { id: true, image: true } },
+          members: { select: { id: true, image: true } },
+        },
+      });
+
       return {
         groups: groups.map((group) => ({
           ...group,

@@ -92,8 +92,18 @@ const HomeContent = async ({
       );
     }
     if (type === "groups") {
-      const groups = await getDynamicGroups(currentPage, query, 4);
-
+      const groupsData = await getDynamicGroups(currentPage, query, 4);
+      const formattedGroups = groupsData?.groups?.map((group) => ({
+        ...group,
+        _count: {
+          posts: group._count.posts || 0,
+          podcasts: group._count.podcasts || 0,
+          meetups: group._count.meetups || 0,
+          members: group._count.members || 0,
+          admins: group._count.admins || 0,
+        },
+        users: [...group.admins, ...group.members],
+      }));
       return (
         <div className="flex  w-full flex-1 flex-col ">
           <div className="mb-4 flex items-center justify-between max-lg:my-4">
@@ -109,22 +119,21 @@ const HomeContent = async ({
             </Button>
           </div>
           <div className="columns-2  gap-x-5 space-y-5 max-md:columns-1">
-            {groups &&
-              groups?.groups?.map((group) => (
-                <GroupCard
-                  group={group}
-                  key={group.id}
-                  userCount={group.users.length + group.admins.length}
-                  profile={group.members.map((member) => ({
-                    id: member.id,
-                    image: member.image,
-                  }))}
-                />
-              ))}
+            {formattedGroups?.map((group: any) => (
+              <GroupCard
+                group={group}
+                key={group.id}
+                userCount={group.users.length}
+                profile={group.members.map((member: any) => ({
+                  id: member.id,
+                  image: member.image,
+                }))}
+              />
+            ))}
           </div>
           <div className="mt-5 flex  justify-center">
             <Pagination
-              totalPages={groups?.totalPages!}
+              totalPages={groupsData?.totalPages!}
               currentPage={currentPage}
             />
           </div>

@@ -105,24 +105,23 @@ export type PodcastContent = Prisma.PodcastGetPayload<{
     group: true;
   };
 }>;
-export type GroupCardContent = Prisma.GroupGetPayload<{
-  include: {
-    _count: {
-      select: {
-        posts: true;
-        podcasts: true;
-        meetups: true;
-        members: true;
-        admins: true;
-      };
-    };
-    admins: { select: { id: true; image: true } };
-    members: { select: { id: true; image: true } };
+export type GroupCardContent = {
+  id: number;
+  name: string;
+  coverImage: string;
+  about: string;
+  _count: {
+    posts: number;
+    podcasts: number;
+    meetups: number;
+    members: number;
+    admins: number;
   };
-}> & {
+  admins: { id: number; image: string | null }[];
+  members: { id: number; image: string | null }[];
   users: {
     id: number;
-    image: string | null | undefined;
+    image: string | null;
     role: string;
   }[];
 };
