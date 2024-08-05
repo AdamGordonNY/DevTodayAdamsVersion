@@ -27,7 +27,7 @@ const MeetupTag = ({
   const day = formattedDate.slice(4);
   return (
     <MotionDiv whileHover={{ scale: 1.1 }}>
-      <section className="flex w-full gap-x-[14px]">
+      <section className="flex w-full gap-x-[14px] overflow-x-hidden ">
         <div className="flex h-[66px] min-w-[42px] flex-col items-center justify-center rounded-[6px] text-dark-700 dark:bg-dark-700 dark:text-white-300">
           <div className="paragraph-4-regular uppercase">{month}</div>
           <span className="display-2-bold text-primary-500">{day}</span>
@@ -49,10 +49,10 @@ const MeetupTag = ({
               <span className="line-clamp-1">{meetupLocation}</span>
             </div>
           </div>
-          <div className="mt-[10px] flex w-full gap-x-1">
+          <div className="mt-[10px] flex w-full gap-x-1 ">
             {meetupTags.map((tag, idx) => (
               <div
-                className="caption-8 rounded-[20px] bg-white-200 px-[10px] py-[4px] uppercase text-white-400  dark:bg-dark-700 dark:text-white-300"
+                className="caption-8 items-center justify-center text-nowrap rounded-[20px] bg-white-200 px-[10px] py-[4px] uppercase text-white-400  dark:bg-dark-700 dark:text-white-300"
                 key={idx}
               >
                 {tag}

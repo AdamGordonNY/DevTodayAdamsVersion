@@ -83,7 +83,7 @@ const PostCard = ({ post, userData, index = 1 }: PostCardProps) => {
                 <UserSection
                   image={userData?.image!}
                   username={userData?.username!}
-                  createdAt={userData?.createdAt!}
+                  createdAt={post?.createdAt!}
                 />
 
                 <div className="flex self-center max-xl:w-full max-lg:-order-1 max-lg:w-full">

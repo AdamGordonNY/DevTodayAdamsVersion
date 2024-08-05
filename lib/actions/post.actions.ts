@@ -26,6 +26,9 @@ export async function createPost(data: any) {
           },
         },
       });
+      revalidateTag("User");
+      revalidateTag("Group");
+      revalidateTag("getPostById");
       return { post, error: null };
     }
   } catch (error) {
@@ -53,6 +56,7 @@ export async function updatePost(data: IPostSchema, postId: number) {
       });
 
       revalidateTag("getPostById");
+      revalidateTag("User");
       return { post, error: null };
     }
   } catch (error) {
