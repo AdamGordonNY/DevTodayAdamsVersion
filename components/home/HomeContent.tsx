@@ -99,10 +99,9 @@ const HomeContent = async ({
           posts: group._count.posts || 0,
           podcasts: group._count.podcasts || 0,
           meetups: group._count.meetups || 0,
-          members: group._count.members || 0,
-          admins: group._count.admins || 0,
+          u: group._count.groupUsers || 0,
         },
-        users: [...group.admins, ...group.members],
+        groupUsers: group.users,
       }));
       return (
         <div className="flex  w-full flex-1 flex-col ">

@@ -1,17 +1,17 @@
 import React from "react";
 
-import { getGroupById } from "@/lib/actions/group.actions";
-
-import Error from "@/components/shared/Error";
+import { fetchGroup } from "@/lib/actions/group.actions";
 
 import ContentNotFound from "@/components/shared/ContentNotFound";
 import GroupOverview from "@/components/groups/GroupOverview";
+import { DetailedGroupContent } from "@/lib/types";
 
 const Group = async ({ params }: { params: { groupId: string } }) => {
-  const { group, error } = await getGroupById(params.groupId);
+  const group = (await fetchGroup(
+    params.groupId
+  )) as unknown as DetailedGroupContent;
 
-  if (!group) return <ContentNotFound contentCategory="Meetup" />;
-  if (error) return <Error contentCategory="Meetup" error={error} />;
+  if (!group) return <ContentNotFound contentCategory="Group" />;
 
   return <GroupOverview group={group} />;
 };

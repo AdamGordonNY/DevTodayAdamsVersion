@@ -31,13 +31,26 @@ model User {
   meetups               Meetup[]
   podcasts              Podcast[]
   SocialMedia           SocialMedia[]
-  adminGroups           Group[]       @relation("GroupAdmins")
-  memberGroups          Group[]       @relation("GroupMembers")
   following             User[]        @relation("Following")
   followers             User[]        @relation("Following")
   likes                 Like[]
-}
+  groupRoles            GroupUser[]
 
+
+}
+model GroupUser {
+  id        Int       @id @default(autoincrement())
+  groupId   Int
+  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role      @default(MEMBER)
+  createdAt DateTime  @default(now())
+  @@unique([groupId, userId])
+  @@unique([groupId, userId, role])
+  @@unique([id,userId,groupId])
+
+}
 model Post {
   id            Int            @id @default(autoincrement())
   createdAt     DateTime       @default(now())
@@ -100,7 +113,6 @@ model Podcast {
   audioTitle    String?
 
 }
-
 model Group {
   id            Int            @id @default(autoincrement())
   createdAt     DateTime       @default(now())
@@ -108,16 +120,13 @@ model Group {
   coverImage    String?
   profileImage  String?
   about         String
-  authorId      Int
-  author        User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdBy     Int?             
+  createdByUser User?           @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   posts         Post[]
   meetups       Meetup[]
   podcasts      Podcast[]
-  admins        User[]        @relation("GroupAdmins")
-  members       User[]        @relation("GroupMembers")
-
+  groupUsers    GroupUser[] 
 }
-
   model Comment {
     id         Int              @id @default(autoincrement())
     createdAt  DateTime         @default(now())
@@ -220,4 +229,9 @@ enum Tech {
   typescript
   graphql
   three
+}
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
 }

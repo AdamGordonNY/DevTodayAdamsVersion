@@ -18,7 +18,6 @@ type Totals = {
 };
 
 const GroupLeftSidebar = async ({ group }: { group: GroupContent }) => {
-  //Ranked according to total number of posts + podcasts + meetups + admins + members
   const topRankedGroups = await getTopRankedGroups();
 
   const renderStats = Object.entries(group._count).map(

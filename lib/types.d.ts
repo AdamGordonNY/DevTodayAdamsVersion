@@ -7,6 +7,8 @@ import {
   User,
   Notification,
   Prisma,
+  GroupUser,
+  Role,
 } from "@prisma/client";
 import { UserWithProfileContent } from "./actions/shared.types";
 export enum Theme {
@@ -114,12 +116,15 @@ export type GroupCardContent = {
     posts: number;
     podcasts: number;
     meetups: number;
-    members: number;
-    admins: number;
+    groupUsers: number;
   };
-  admins: { id: number; image: string | null }[];
-  members: { id: number; image: string | null }[];
-  users: {
+  createdByUser: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    image: string | null;
+  };
+  groupUsers: {
     id: number;
     image: string | null;
     role: string;
@@ -127,20 +132,35 @@ export type GroupCardContent = {
 };
 export type GroupContent = Prisma.GroupGetPayload<{
   include: {
-    author: true;
-    meetups: true;
-    admins: true;
-    members: true;
+    createdBy: true;
+    createdByUser: true;
+    groupUsers: true;
     _count: {
       select: {
         posts: true;
-        members: true;
-        admins: true;
+        podcasts: true;
+        meetups: true;
+        groupUsers: true;
       };
     };
+    posts: true;
+    podcasts: true;
+    meetups: true;
   };
 }>;
-
+export type DetailedGroupContent = GroupContent & {
+  admins: GroupUser[];
+  members: GroupUser[];
+  owner: User;
+  createdBy: number;
+};
+export type GroupUserContent = Prisma.GroupUserGetPayload<{
+  include: {
+    user: true;
+    group: true;
+    role: true;
+  };
+}>;
 export type ContentType = PostContent | MeetupContent | PodcastContent;
 
 export type GroupTabContent = GroupContent & {

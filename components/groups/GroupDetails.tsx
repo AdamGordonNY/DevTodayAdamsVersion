@@ -16,31 +16,47 @@ import GroupTabs from "./GroupTabs";
 import GroupAboutSection from "./GroupAboutSection";
 
 const GroupDetails = ({ group, user }: { group: GroupContent; user: User }) => {
-  const [isMember, setIsMember] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isMember, setIsMember] = useState<User[]>([]);
+  const [isAdmin, setIsAdmin] = useState<User[]>([]);
+  const [isOwner, setIsOwner] = useState<User>();
   const [pending, startTransition] = useTransition();
 
   useEffect(() => {
-    if (group.admins.length > 0) {
-      setIsAdmin(
-        group.admins.some((admin) => user.id === admin.id) ||
-          group.authorId === user.id
-      );
-    }
-  }, [group.admins, group.authorId, isAdmin, user.id]);
+    const assignRoles = async () => {
+      const groupAdmins = group.groupUsers.filter((user) => {
+        return user.role === "ADMIN" ? user : null;
+      });
+      groupAdmins.forEach((admin) => {
+        if (admin.id === user.id) {
+          setIsAdmin([...isAdmin, user]);
+        }
+      });
+      const groupMembers = group.groupUsers.filter((user) => {
+        return user.role === "MEMBER" ? user : null;
+      });
+      groupMembers.forEach((member) => {
+        if (member.id === user.id) {
+          setIsMember([...isMember, user]);
+        }
+      });
+      const groupOwner = group.groupUsers.filter((user) => {
+        return user.role === "OWNER" ? user : null;
+      });
+      groupOwner.forEach((owner) => {
+        if (owner.id === user.id) {
+          setIsOwner(user);
+          setIsAdmin([...isAdmin, user]);
+        }
+      });
+    };
+    assignRoles();
+  }, [group.createdBy, group.groupUsers, isAdmin, isMember, user, user.id]);
 
   const handleAddOrdRemove = async () => {
     startTransition(async () => {
       await addOrRemoveGroupUser(group.id, user.id);
     });
   };
-
-  useEffect(() => {
-    const allMembers = group.admins.concat(group.members);
-    if (allMembers.length > 0) {
-      setIsMember(allMembers.some((member) => user.id === member.id));
-    }
-  }, [isMember, group, user.id]);
 
   return (
     <section className="flex w-full flex-col gap-y-5">
@@ -85,7 +101,8 @@ const GroupDetails = ({ group, user }: { group: GroupContent; user: User }) => {
                 {group.name ?? "Missing Post Title!"}
               </h1>
               <p className="mt-1 flex">
-                Created by {group.author.firstName} {group.author.lastName}
+                Created by {group.createdByUser?.firstName}{" "}
+                {group.createdByUser?.lastName}
               </p>
             </div>
 
@@ -152,7 +169,7 @@ const GroupDetails = ({ group, user }: { group: GroupContent; user: User }) => {
       <GroupTabs
         group={group as GroupTabContent}
         user={user}
-        isAdmin={isAdmin}
+        isAdmin={isAdmin.includes(user) || isOwner === user}
       />
     </section>
   );

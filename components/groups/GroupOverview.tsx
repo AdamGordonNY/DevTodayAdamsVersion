@@ -4,12 +4,16 @@ import { getUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 
 import { User } from "@prisma/client";
-import { GroupContent } from "@/lib/types.d";
+import { DetailedGroupContent, GroupContent } from "@/lib/types.d";
 import GroupLeftSidebar from "./GroupLeftSidebar";
 import GroupRightSidebar from "./GroupRightSidebar";
 import GroupDetails from "./GroupDetails";
 
-const GroupOverview = async ({ group }: { group: GroupContent }) => {
+const GroupOverview = async ({
+  group,
+}: {
+  group: GroupContent & DetailedGroupContent;
+}) => {
   const clerkUser = await currentUser();
   const user = clerkUser && (await getUser(clerkUser.id));
 
