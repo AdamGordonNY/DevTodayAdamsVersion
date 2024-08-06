@@ -1,5 +1,6 @@
 import HomeContent from "@/components/home/HomeContent";
 import SharedSidebars from "@/components/layout/SharedSidebars";
+import MotionDiv from "@/components/shared/MotionDiv";
 
 import React, { Suspense } from "react";
 
@@ -16,7 +17,7 @@ const Home = async ({
     <SharedSidebars contentType="groups" page={page} filter={filter!}>
       <Suspense
         key={JSON.stringify(searchParams)}
-        fallback={<div>Loading...</div>}
+        fallback={<MotionDiv>Loading...</MotionDiv>}
       >
         <HomeContent query={filter} currentPage={page} type="groups" />
       </Suspense>
