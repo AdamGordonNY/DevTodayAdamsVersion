@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 
 import { User } from "@prisma/client";
 import { GroupContent, GroupTabContent } from "@/lib/types.d";
-import { addOrRemoveGroupUser } from "@/lib/actions/group.actions";
+// import { addOrRemoveGroupUser } from "@/lib/actions/group.actions";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import ConfirmationModal from "../shared/ConfirmationModal";
 import { ImagePlaceholder, LeaveGroup, ProfilePlaceholder } from "../ui";
@@ -21,40 +21,40 @@ const GroupDetails = ({ group, user }: { group: GroupContent; user: User }) => {
   const [isOwner, setIsOwner] = useState<User>();
   const [pending, startTransition] = useTransition();
 
-  useEffect(() => {
-    const assignRoles = async () => {
-      const groupAdmins = group.groupUsers.filter((user) => {
-        return user.role === "ADMIN" ? user : null;
-      });
-      groupAdmins.forEach((admin) => {
-        if (admin.id === user.id) {
-          setIsAdmin([...isAdmin, user]);
-        }
-      });
-      const groupMembers = group.groupUsers.filter((user) => {
-        return user.role === "MEMBER" ? user : null;
-      });
-      groupMembers.forEach((member) => {
-        if (member.id === user.id) {
-          setIsMember([...isMember, user]);
-        }
-      });
-      const groupOwner = group.groupUsers.filter((user) => {
-        return user.role === "OWNER" ? user : null;
-      });
-      groupOwner.forEach((owner) => {
-        if (owner.id === user.id) {
-          setIsOwner(user);
-          setIsAdmin([...isAdmin, user]);
-        }
-      });
-    };
-    assignRoles();
-  }, [group.createdBy, group.groupUsers, isAdmin, isMember, user, user.id]);
+  // useEffect(() => {
+  //   const assignRoles = async () => {
+  //     const groupAdmins = group.groupUsers.filter((user) => {
+  //       return user.role === "ADMIN" ? user : null;
+  //     });
+  //     groupAdmins.forEach((admin) => {
+  //       if (admin.id === user.id) {
+  //         setIsAdmin([...isAdmin, user]);
+  //       }
+  //     });
+  //     const groupMembers = group.groupUsers.filter((user) => {
+  //       return user.role === "MEMBER" ? user : null;
+  //     });
+  //     groupMembers.forEach((member) => {
+  //       if (member.id === user.id) {
+  //         setIsMember([...isMember, user]);
+  //       }
+  //     });
+  //     const groupOwner = group.groupUsers.filter((user) => {
+  //       return user.role === "OWNER" ? user : null;
+  //     });
+  //     groupOwner.forEach((owner) => {
+  //       if (owner.id === user.id) {
+  //         setIsOwner(user);
+  //         setIsAdmin([...isAdmin, user]);
+  //       }
+  //     });
+  //   };
+  //   assignRoles();
+  // }, [group.createdBy, group.groupUsers, isAdmin, isMember, user, user.id]);
 
   const handleAddOrdRemove = async () => {
     startTransition(async () => {
-      await addOrRemoveGroupUser(group.id, user.id);
+      // await addOrRemoveGroupUser(group.id, user.id);
     });
   };
 

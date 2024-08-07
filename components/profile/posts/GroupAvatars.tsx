@@ -1,14 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { User } from "@prisma/client";
 import React from "react";
 
 interface GroupAvatarsProps {
-  members:
-    | {
-        id: number | undefined | null;
-        image: string | undefined | null;
-      }[]
-    | undefined
-    | null;
+  members: User[];
   count?: number;
 }
 

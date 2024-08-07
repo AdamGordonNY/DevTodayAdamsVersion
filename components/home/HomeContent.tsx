@@ -10,6 +10,7 @@ import { getDynamicGroups } from "@/lib/actions/group.actions";
 import GroupCard from "../profile/posts/GroupCard";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { DetailedGroupContent } from "@/lib/types";
 
 interface HomeContentProps {
   type: "meetups" | "posts" | "podcasts" | "groups";
@@ -92,17 +93,9 @@ const HomeContent = async ({
       );
     }
     if (type === "groups") {
-      const groupsData = await getDynamicGroups(currentPage, query, 4);
-      const formattedGroups = groupsData?.groups?.map((group) => ({
-        ...group,
-        _count: {
-          posts: group._count.posts || 0,
-          podcasts: group._count.podcasts || 0,
-          meetups: group._count.meetups || 0,
-          u: group._count.groupUsers || 0,
-        },
-        groupUsers: group.users,
-      }));
+      const fetchedGroups = await getDynamicGroups(currentPage, query, 4);
+      console.log(fetchedGroups?.groups.map((group: any) => group.groupUsers));
+
       return (
         <div className="flex  w-full flex-1 flex-col ">
           <div className="mb-4 flex items-center justify-between max-lg:my-4">
@@ -118,21 +111,13 @@ const HomeContent = async ({
             </Button>
           </div>
           <div className="columns-2  gap-x-5 space-y-5 max-md:columns-1">
-            {formattedGroups?.map((group: any) => (
-              <GroupCard
-                group={group}
-                key={group.id}
-                userCount={group.users.length}
-                profile={group.members.map((member: any) => ({
-                  id: member.id,
-                  image: member.image,
-                }))}
-              />
+            {fetchedGroups?.groups.map((group: any) => (
+              <GroupCard group={group as DetailedGroupContent} key={group.id} />
             ))}
           </div>
           <div className="mt-5 flex  justify-center">
             <Pagination
-              totalPages={groupsData?.totalPages!}
+              totalPages={fetchedGroups?.totalPages!}
               currentPage={currentPage}
             />
           </div>

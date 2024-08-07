@@ -134,7 +134,7 @@ export type GroupContent = Prisma.GroupGetPayload<{
   include: {
     createdBy: true;
     createdByUser: true;
-    groupUsers: true;
+    groupUsers: { select: { user: true; role: true } };
     _count: {
       select: {
         posts: true;
@@ -149,10 +149,9 @@ export type GroupContent = Prisma.GroupGetPayload<{
   };
 }>;
 export type DetailedGroupContent = GroupContent & {
-  admins: GroupUser[];
-  members: GroupUser[];
+  admins: GroupUser[] & User[];
+  members: GroupUser[] & User[];
   owner: User;
-  createdBy: number;
 };
 export type GroupUserContent = Prisma.GroupUserGetPayload<{
   include: {
@@ -160,7 +159,7 @@ export type GroupUserContent = Prisma.GroupUserGetPayload<{
     group: true;
     role: true;
   };
-}>;
+}>[];
 export type ContentType = PostContent | MeetupContent | PodcastContent;
 
 export type GroupTabContent = GroupContent & {

@@ -6,7 +6,6 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-
 }
 
 model User {
@@ -26,31 +25,29 @@ model User {
   notificationActions   Notification[] @relation("NotificationActions")
   notificationsReceived Notification[] @relation("NotificationsReceived")
   comments              Comment[]      @relation("Comment")
-  groups                Group[]
+  groupRoles            GroupUser[]
+  groups                Group[]        @relation("GroupMembers")
   posts                 Post[]
   meetups               Meetup[]
   podcasts              Podcast[]
   SocialMedia           SocialMedia[]
-  following             User[]        @relation("Following")
-  followers             User[]        @relation("Following")
+  following             User[]         @relation("Following")
+  followers             User[]         @relation("Following")
   likes                 Like[]
-  groupRoles            GroupUser[]
-
-
 }
+
 model GroupUser {
-  id        Int       @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   groupId   Int
-  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
   userId    Int
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role      Role      @default(MEMBER)
-  createdAt DateTime  @default(now())
-  @@unique([groupId, userId])
-  @@unique([groupId, userId, role])
-  @@unique([id,userId,groupId])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role     @default(MEMBER)
+  createdAt DateTime @default(now())
 
+  @@unique([id,groupId, userId])
 }
+
 model Post {
   id            Int            @id @default(autoincrement())
   createdAt     DateTime       @default(now())
@@ -71,78 +68,79 @@ model Post {
 }
 
 model Meetup {
-  id            Int            @id @default(autoincrement())
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime?
-  title         String         @default("")
-  body          String         @default("")
-  startTime     DateTime?      @default(now())
-  endTime       DateTime?      @default(dbgenerated("NOW() + interval '1 hour'"))
-  address       String
-  latitude      Float?         @default(40.68)
-  longitude     Float?         @default(-73.98)
-  comment       Comment[]
-  likes         Int            @default(0)
-  views         Int            @default(0)
-  image         String?
-  tags          String[]
-  groupId       Int
-  group         Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        Int
-  likedBy       Like[]
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  title     String    @default("")
+  body      String    @default("")
+  startTime DateTime? @default(now())
+  endTime   DateTime? @default(dbgenerated("NOW() + interval '1 hour'"))
+  address   String
+  latitude  Float?    @default(40.68)
+  longitude Float?    @default(-73.98)
+  comment   Comment[]
+  likes     Int       @default(0)
+  views     Int       @default(0)
+  image     String?
+  tags      String[]
+  groupId   Int
+  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  likedBy   Like[]
 }
 
 model Podcast {
-  id            Int            @id @default(autoincrement())
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime?
-  title         String         @default("")
-  body          String         @default("")
-  comment       Comment[]
-  likes         Int            @default(0)
-  views         Int            @default(0)
-  image         String?
-  audio         String
-  tags          String[]
-  groupId       Int
-  group         Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        Int
-  likedBy       Like[]
-  audioTitle    String?
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime?
+  title      String    @default("")
+  body       String    @default("")
+  comment    Comment[]
+  likes      Int       @default(0)
+  views      Int       @default(0)
+  image      String?
+  audio      String
+  tags       String[]
+  groupId    Int
+  group      Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  likedBy    Like[]
+  audioTitle String?
+}
 
-}
 model Group {
-  id            Int            @id @default(autoincrement())
-  createdAt     DateTime       @default(now())
-  name          String
-  coverImage    String?
-  profileImage  String?
-  about         String
-  createdBy     Int?             
-  createdByUser User?           @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  posts         Post[]
-  meetups       Meetup[]
-  podcasts      Podcast[]
-  groupUsers    GroupUser[] 
+  id           Int         @id @default(autoincrement())
+  createdAt    DateTime    @default(now())
+  name         String
+  coverImage   String?
+  profileImage String?
+  about        String
+  createdBy    Int
+  posts        Post[]
+  meetups      Meetup[]
+  podcasts     Podcast[]
+  groupUsers   GroupUser[]
+  members      User[]      @relation("GroupMembers")
 }
-  model Comment {
-    id         Int              @id @default(autoincrement())
-    createdAt  DateTime         @default(now())
-    updatedAt  DateTime?
-    body       String
-    likes      Int              @default(0)
-    post       Post?            @relation(fields: [postId], references: [id])
-    postId     Int?
-    meetup     Meetup?          @relation(fields: [meetupId], references: [id])
-    meetupId   Int?
-    podcast    Podcast?         @relation(fields: [podcastId], references: [id])
-    podcastId  Int?
-    author     User             @relation("Comment", fields: [authorId], references: [id])
-    authorId   Int
-    likedBy    Like[]
-  }
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  body      String
+  likes     Int       @default(0)
+  post      Post?     @relation(fields: [postId], references: [id])
+  postId    Int?
+  meetup    Meetup?   @relation(fields: [meetupId], references: [id])
+  meetupId  Int?
+  podcast   Podcast?  @relation(fields: [podcastId], references: [id])
+  podcastId Int?
+  author    User      @relation("Comment", fields: [authorId], references: [id])
+  authorId  Int
+  likedBy   Like[]
+}
 
 model Notification {
   id         Int              @id @default(autoincrement())
@@ -165,6 +163,7 @@ model SocialMedia {
   userId   Int
   user     User     @relation(fields: [userId], references: [id])
 }
+
 model Like {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -175,16 +174,18 @@ model Like {
 
   commentId Int?
   user      User     @relation(fields: [clerkId], references: [clerkID], onDelete: Cascade)
-  post      Post?     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  podcast   Podcast?  @relation(fields: [podcastId], references: [id], onDelete: Cascade)
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  podcast   Podcast? @relation(fields: [podcastId], references: [id], onDelete: Cascade)
   comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  meetup    Meetup? @relation(fields: [meetupId], references: [id], onDelete: Cascade)
+  meetup    Meetup?  @relation(fields: [meetupId], references: [id], onDelete: Cascade)
   meetupId  Int?
+
   @@unique([clerkId, postId])
   @@unique([clerkId, podcastId])
   @@unique([clerkId, commentId])
   @@unique([clerkId, meetupId])
 }
+
 enum Platform {
   Twitter
   Instagram
@@ -230,6 +231,7 @@ enum Tech {
   graphql
   three
 }
+
 enum Role {
   OWNER
   ADMIN

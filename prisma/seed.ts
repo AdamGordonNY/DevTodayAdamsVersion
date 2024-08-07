@@ -2,7 +2,13 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const { faker } = require("@faker-js/faker");
 
-const { Goals, Levels, Tech, NotificationType } = require("@prisma/client");
+const {
+  Goals,
+  Levels,
+  Tech,
+  NotificationType,
+  Role,
+} = require("@prisma/client");
 
 async function main() {
   const techArray = Object.values(Tech);
@@ -32,37 +38,36 @@ async function main() {
 
   // GROUPS
   for (let i = 0; i < 20; i++) {
-    const adminsConnect = faker.helpers
-      .arrayElements(userIds)
-      .map((userId: number) => {
-        return { id: userId };
-      });
-    const membersConnect = faker.helpers
-      .arrayElements(userIds)
-      .map((userId: number) => {
-        return { id: userId };
-      });
-
+    const authorId = faker.helpers.arrayElement(userIds);
     const group = await prisma.group.create({
       data: {
         name: faker.lorem.sentence(),
         about: faker.lorem.paragraph(2),
         coverImage: faker.image.url(),
         profileImage: faker.image.avatar(),
-        admins: {
-          connect: adminsConnect,
-        },
-        members: {
-          connect: membersConnect,
-        },
-        author: {
-          connect: {
-            id: faker.helpers.arrayElement(userIds),
-          },
-        },
+        createdBy: authorId,
       },
     });
     groupIds.push(group.id);
+
+    const adminIds = faker.helpers.arrayElements(userIds, 3);
+    const memberIds = faker.helpers.arrayElements(userIds, 7);
+
+    await prisma.groupUser.createMany({
+      data: [
+        { groupId: group.id, userId: authorId, role: Role.OWNER },
+        ...adminIds.map((userId: number) => ({
+          groupId: group.id,
+          userId,
+          role: Role.ADMIN,
+        })),
+        ...memberIds.map((userId: number) => ({
+          groupId: group.id,
+          userId,
+          role: Role.MEMBER,
+        })),
+      ],
+    });
   }
 
   // POSTS

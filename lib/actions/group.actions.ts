@@ -9,7 +9,7 @@ import { TopRankGroups } from "./shared.types.d";
 
 import { getUserIdWithClerkID } from "./user.actions";
 import { DetailedGroupContent } from "../types";
-
+import { Group } from "@prisma/client";
 export async function createGroup(data: any, authorId: number) {
   try {
     if (data) {
@@ -179,7 +179,6 @@ export async function _getGroupById(id: string) {
         id: Number(id),
       },
       include: {
-        createdByUser: true,
         meetups: {
           orderBy: {
             startTime: "desc",
@@ -216,12 +215,6 @@ export async function _getGroupById(id: string) {
           },
           take: 5,
         },
-        _count: {
-          select: {
-            posts: true,
-            groupUsers: true,
-          },
-        },
       },
     });
 
@@ -229,24 +222,17 @@ export async function _getGroupById(id: string) {
       throw new Error("Group not found.");
     }
 
-    const admins = group.groupUsers
-      .filter((groupUser) => groupUser.role === "ADMIN")
-      .map((groupUser) => groupUser.user);
-    const members = group.groupUsers
-      .filter((groupUser) => groupUser.role === "MEMBER")
-      .map((groupUser) => groupUser.user);
-    const owners = group.groupUsers
-      .filter((groupUser) => groupUser.role === "OWNER")
-      .map((groupUser) => groupUser.user);
+    // const admins = group.groupUsers
+    //   .filter((groupUser) => groupUser.role === "ADMIN")
+    //   .map((groupUser) => groupUser.user);
+    // const members = group.groupUsers
+    //   .filter((groupUser) => groupUser.role === "MEMBER")
+    //   .map((groupUser) => groupUser.user);
+    // const owners = group.groupUsers
+    //   .filter((groupUser) => groupUser.role === "OWNER")
+    //   .map((groupUser) => groupUser.user);
 
-    const groupWithRoles = {
-      ...group,
-      admins,
-      members,
-      owners,
-    };
-
-    return { group: groupWithRoles, error: null };
+    return { group, error: null };
   } catch (error) {
     console.error("Error returning group:", error);
     return { error: "An unexpected error occurred while returning group." };
@@ -267,7 +253,6 @@ export async function fetchGroup(
         id: Number(id),
       },
       include: {
-        createdByUser: true,
         meetups: {
           orderBy: {
             startTime: "desc",
@@ -322,21 +307,7 @@ export async function fetchGroup(
       (groupUser) => groupUser.role === "OWNER"
     );
 
-    const groupWithRoles: DetailedGroupContent | undefined = {
-      ...group,
-      admins,
-      members,
-      owner: owner?.user!,
-      _count: {
-        posts: group._count.posts,
-        groupUsers: group._count.groupUsers,
-        podcasts: group.podcasts.length,
-        meetups: group.meetups.length,
-      },
-      createdBy: group?.createdBy!,
-    };
-
-    return { group: groupWithRoles, error: null };
+    return { group, error: null };
   } catch (error) {
     console.error("Error returning group:", error);
     return {
@@ -392,17 +363,17 @@ export async function getTopRankedGroups() {
   }
 }
 
-export async function getDynamicGroups(
+export const getDynamicGroups = async (
   page: number,
   type: "newest" | "popular" | "following" | "joined",
   pageSize: number
-) {
+) => {
   try {
     const skip = (page - 1) * pageSize;
     const totalGroups = await prisma.group.count();
     const totalPages = Math.ceil(totalGroups / pageSize);
 
-    let groups;
+    let groups: Group[];
 
     if (type === "joined") {
       const user = await prisma.user.findUnique({
@@ -410,7 +381,7 @@ export async function getDynamicGroups(
           clerkID: auth().userId!,
         },
         include: {
-          groupRoles: true,
+          groups: true,
         },
       });
 
@@ -418,7 +389,7 @@ export async function getDynamicGroups(
         throw new Error("User not found.");
       }
 
-      const groupIds = user.groupRoles.map((role) => role.groupId);
+      const groupIds = user.groups.map((grp) => grp.id);
 
       groups = await prisma.group.findMany({
         where: {
@@ -430,39 +401,16 @@ export async function getDynamicGroups(
         skip,
         take: pageSize,
         include: {
-          _count: {
-            select: {
-              posts: true,
-              podcasts: true,
-              meetups: true,
-              groupUsers: true,
-            },
-          },
           groupUsers: {
-            select: {
-              user: {
-                select: {
-                  id: true,
-                  image: true,
-                },
-              },
-              role: true,
+            include: {
+              user: true,
             },
           },
         },
       });
 
       return {
-        groups: groups.map((group) => ({
-          ...group,
-          postCount: group._count.posts,
-          users: group.groupUsers.map((groupUser) => ({
-            id: groupUser.user.id,
-            image: groupUser.user.image,
-            role: groupUser.role.toLowerCase(),
-          })),
-          userCount: group.groupUsers.length,
-        })),
+        groups,
         totalPages,
         error: null,
       };
@@ -476,6 +424,11 @@ export async function getDynamicGroups(
         skip,
         take: pageSize,
         include: {
+          groupUsers: {
+            include: {
+              user: true,
+            },
+          },
           _count: {
             select: {
               posts: true,
@@ -484,31 +437,12 @@ export async function getDynamicGroups(
               groupUsers: true,
             },
           },
-          groupUsers: {
-            select: {
-              user: {
-                select: {
-                  id: true,
-                  image: true,
-                },
-              },
-              role: true,
-            },
-          },
         },
       });
 
       return {
-        groups: groups.map((group) => ({
-          ...group,
-          postCount: group._count.posts,
-          users: group.groupUsers.map((groupUser) => ({
-            id: groupUser.user.id,
-            image: groupUser.user.image,
-            role: groupUser.role.toLowerCase(),
-          })),
-          userCount: group.groupUsers.length,
-        })),
+        groups,
+
         totalPages,
         error: null,
       };
@@ -531,39 +465,29 @@ export async function getDynamicGroups(
             },
           },
           groupUsers: {
-            select: {
-              user: {
-                select: {
-                  id: true,
-                  image: true,
-                },
-              },
-              role: true,
+            include: {
+              user: { select: { id: true, image: true, username: true } },
             },
           },
         },
       });
 
       return {
-        groups: groups.map((group) => ({
-          ...group,
-          postCount: group._count.posts,
-          users: group.groupUsers.map((groupUser) => ({
-            id: groupUser.user.id,
-            image: groupUser.user.image,
-            role: groupUser.role.toLowerCase(),
-          })),
-          userCount: group.groupUsers.length,
-        })),
+        groups,
+
         totalPages,
         error: null,
       };
     }
   } catch (error) {
     console.error("Error returning groups:", error);
-    return { error: "An unexpected error occurred while returning groups." };
+    return {
+      groups: [],
+      error: "An unexpected error occurred while returning groups.",
+      totalPages: 0,
+    };
   }
-}
+};
 export const getActiveGroups = async () => {
   try {
     const seventyTwoHoursAgo = new Date(Date.now() - 72 * 60 * 60 * 1000);
@@ -665,40 +589,40 @@ export const getJoinedGroupCount = async () => {
     return 0;
   }
 };
-export async function addOrRemoveGroupUser(groupId: number, userId: number) {
-  try {
-    const whereInput = {
-      groupId_userId: {
-        groupId,
-        userId,
-      },
-    };
+// export async function addOrRemoveGroupUser(groupId: number, userId: number) {
+//   try {
+//     const whereInput = {
+//       groupId_userId: {
+//         groupId,
+//         userId,
+//       },
+//     };
 
-    const existingMember = await prisma.groupUser.findUnique({
-      where: whereInput,
-    });
+//     const existingMember = await prisma.groupUser.findUnique({
+//       where: whereInput,
+//     });
 
-    if (existingMember) {
-      await prisma.groupUser.delete({
-        where: whereInput,
-      });
-    } else {
-      await prisma.groupUser.create({
-        data: {
-          groupId,
-          userId,
-          role: "MEMBER",
-        },
-      });
-    }
+//     if (existingMember) {
+//       await prisma.groupUser.delete({
+//         where: whereInput,
+//       });
+//     } else {
+//       await prisma.groupUser.create({
+//         data: {
+//           groupId,
+//           userId,
+//           role: "MEMBER",
+//         },
+//       });
+//     }
 
-    revalidateTag("getGroupById");
-    return { error: null };
-  } catch (error) {
-    console.error("Error adding or removing user:", error);
-    return {
-      error:
-        "An unexpected error occurred while adding or removing user from group.",
-    };
-  }
-}
+//     revalidateTag("getGroupById");
+//     return { error: null };
+//   } catch (error) {
+//     console.error("Error adding or removing user:", error);
+//     return {
+//       error:
+//         "An unexpected error occurred while adding or removing user from group.",
+//     };
+//   }
+// }
