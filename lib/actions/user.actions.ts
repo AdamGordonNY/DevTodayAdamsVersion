@@ -5,8 +5,7 @@ import { prisma } from "@/db";
 import { revalidateTag, unstable_cache as cache } from "next/cache";
 import { IUserProfileUpdateSchema } from "../validations/user.validations";
 
-import { Platform, SocialMedia } from "@prisma/client";
-import { UserWithProfileContent } from "./shared.types";
+import { Platform } from "@prisma/client";
 
 import { auth } from "@clerk/nextjs/server";
 
@@ -202,16 +201,11 @@ export const _getUserWithContent = async (slug: number | string) => {
             name: true,
             about: true,
             coverImage: true,
-            members: {
-              select: { id: true, image: true },
-              take: 4,
-            },
-            admins: {
-              select: { id: true, image: true },
+            groupUsers: {
               take: 4,
             },
             createdAt: true,
-            _count: { select: { members: true, admins: true } },
+            _count: { select: { groupUsers: true } },
           },
         },
 
@@ -225,32 +219,7 @@ export const _getUserWithContent = async (slug: number | string) => {
       return { user: null, error: "User not found" };
     }
 
-    const userWithContent: UserWithProfileContent = {
-      ...user,
-      clerkID: user.clerkID ?? "",
-      posts: user.posts.map((post) => ({
-        ...post,
-        commentCount: post._count.comment,
-      })),
-      podcasts: user.podcasts.map((podcast) => ({
-        ...podcast,
-        commentCount: podcast._count.comment,
-      })),
-      meetups: user.meetups.map((meetup) => ({
-        ...meetup,
-        commentCount: meetup._count.comment,
-      })),
-      groups: user.groups.map((group) => ({
-        ...group,
-        memberCount: group._count.members + group._count.admins,
-      })),
-      goals: user.goal,
-      SocialMedia: user.SocialMedia as SocialMedia[],
-      followers: user.followers,
-      following: user.following,
-    };
-
-    return { user: userWithContent, error: null };
+    return { user, error: null };
   } catch (error) {
     console.error(error);
     return { user: null, error: "There was an error fetching the user." };

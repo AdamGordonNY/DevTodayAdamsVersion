@@ -21,36 +21,36 @@ const GroupDetails = ({ group, user }: { group: GroupContent; user: User }) => {
   const [isOwner, setIsOwner] = useState<User>();
   const [pending, startTransition] = useTransition();
 
-  // useEffect(() => {
-  //   const assignRoles = async () => {
-  //     const groupAdmins = group.groupUsers.filter((user) => {
-  //       return user.role === "ADMIN" ? user : null;
-  //     });
-  //     groupAdmins.forEach((admin) => {
-  //       if (admin.id === user.id) {
-  //         setIsAdmin([...isAdmin, user]);
-  //       }
-  //     });
-  //     const groupMembers = group.groupUsers.filter((user) => {
-  //       return user.role === "MEMBER" ? user : null;
-  //     });
-  //     groupMembers.forEach((member) => {
-  //       if (member.id === user.id) {
-  //         setIsMember([...isMember, user]);
-  //       }
-  //     });
-  //     const groupOwner = group.groupUsers.filter((user) => {
-  //       return user.role === "OWNER" ? user : null;
-  //     });
-  //     groupOwner.forEach((owner) => {
-  //       if (owner.id === user.id) {
-  //         setIsOwner(user);
-  //         setIsAdmin([...isAdmin, user]);
-  //       }
-  //     });
-  //   };
-  //   assignRoles();
-  // }, [group.createdBy, group.groupUsers, isAdmin, isMember, user, user.id]);
+  useEffect(() => {
+    const assignRoles = async () => {
+      const groupAdmins = group.groupUsers.filter((user) => {
+        return user.role === "ADMIN" ? user : null;
+      });
+      groupAdmins.forEach((admin) => {
+        if (admin.user.id === user.id) {
+          setIsAdmin([...isAdmin, user]);
+        }
+      });
+      const groupMembers = group.groupUsers.filter((user) => {
+        return user.role === "MEMBER" ? user : null;
+      });
+      groupMembers.forEach((member) => {
+        if (member.user.id === user.id) {
+          setIsMember([...isMember, user]);
+        }
+      });
+      const groupOwner = group.groupUsers.filter((user) => {
+        return user.role === "OWNER" ? user : null;
+      });
+      groupOwner.forEach((owner) => {
+        if (owner.user.id === user.id) {
+          setIsOwner(user);
+          setIsAdmin([...isAdmin, user]);
+        }
+      });
+    };
+    assignRoles();
+  }, [group.createdBy, group.groupUsers, isAdmin, isMember, user, user.id]);
 
   const handleAddOrdRemove = async () => {
     startTransition(async () => {
@@ -101,8 +101,8 @@ const GroupDetails = ({ group, user }: { group: GroupContent; user: User }) => {
                 {group.name ?? "Missing Post Title!"}
               </h1>
               <p className="mt-1 flex">
-                Created by {group.createdByUser?.firstName}{" "}
-                {group.createdByUser?.lastName}
+                Created by {isOwner?.firstName!}
+                {isOwner?.lastName!}
               </p>
             </div>
 

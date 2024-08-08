@@ -1,19 +1,16 @@
 import React from "react";
 
-import { fetchGroup } from "@/lib/actions/group.actions";
+import { getGroupById } from "@/lib/actions/group.actions";
 
 import ContentNotFound from "@/components/shared/ContentNotFound";
 import GroupOverview from "@/components/groups/GroupOverview";
-import { DetailedGroupContent } from "@/lib/types";
 
 const Group = async ({ params }: { params: { groupId: string } }) => {
-  const group = (await fetchGroup(
-    params.groupId
-  )) as unknown as DetailedGroupContent;
+  const { group, totals } = await getGroupById(params.groupId);
 
   if (!group) return <ContentNotFound contentCategory="Group" />;
 
-  return <GroupOverview group={group} />;
+  return <GroupOverview group={group} totals={totals} />;
 };
 
 export default Group;

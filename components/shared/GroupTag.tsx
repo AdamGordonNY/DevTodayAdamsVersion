@@ -1,13 +1,13 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { GroupTagContent } from "@/lib/types.d";
+
 import { TopRankGroups } from "@/lib/actions/shared.types";
 const GroupTag = async ({
   group,
   active,
 }: {
-  group: GroupTagContent | TopRankGroups;
+  group: TopRankGroups;
   active: boolean;
 }) => {
   return (

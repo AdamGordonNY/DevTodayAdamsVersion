@@ -133,7 +133,6 @@ export type GroupCardContent = {
 export type GroupContent = Prisma.GroupGetPayload<{
   include: {
     createdBy: true;
-    createdByUser: true;
     groupUsers: { select: { user: true; role: true } };
     _count: {
       select: {
@@ -148,11 +147,7 @@ export type GroupContent = Prisma.GroupGetPayload<{
     meetups: true;
   };
 }>;
-export type DetailedGroupContent = GroupContent & {
-  admins: GroupUser[] & User[];
-  members: GroupUser[] & User[];
-  owner: User;
-};
+
 export type GroupUserContent = Prisma.GroupUserGetPayload<{
   include: {
     user: true;

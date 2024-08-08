@@ -25,8 +25,8 @@ const GroupRightSidebar = async ({
   user: User;
 }) => {
   const renderMeetups =
-    group.meetups.length > 0 ? (
-      group.meetups.map((meetup) => {
+    group?.meetups?.length > 0 ? (
+      group?.meetups?.map((meetup) => {
         return (
           <MotionDiv
             key={meetup.id}
@@ -68,12 +68,12 @@ const GroupRightSidebar = async ({
         </div>
 
         <div className="mt-5 flex flex-wrap justify-start gap-6">
-          {group.members.map((member) => {
-            return member.image ? (
+          {group.groupUsers.map((member) => {
+            return member.user.image ? (
               <TooltipProvider>
                 <Tooltip>
                   <MotionDiv
-                    key={member.id}
+                    key={member.user.id}
                     whileHover={{
                       scale: 1.2,
                     }}
@@ -84,12 +84,12 @@ const GroupRightSidebar = async ({
                     className="flex"
                   >
                     <Link
-                      href={`/profile/${member.id}`}
+                      href={`/profile/${member.user.id}`}
                       className="relative size-10"
                     >
                       <TooltipTrigger>
                         <Image
-                          src={member.image}
+                          src={member.user.image}
                           alt="members-profile-image"
                           fill
                           className="rounded-full"
@@ -101,13 +101,13 @@ const GroupRightSidebar = async ({
                     className="caption-8 border border-white-border bg-white-100 text-dark-700 dark:border-dark-border dark:bg-dark-800 dark:text-white-300"
                     align="center"
                   >
-                    {member.firstName} {member.lastName}
+                    {member.user.firstName} {member.user.lastName}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             ) : (
               <MotionDiv
-                key={member.id}
+                key={member.user.id}
                 whileHover={{
                   scale: 1.2,
                 }}
@@ -134,11 +134,11 @@ const GroupRightSidebar = async ({
           </p>
         </div>
         <div className="mt-5 flex flex-col justify-between gap-4">
-          {group.admins.map((admin) => {
+          {group.groupUsers.map((admin) => {
             return (
               <GroupMembersCard
-                key={admin.id}
-                member={admin}
+                key={admin.user.id}
+                member={admin.user}
                 loggedInUser={user as GroupLoggedInUser}
                 isMemberAdmin={true}
               />

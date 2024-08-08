@@ -1,4 +1,11 @@
-import { Levels, Tech, Goals, SocialMedia, User } from "@prisma/client";
+import {
+  Levels,
+  Tech,
+  Goals,
+  SocialMedia,
+  User,
+  GroupUser,
+} from "@prisma/client";
 import { ContentCategoryEnum } from "../types";
 
 export type Option = {
@@ -70,7 +77,7 @@ export interface ProfileGroup {
   }[];
 
   createdAt: Date;
-  memberCount: number;
+  groupUsers: GroupUser[];
 }
 export interface UserWithProfileContent {
   id: number;
@@ -116,8 +123,14 @@ export interface TopRankGroups {
   id: number;
   name: string;
   postCount: number;
-  podcastCount: number;
-  meetupCount: number;
-  totalCount: number;
   coverImage?: string;
+  groupUsers: GroupUser[];
 }
+export type Totals = {
+  id: number;
+  name: string;
+  coverImage: string;
+  totals: number;
+  admins: number;
+  members: number;
+};

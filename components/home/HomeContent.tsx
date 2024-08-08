@@ -10,7 +10,7 @@ import { getDynamicGroups } from "@/lib/actions/group.actions";
 import GroupCard from "../profile/posts/GroupCard";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { DetailedGroupContent } from "@/lib/types";
+import { GroupCardContent } from "@/lib/types";
 
 interface HomeContentProps {
   type: "meetups" | "posts" | "podcasts" | "groups";
@@ -94,7 +94,6 @@ const HomeContent = async ({
     }
     if (type === "groups") {
       const fetchedGroups = await getDynamicGroups(currentPage, query, 4);
-      console.log(fetchedGroups?.groups.map((group: any) => group.groupUsers));
 
       return (
         <div className="flex  w-full flex-1 flex-col ">
@@ -112,7 +111,7 @@ const HomeContent = async ({
           </div>
           <div className="columns-2  gap-x-5 space-y-5 max-md:columns-1">
             {fetchedGroups?.groups.map((group: any) => (
-              <GroupCard group={group as DetailedGroupContent} key={group.id} />
+              <GroupCard group={group as GroupCardContent} key={group.id} />
             ))}
           </div>
           <div className="mt-5 flex  justify-center">

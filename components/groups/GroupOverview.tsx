@@ -3,8 +3,8 @@ import React from "react";
 import { getUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 
-import { User } from "@prisma/client";
-import { DetailedGroupContent, GroupContent } from "@/lib/types.d";
+import { GroupUser, User } from "@prisma/client";
+import { GroupContent } from "@/lib/types.d";
 import GroupLeftSidebar from "./GroupLeftSidebar";
 import GroupRightSidebar from "./GroupRightSidebar";
 import GroupDetails from "./GroupDetails";
@@ -12,7 +12,7 @@ import GroupDetails from "./GroupDetails";
 const GroupOverview = async ({
   group,
 }: {
-  group: GroupContent & DetailedGroupContent;
+  group: GroupContent & Partial<GroupUser[]> & Partial<User[]>;
 }) => {
   const clerkUser = await currentUser();
   const user = clerkUser && (await getUser(clerkUser.id));

@@ -66,7 +66,7 @@ const GroupMembersCard = ({
           )}
 
           <p className="paragraph-3-medium text-dark-700 dark:text-white-300">
-            {member.firstName} {member.lastName}
+            {member.username}
           </p>
         </Link>
       </MotionDiv>

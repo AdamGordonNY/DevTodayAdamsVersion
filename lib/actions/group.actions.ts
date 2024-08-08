@@ -5,10 +5,9 @@ import { prisma } from "@/db";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { auth } from "@clerk/nextjs";
 
-import { TopRankGroups } from "./shared.types.d";
+import { TopRankGroups, Totals } from "./shared.types.d";
 
 import { getUserIdWithClerkID } from "./user.actions";
-import { DetailedGroupContent } from "../types";
 import { Group } from "@prisma/client";
 export async function createGroup(data: any, authorId: number) {
   try {
@@ -179,12 +178,6 @@ export async function _getGroupById(id: string) {
         id: Number(id),
       },
       include: {
-        meetups: {
-          orderBy: {
-            startTime: "desc",
-          },
-          take: 5,
-        },
         groupUsers: {
           select: {
             user: {
@@ -198,78 +191,15 @@ export async function _getGroupById(id: string) {
           },
           orderBy: {
             role: "asc",
-            user: {
-              firstName: "asc",
-            },
           },
         },
-        posts: {
-          orderBy: {
-            createdAt: "desc",
-          },
-          take: 5,
-        },
-        podcasts: {
-          orderBy: {
-            createdAt: "desc",
-          },
-          take: 5,
-        },
-      },
-    });
-
-    if (!group) {
-      throw new Error("Group not found.");
-    }
-
-    // const admins = group.groupUsers
-    //   .filter((groupUser) => groupUser.role === "ADMIN")
-    //   .map((groupUser) => groupUser.user);
-    // const members = group.groupUsers
-    //   .filter((groupUser) => groupUser.role === "MEMBER")
-    //   .map((groupUser) => groupUser.user);
-    // const owners = group.groupUsers
-    //   .filter((groupUser) => groupUser.role === "OWNER")
-    //   .map((groupUser) => groupUser.user);
-
-    return { group, error: null };
-  } catch (error) {
-    console.error("Error returning group:", error);
-    return { error: "An unexpected error occurred while returning group." };
-  }
-}
-
-export const getGroupById = unstable_cache(_getGroupById, ["_getGroupById"], {
-  tags: ["getGroupById", "commentPages", "likes"],
-  revalidate: 1,
-});
-
-export async function fetchGroup(
-  id: string
-): Promise<{ group: DetailedGroupContent | undefined; error: string | null }> {
-  try {
-    const group = await prisma.group.findUnique({
-      where: {
-        id: Number(id),
-      },
-      include: {
         meetups: {
           orderBy: {
             startTime: "desc",
           },
           take: 5,
         },
-        groupUsers: {
-          orderBy: {
-            user: {
-              firstName: "asc",
-            },
-            role: "asc",
-          },
-          include: {
-            user: true,
-          },
-        },
+
         posts: {
           orderBy: {
             createdAt: "desc",
@@ -297,71 +227,37 @@ export async function fetchGroup(
       throw new Error("Group not found.");
     }
 
-    const admins = group.groupUsers.filter(
-      (groupUser) => groupUser.role === "ADMIN"
-    );
-    const members = group.groupUsers.filter(
-      (groupUser) => groupUser.role === "MEMBER"
-    );
-    const owner = group.groupUsers.find(
-      (groupUser) => groupUser.role === "OWNER"
-    );
+    // const admins = group.groupUsers
+    //   .filter((groupUser) => groupUser.role === "ADMIN")
+    //   .map((groupUser) => groupUser.user);
+    // const members = group.groupUsers
+    //   .filter((groupUser) => groupUser.role === "MEMBER")
+    //   .map((groupUser) => groupUser.user);
+    // const owners = group.groupUsers
+    //   .filter((groupUser) => groupUser.role === "OWNER")
+    //   .map((groupUser) => groupUser.user);
+    const totals: Totals = {
+      id: group.id,
+      totals: group._count.posts + group._count.podcasts + group._count.meetups,
+      members: group._count.groupUsers,
+      name: group.name,
+      coverImage: group.coverImage!,
+      admins: group.groupUsers.filter(
+        (groupUser) => groupUser.role === "ADMIN" || groupUser.role === "OWNER"
+      ).length,
+    };
 
-    return { group, error: null };
+    return { group, totals, error: null };
   } catch (error) {
     console.error("Error returning group:", error);
-    return {
-      group: undefined,
-      error: "An unexpected error occurred while returning group.",
-    };
+    return { error: "An unexpected error occurred while returning group." };
   }
 }
-export async function getTopRankedGroups() {
-  try {
-    const totals = await prisma.$queryRaw`
-    SELECT
-    "Group".id,
-    "Group".name,
-    "Group"."coverImage",
-    (
-      (
-        SELECT COUNT(*) FROM "Post" WHERE "Post"."groupId" = "Group".id
-      ) +
-       (
-        SELECT COUNT(*) FROM "Meetup" WHERE "Meetup"."groupId" = "Group".id
-      ) +
-       (
-        SELECT COUNT(*) FROM "Podcast" WHERE "Podcast"."groupId" = "Group".id
-      ) +
-       (
-        SELECT COUNT(*) FROM "_GroupMembers" WHERE "_GroupMembers"."A" = "Group".id
-      ) +
-       (
-        SELECT COUNT(*) FROM "_GroupAdmins" WHERE "_GroupAdmins"."A" = "Group".id
-      )
-    ) AS "totals",
-    (
-      (
-        SELECT COUNT(*) FROM "Post" WHERE "Post"."groupId" = "Group".id
-      ) +
-       (
-        SELECT COUNT(*) FROM "Meetup" WHERE "Meetup"."groupId" = "Group".id
-      ) +
-       (
-        SELECT COUNT(*) FROM "Podcast" WHERE "Podcast"."groupId" = "Group".id
-      )
-    ) AS "totalsExcludingMembers"
 
-  FROM "Group"
-  ORDER BY "totals" DESC
-  limit 5`;
-
-    return { totals, error: null };
-  } catch (error) {
-    console.log("Error returning totals:", error);
-    console.error("Error fetching totals:", error);
-  }
-}
+export const getGroupById = unstable_cache(_getGroupById, ["_getGroupById"], {
+  tags: ["getGroupById", "commentPages", "likes"],
+  revalidate: 10,
+});
 
 export const getDynamicGroups = async (
   page: number,
@@ -521,7 +417,7 @@ export const getActiveGroups = async () => {
     ORDER BY "postCount" DESC
     LIMIT 5
   `;
-
+    console.log(topGroups);
     return topGroups;
   } catch (error) {
     console.error("Error fetching active groups:", error);

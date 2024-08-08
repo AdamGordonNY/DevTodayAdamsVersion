@@ -3,11 +3,7 @@
 import React from "react";
 
 import { User } from "@prisma/client";
-import {
-  GroupLoggedInUser,
-  GroupTabContent,
-  MemberIsAdmin,
-} from "@/lib/types.d";
+import { GroupLoggedInUser, GroupTabContent } from "@/lib/types.d";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -28,9 +24,15 @@ const GroupTabs = ({
   const [tabValue, setTabValue] = React.useState<string>("Posts");
   const tabsList = ["Posts", "Meetups", "Podcasts", "Members"];
 
-  const groupAdmins = [...group.admins];
-  groupAdmins.forEach((admin: MemberIsAdmin) => (admin.isAdmin = true));
-  const allMembers = [...group.members, ...groupAdmins];
+  const groupAdmins = [
+    ...group.groupUsers.filter(
+      (user) => user.role === "ADMIN" || user.role === "OWNER"
+    ),
+  ];
+  const groupMembers = [
+    ...group.groupUsers.filter((user) => user.role === "MEMBER"),
+  ];
+  const allMembers = [...groupMembers, ...groupAdmins];
 
   return (
     <Tabs defaultValue={tabValue} onValueChange={(value) => setTabValue(value)}>
@@ -90,13 +92,16 @@ const GroupTabs = ({
         className="mt-4 w-full space-y-2.5 bg-white-200 dark:bg-dark-900"
       >
         <div className=" grid grid-flow-row grid-rows-2 gap-5 max-lg:flex max-lg:flex-col xl:grid-cols-2 ">
-          {allMembers?.map((member: MemberIsAdmin, index: any) => (
+          {allMembers?.map((member, index: any) => (
             <div key={index} className="rounded-[16px]">
               <GroupMembersTab
-                member={member}
+                member={member.user}
                 loggedInUser={user as GroupLoggedInUser}
-                isLoggedInUserAdmin={isAdmin}
-                isMemberAdmin={member.isAdmin}
+                isLoggedInUserAdmin={
+                  member.role === "ADMIN" ||
+                  (member.role === "OWNER" && groupAdmins.includes(member))
+                }
+                isMemberAdmin={isAdmin}
               />
             </div>
           ))}

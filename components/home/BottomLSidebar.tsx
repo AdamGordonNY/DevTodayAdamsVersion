@@ -1,4 +1,4 @@
-import { getActiveGroups, getDynamicGroups } from "@/lib/actions/group.actions";
+import { getActiveGroups, getTopRankGroups } from "@/lib/actions/group.actions";
 import React from "react";
 import GroupTag from "../shared/GroupTag";
 import { TopRankGroups } from "@/lib/actions/shared.types";
@@ -10,12 +10,12 @@ const BottomLSidebar = async ({
 }) => {
   const renderContent = async () => {
     if (contentType !== "groups") {
-      const groups = await getDynamicGroups(1, "popular", 5);
+      const groups = await getTopRankGroups();
 
       return (
         <div className="flex w-full  flex-col  justify-start gap-y-3.5 bg-white-100  dark:bg-dark-800">
-          {groups &&
-            groups?.groups?.map((group, idx) => (
+          {(groups as TopRankGroups[]) &&
+            groups?.map((group, idx) => (
               <GroupTag active={false} key={idx} group={group} />
             ))}
         </div>

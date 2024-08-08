@@ -4,21 +4,13 @@ import Link from "next/link";
 
 import { GroupContent } from "@/lib/types.d";
 import { ImagePlaceholder } from "../ui";
-import { getTopRankedGroups } from "@/lib/actions/group.actions";
+import { getTopRankGroups } from "@/lib/actions/group.actions";
 import { singularOrPlural } from "@/lib/utils";
 import MotionDiv from "../shared/MotionDiv";
 import GroupAboutSection from "./GroupAboutSection";
 
-type Totals = {
-  id: number;
-  name: string;
-  coverImage: string;
-  totals: number;
-  totalsExcludingMembers: number;
-};
-
 const GroupLeftSidebar = async ({ group }: { group: GroupContent }) => {
-  const topRankedGroups = await getTopRankedGroups();
+  const topRankedGroups = await getTopRankGroups();
 
   const renderStats = Object.entries(group._count).map(
     ([stat, count]: [stat: string, count: number]) => {
@@ -35,57 +27,51 @@ const GroupLeftSidebar = async ({ group }: { group: GroupContent }) => {
   );
 
   const renderTopRanked =
-    topRankedGroups && (topRankedGroups.totals as Totals[]).length > 0 ? (
-      (topRankedGroups.totals as Totals[]).map((group) => {
-        return (
-          <MotionDiv
-            key={group.id}
-            whileHover={{
-              scale: 1.05,
-            }}
-            transition={{
-              duration: 0.2,
-              ease: "linear",
-            }}
+    topRankedGroups &&
+    topRankedGroups.map((group) => {
+      return (
+        <MotionDiv
+          key={group.id}
+          whileHover={{
+            scale: 1.05,
+          }}
+          transition={{
+            duration: 0.2,
+            ease: "linear",
+          }}
+        >
+          <Link
+            href={`/groups/${group.id}`}
+            className="group flex items-center gap-x-2 rounded  hover:bg-white-200 dark:hover:bg-dark-700"
           >
-            <Link
-              href={`/groups/${group.id}`}
-              className="group flex items-center gap-x-2 rounded  hover:bg-white-200 dark:hover:bg-dark-700"
-            >
-              {group.coverImage ? (
-                <div className="relative h-[31px] min-w-[31px]">
-                  <Image
-                    src={group.coverImage}
-                    alt="group-cover-image"
-                    fill
-                    className="rounded object-cover"
-                  />
-                </div>
-              ) : (
-                <ImagePlaceholder
-                  size={31}
-                  className="rounded bg-white-100 text-white-300 dark:bg-dark-700 dark:text-white-400"
+            {group.coverImage ? (
+              <div className="relative h-[31px] min-w-[31px]">
+                <Image
+                  src={group.coverImage}
+                  alt="group-cover-image"
+                  fill
+                  className="rounded object-cover"
                 />
-              )}
-
-              <div className="flex flex-col">
-                <h1 className="paragraph-4-medium max-w-[130px] truncate text-dark-700 dark:text-white-200">
-                  {group.name ?? "Missing Group Name!"}
-                </h1>
-                <p className="caption-10 mt-0.5 flex gap-x-0.5 text-white-400 dark:group-hover:text-white-300">
-                  <span>{Number(group.totalsExcludingMembers)}</span> Items
-                  Published
-                </p>
               </div>
-            </Link>
-          </MotionDiv>
-        );
-      })
-    ) : (
-      <h1 className="paragraph-3-medium flex gap-x-1 text-white-400 dark:text-white-300">
-        No Posts
-      </h1>
-    );
+            ) : (
+              <ImagePlaceholder
+                size={31}
+                className="rounded bg-white-100 text-white-300 dark:bg-dark-700 dark:text-white-400"
+              />
+            )}
+
+            <div className="flex flex-col">
+              <h1 className="paragraph-4-medium max-w-[130px] truncate text-dark-700 dark:text-white-200">
+                {group.name ?? "Missing Group Name!"}
+              </h1>
+              <p className="caption-10 mt-0.5 flex gap-x-0.5 text-white-400 dark:group-hover:text-white-300">
+                <span>{Number(group.postCount)}</span> Items Published
+              </p>
+            </div>
+          </Link>
+        </MotionDiv>
+      );
+    });
 
   return (
     <section className="flex w-full flex-col gap-y-5">
