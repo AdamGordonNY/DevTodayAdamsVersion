@@ -3,7 +3,7 @@
 import React from "react";
 
 import { User } from "@prisma/client";
-import { GroupLoggedInUser, GroupTabContent } from "@/lib/types.d";
+import { GroupLoggedInUser } from "@/lib/types.d";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -11,19 +11,20 @@ import MeetupCard from "@/components/profile/posts/MeetupCard";
 import PostCard from "@/components/profile/posts/PostCard";
 import PodcastCard from "@/components/profile/posts/PodcastCard";
 import GroupMembersTab from "./GroupMembersTab";
+import { GroupDetails } from "@/lib/actions/shared.types";
 
 const GroupTabs = ({
   group,
   user,
   isAdmin,
 }: {
-  group: GroupTabContent;
+  group: GroupDetails;
   user: User;
   isAdmin: boolean;
 }) => {
   const [tabValue, setTabValue] = React.useState<string>("Posts");
   const tabsList = ["Posts", "Meetups", "Podcasts", "Members"];
-
+  const groupUsers = group.groupUsers.map((grpUser) => grpUser.user);
   const groupAdmins = [
     ...group.groupUsers.filter(
       (user) => user.role === "ADMIN" || user.role === "OWNER"
@@ -95,7 +96,7 @@ const GroupTabs = ({
           {allMembers?.map((member, index: any) => (
             <div key={index} className="rounded-[16px]">
               <GroupMembersTab
-                member={member.user}
+                member={member}
                 loggedInUser={user as GroupLoggedInUser}
                 isLoggedInUserAdmin={
                   member.role === "ADMIN" ||

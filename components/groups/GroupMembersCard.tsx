@@ -6,12 +6,13 @@ import Link from "next/link";
 import { Loader2 } from "lucide-react";
 
 import { User } from "@prisma/client";
-import { GroupLoggedInUser } from "@/lib/types.d";
+
 import addUser from "@/public/add-user.svg";
 import { followUser } from "@/lib/actions/user.actions";
 import { ProfilePlaceholder } from "../ui";
 import MotionDiv from "../shared/MotionDiv";
 import GroupMembersMenu from "./GroupMembersMenu";
+import { GroupUserContent } from "@/lib/actions/shared.types";
 
 const GroupMembersCard = ({
   member,
@@ -19,8 +20,8 @@ const GroupMembersCard = ({
   isLoggedInUserAdmin = false,
   isMemberAdmin = false,
 }: {
-  member: User;
-  loggedInUser: GroupLoggedInUser;
+  member: GroupUserContent;
+  loggedInUser: User & { following: User[]; followers: User[] };
   isLoggedInUserAdmin?: boolean;
   isMemberAdmin?: boolean;
 }) => {
@@ -50,10 +51,10 @@ const GroupMembersCard = ({
           href={`/profile/${member.id}`}
           className="flex items-center gap-x-2"
         >
-          {member.image ? (
+          {member.user.image ? (
             <div className="relative size-[30px]">
               <Image
-                src={member.image}
+                src={member.user.image}
                 alt="member-image"
                 fill
                 className="rounded-full"
@@ -66,7 +67,7 @@ const GroupMembersCard = ({
           )}
 
           <p className="paragraph-3-medium text-dark-700 dark:text-white-300">
-            {member.username}
+            {member.user.username}
           </p>
         </Link>
       </MotionDiv>

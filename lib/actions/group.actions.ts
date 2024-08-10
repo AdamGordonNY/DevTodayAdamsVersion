@@ -5,14 +5,15 @@ import { prisma } from "@/db";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { auth } from "@clerk/nextjs";
 
-import { TopRankGroups, Totals } from "./shared.types.d";
+import { GroupDetails, TopRankGroups, Totals } from "./shared.types.d";
 
 import { getUserIdWithClerkID } from "./user.actions";
 import { Group } from "@prisma/client";
+
 export async function createGroup(data: any, authorId: number) {
   try {
     if (data) {
-      const { groupAdmins, groupMembers, ...rest } = data;
+      const { groupUsers, ...rest } = data;
 
       const group = await prisma.group.create({
         data: {
@@ -27,12 +28,12 @@ export async function createGroup(data: any, authorId: number) {
           groupId: group.id,
           role: "OWNER",
         },
-        ...groupAdmins.map((admin: { id: number }) => ({
+        ...groupUsers.map((admin: { id: number }) => ({
           userId: admin.id,
           groupId: group.id,
           role: "ADMIN",
         })),
-        ...groupMembers.map((member: { id: number }) => ({
+        ...groupUsers.map((member: { id: number }) => ({
           userId: member.id,
           groupId: group.id,
           role: "MEMBER",
@@ -222,7 +223,15 @@ export async function _getGroupById(id: string) {
         },
       },
     });
-
+    const groupOwner = prisma.user.findFirst({
+      where: {
+        id: group?.createdBy,
+      },
+      include: {
+        followers: true,
+        following: true,
+      },
+    });
     if (!group) {
       throw new Error("Group not found.");
     }
@@ -247,7 +256,12 @@ export async function _getGroupById(id: string) {
       ).length,
     };
 
-    return { group, totals, error: null };
+    return {
+      group,
+      totals,
+      owner: groupOwner,
+      error: null,
+    };
   } catch (error) {
     console.error("Error returning group:", error);
     return { error: "An unexpected error occurred while returning group." };
@@ -384,6 +398,26 @@ export const getDynamicGroups = async (
     };
   }
 };
+export const grabGroupToEdit = async (id: string) => {
+  try {
+    const group = await prisma.group.findUnique({
+      where: {
+        id: Number(id),
+      },
+      select: {
+        id: true,
+        name: true,
+        about: true,
+        coverImage: true,
+        groupUsers: { include: { user: true } },
+        posts: true,
+        podcasts: true,
+        meetups: true,
+      },
+    });
+    return group as Partial<Group>;
+  } catch (error) {}
+};
 export const getActiveGroups = async () => {
   try {
     const seventyTwoHoursAgo = new Date(Date.now() - 72 * 60 * 60 * 1000);
@@ -485,6 +519,139 @@ export const getJoinedGroupCount = async () => {
     return 0;
   }
 };
+export const getLoggedInUserRole = async (groupId: number) => {
+  try {
+    const { userId } = await getUserIdWithClerkID();
+    if (userId) {
+      const groupUser = await prisma.groupUser.findUnique({
+        where: {
+          groupId_userId: {
+            groupId,
+            userId,
+          },
+        },
+      });
+      return { role: groupUser?.role, error: null };
+    } else {
+      return { error: "User Not Logged In, Please Log In" };
+    }
+  } catch (error) {
+    console.error("Error fetching user role:", error);
+    return null;
+  }
+};
+export async function getGroupWithUsers(groupId: number) {
+  try {
+    const group = await prisma.group.findUnique({
+      where: {
+        id: groupId,
+      },
+      include: {
+        groupUsers: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                image: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!group) {
+      throw new Error(`Group with ID ${groupId} not found.`);
+    }
+
+    return group;
+  } catch (error) {
+    console.error("Error fetching group with users:", error);
+    throw error;
+  }
+}
+
+export async function getGroupDetails(groupId: number) {
+  try {
+    const group = await prisma.group.findUnique({
+      where: {
+        id: groupId,
+      },
+      include: {
+        groupUsers: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+        },
+        posts: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+        },
+        podcasts: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+        },
+        meetups: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!group) {
+      throw new Error(`Group with ID ${groupId} not found.`);
+    }
+
+    return {
+      posts: group.posts,
+      podcasts: group.podcasts,
+      meetups: group.meetups,
+      groupUsers: group.groupUsers,
+      group: group,
+      coverImage: group.coverImage,
+      about: group.about,
+      createdBy: group.createdBy,
+      createdAt: group.createdAt,
+      id: group.id,
+      name: group.name,
+      profileImage: group.profileImage,
+    };
+  } catch (error) {
+    console.error("Error fetching group details:", error);
+    throw error;
+  }
+}
 // export async function addOrRemoveGroupUser(groupId: number, userId: number) {
 //   try {
 //     const whereInput = {

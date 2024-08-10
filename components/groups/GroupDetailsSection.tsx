@@ -4,8 +4,7 @@ import React, { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 
-import { User } from "@prisma/client";
-import { GroupContent, GroupTabContent } from "@/lib/types.d";
+import { Role, User } from "@prisma/client";
 // import { addOrRemoveGroupUser } from "@/lib/actions/group.actions";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import ConfirmationModal from "../shared/ConfirmationModal";
@@ -14,44 +13,77 @@ import MotionDiv from "../shared/MotionDiv";
 import ContentMenu from "../contentTypes/ContentMenu";
 import GroupTabs from "./GroupTabs";
 import GroupAboutSection from "./GroupAboutSection";
+import { GroupDetails, GroupUserContent } from "@/lib/actions/shared.types";
 
-const GroupDetails = ({ group, user }: { group: GroupContent; user: User }) => {
-  const [isMember, setIsMember] = useState<User[]>([]);
-  const [isAdmin, setIsAdmin] = useState<User[]>([]);
-  const [isOwner, setIsOwner] = useState<User>();
+const GroupDetailsSection = ({
+  group,
+  user,
+  role,
+  owner,
+}: {
+  group: GroupDetails;
+  user: Partial<User> & Partial<GroupUserContent[]>;
+  role: "OWNER" | "ADMIN" | "MEMBER";
+  owner: User;
+}) => {
+  const [isMember, setIsMember] = useState<Partial<User>[]>([]);
+  const [admins, setAdmins] = useState<Partial<User>[]>([]);
+  const [isOwner, setIsOwner] = useState<Partial<User>>(owner!);
   const [pending, startTransition] = useTransition();
-
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  // const { id } = user;
+  // useEffect(() => {
+  //   const assignRoles = async () => {
+  //     const groupAdmins = group.groupUsers.filter((user) => {
+  //       return user.role === "ADMIN" ? user : null;
+  //     });
+  //     groupAdmins.forEach((admin) => {
+  //       if (admin.user.id === user.id) {
+  //         setAdmins([...admins, user]);
+  //       }
+  //     });
+  //     const groupMembers = group.groupUsers.filter((user) => {
+  //       return user.role === "MEMBER" ? user : null;
+  //     });
+  //     groupMembers.forEach((member) => {
+  //       if (member.id === user.id) {
+  //         setIsMember([...isMember, user]);
+  //       }
+  //     });
+  //     const groupOwner = group.groupUsers.filter((user) => {
+  //       return user.role === "OWNER" ? user : null;
+  //     });
+  //     groupOwner.forEach((owner) => {
+  //       if (owner.id === user.id) {
+  //         setIsOwner(user);
+  //       }
+  //     });
+  //   };
+  //   assignRoles();
+  // }, [
+  //   admins,
+  //   group.createdBy,
+  //   group.groupUsers,
+  //   isAdmin,
+  //   isMember,
+  //   user,
+  //   user.id,
+  // ]);
   useEffect(() => {
-    const assignRoles = async () => {
-      const groupAdmins = group.groupUsers.filter((user) => {
-        return user.role === "ADMIN" ? user : null;
-      });
-      groupAdmins.forEach((admin) => {
-        if (admin.user.id === user.id) {
-          setIsAdmin([...isAdmin, user]);
-        }
-      });
-      const groupMembers = group.groupUsers.filter((user) => {
-        return user.role === "MEMBER" ? user : null;
-      });
-      groupMembers.forEach((member) => {
-        if (member.user.id === user.id) {
-          setIsMember([...isMember, user]);
-        }
-      });
-      const groupOwner = group.groupUsers.filter((user) => {
-        return user.role === "OWNER" ? user : null;
-      });
-      groupOwner.forEach((owner) => {
-        if (owner.user.id === user.id) {
-          setIsOwner(user);
-          setIsAdmin([...isAdmin, user]);
-        }
-      });
+    const checkSelfRole = async () => {
+      const role = group.groupUsers.find(
+        (grpUser) =>
+          (grpUser.id === user.id && grpUser.role === "ADMIN") ||
+          grpUser.role === "OWNER"
+      );
+      if (role?.role.includes("ADMIN") || role?.role.includes("OWNER")) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
     };
-    assignRoles();
-  }, [group.createdBy, group.groupUsers, isAdmin, isMember, user, user.id]);
-
+    checkSelfRole();
+  });
   const handleAddOrdRemove = async () => {
     startTransition(async () => {
       // await addOrRemoveGroupUser(group.id, user.id);
@@ -100,10 +132,7 @@ const GroupDetails = ({ group, user }: { group: GroupContent; user: User }) => {
               <h1 className="display-2-bold dark:text-white-100">
                 {group.name ?? "Missing Post Title!"}
               </h1>
-              <p className="mt-1 flex">
-                Created by {isOwner?.firstName!}
-                {isOwner?.lastName!}
-              </p>
+              <p className="mt-1 flex">Created by{isOwner.username};</p>
             </div>
 
             <div className="flex gap-x-2">
@@ -167,12 +196,12 @@ const GroupDetails = ({ group, user }: { group: GroupContent; user: User }) => {
         <GroupAboutSection about={group.about} />
       </div>
       <GroupTabs
-        group={group as GroupTabContent}
+        group={group as GroupDetails}
         user={user}
-        isAdmin={isAdmin.includes(user) || isOwner === user}
+        isAdmin={role === "ADMIN" || role === "OWNER"}
       />
     </section>
   );
 };
 
-export default GroupDetails;
+export default GroupDetailsSection;

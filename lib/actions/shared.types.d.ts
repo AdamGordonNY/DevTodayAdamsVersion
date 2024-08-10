@@ -124,7 +124,8 @@ export interface TopRankGroups {
   name: string;
   postCount: number;
   coverImage?: string;
-  groupUsers: GroupUser[];
+  members?: GroupUser[];
+  admins?: GroupUser[];
 }
 export type Totals = {
   id: number;
@@ -133,4 +134,102 @@ export type Totals = {
   totals: number;
   admins: number;
   members: number;
+};
+
+export type GroupUserContent = {
+  id: number;
+  groupId: number;
+  userId: number;
+  clerkId: string;
+  role: string;
+  createdAt: Date;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    image: string | null;
+  };
+  following: User[];
+  followers: User[];
+  groups: GroupUserContent[];
+};
+
+// Define the types for the content related to Posts, Podcasts, and Meetups
+export type PostContent = {
+  id: number;
+  title: string;
+  body: string;
+  createdAt: Date;
+  updatedAt: Date | null;
+  likes: number;
+  views: number;
+  image: string | null;
+  tags: string[];
+  commentCount: number;
+  userId: number;
+  user: {
+    id: number;
+    username: string;
+    image: string | null;
+  };
+};
+
+export type PodcastContent = {
+  id: number;
+  title: string;
+  body: string;
+  createdAt: Date;
+  updatedAt: Date | null;
+  likes: number;
+  views: number;
+  image: string | null;
+  tags: string[];
+  commentCount: number;
+  audio: string;
+  userId: number;
+  groupId: number;
+  user: {
+    id: number;
+    username: string;
+    image: string | null;
+  };
+};
+
+export type MeetupContent = {
+  id: number;
+  title: string;
+  body: string;
+  createdAt: Date;
+  updatedAt: Date | null;
+  likes: number;
+  views: number;
+  image: string | null;
+  commentCount: number;
+  startTime: Date | null;
+  address: string;
+  userId: number;
+  groupId: number;
+  user: {
+    id: number;
+    username: string;
+    image: string | null;
+  };
+};
+
+// Update the GroupDetails type to include the content types for posts, podcasts, and meetups
+export type GroupDetails = {
+  id: number;
+  createdAt: Date;
+  name: string;
+  coverImage: string | null;
+  profileImage: string | null;
+  about: string;
+  createdBy: number;
+  groupUsers: GroupUserContent[];
+  admins: GroupUserContent[];
+  posts: PostContent[];
+  podcasts: PodcastContent[];
+  meetups: MeetupContent[];
 };

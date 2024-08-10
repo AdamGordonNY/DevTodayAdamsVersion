@@ -5,11 +5,38 @@ import { prisma } from "@/db";
 import { revalidateTag, unstable_cache as cache } from "next/cache";
 import { IUserProfileUpdateSchema } from "../validations/user.validations";
 
-import { Platform } from "@prisma/client";
+import { Platform, User } from "@prisma/client";
 
 import { auth } from "@clerk/nextjs/server";
-
-export const _getUser = async (clerkID: string) => {
+export const getLoggedInUser = async () => {
+  try {
+    const { userId: clerkID } = await auth();
+    const user = await prisma.user.findUnique({
+      where: { clerkID: clerkID! },
+      include: {
+        SocialMedia: true,
+        followers: true,
+        following: true,
+        groupRoles: true,
+        groups: true,
+      },
+    });
+    if (user?.username === null || user?.username === undefined) {
+      const setUserName = user?.email.split("@")[0];
+      await prisma.user.update({
+        where: { id: user?.id },
+        data: {
+          username: setUserName,
+        },
+      });
+    }
+    return { user: user };
+  } catch (error) {
+    console.log(error);
+    return { error: "There was an error fetching the user." };
+  }
+};
+export const getUser = async (clerkID: string) => {
   try {
     const user = await prisma.user.findUnique({
       where: { clerkID },
@@ -17,6 +44,8 @@ export const _getUser = async (clerkID: string) => {
         SocialMedia: true,
         followers: true,
         following: true,
+        groupRoles: true,
+        groups: true,
       },
     });
     if (user?.username === null || user?.username === undefined) {
@@ -28,15 +57,13 @@ export const _getUser = async (clerkID: string) => {
         },
       });
     }
-    return { user };
+    return user;
   } catch (error) {
     console.log(error);
     return { error: "There was an error fetching the user." };
   }
 };
-export const getUser = cache(_getUser, ["getUser"], {
-  tags: ["User", "likes"],
-});
+
 export const editPicture = async (id: number, image: string) => {
   try {
     const user = await prisma.user.update({
@@ -104,6 +131,8 @@ export const getUserById = async (slug: number) => {
         SocialMedia: true,
         followers: true,
         following: true,
+        groupRoles: true,
+        groups: true,
       },
     });
 
@@ -254,8 +283,8 @@ export const isUserAuthor = async (authorId: number) => {
   if (!clerkID) return { message: "No Logged In User" };
 
   try {
-    const user = await getUser(clerkID);
-    const isAuthor = user?.user?.id === authorId;
+    const user = (await getUser(clerkID)) as User;
+    const isAuthor = user.id === authorId;
 
     return { isAuthor, error: null };
   } catch (error) {

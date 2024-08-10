@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -12,24 +13,43 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ProfilePlaceholder } from "../ui";
-import { GroupContent, GroupLoggedInUser, MeetupContent } from "@/lib/types.d";
+import { GroupContent, MeetupContent } from "@/lib/types.d";
 import GroupMeetupCard from "./GroupMeetupCard";
 import GroupMembersCard from "./GroupMembersCard";
 import MotionDiv from "../shared/MotionDiv";
+import { randomUUID } from "crypto";
+import { GroupDetails, GroupUserContent } from "@/lib/actions/shared.types";
 
-const GroupRightSidebar = async ({
+const GroupRightSidebar = ({
   group,
-  user,
+  loggedIn,
+  users,
 }: {
-  group: GroupContent;
-  user: User;
+  group: GroupDetails;
+  loggedIn: User;
+  users: GroupUserContent[];
 }) => {
+  const [meets, setMeets] = React.useState<MeetupContent[]>([]);
+  const [groupMembers, setGroupMembers] = React.useState<any[]>(users);
+  const [groupAdmins, setGroupAdmins] = React.useState<any[]>([]);
+  const { groupUsers } = group;
+
+  useEffect(() => {
+    const roleAssign = async () => {
+      const admins = groupUsers.filter((user) =>
+        user.role === "ADMIN" || user.role === "OWNER" ? user : null
+      );
+      const allMembers = groupUsers.map((user) => user.user);
+      setGroupAdmins(admins);
+      setGroupMembers(allMembers);
+    };
+  });
   const renderMeetups =
     group?.meetups?.length > 0 ? (
-      group?.meetups?.map((meetup) => {
+      group?.meetups?.map((meetup, idx) => {
         return (
           <MotionDiv
-            key={meetup.id}
+            key={idx}
             whileHover={{
               scale: 1.03,
             }}
@@ -68,59 +88,61 @@ const GroupRightSidebar = async ({
         </div>
 
         <div className="mt-5 flex flex-wrap justify-start gap-6">
-          {group.groupUsers.map((member) => {
-            return member.user.image ? (
-              <TooltipProvider>
-                <Tooltip>
-                  <MotionDiv
-                    key={member.user.id}
-                    whileHover={{
-                      scale: 1.2,
-                    }}
-                    transition={{
-                      duration: 0.2,
-                      ease: "linear",
-                    }}
-                    className="flex"
-                  >
-                    <Link
-                      href={`/profile/${member.user.id}`}
-                      className="relative size-10"
+          {groupMembers.length > 0 ? (
+            groupMembers.map((member, idx) => (
+              <React.Fragment key={idx}>
+                <TooltipProvider>
+                  <Tooltip>
+                    <MotionDiv
+                      key={idx}
+                      whileHover={{
+                        scale: 1.2,
+                      }}
+                      transition={{
+                        duration: 0.2,
+                        ease: "linear",
+                      }}
+                      className="flex"
                     >
-                      <TooltipTrigger>
-                        <Image
-                          src={member.user.image}
-                          alt="members-profile-image"
-                          fill
-                          className="rounded-full"
-                        />
-                      </TooltipTrigger>
-                    </Link>
-                  </MotionDiv>
-                  <TooltipContent
-                    className="caption-8 border border-white-border bg-white-100 text-dark-700 dark:border-dark-border dark:bg-dark-800 dark:text-white-300"
-                    align="center"
-                  >
-                    {member.user.firstName} {member.user.lastName}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            ) : (
-              <MotionDiv
-                key={member.user.id}
-                whileHover={{
-                  scale: 1.2,
-                }}
-                transition={{
-                  duration: 0.2,
-                  ease: "linear",
-                }}
-                className="flex cursor-pointer"
-              >
-                <ProfilePlaceholder size={40} className="shrink-0" />
-              </MotionDiv>
-            );
-          })}
+                      <Link
+                        href={`/profile/${member.user.id!}`}
+                        className="relative size-10"
+                      >
+                        <TooltipTrigger>
+                          <Image
+                            src={member.user.image!}
+                            alt="members-profile-image"
+                            fill
+                            className="rounded-full"
+                          />
+                        </TooltipTrigger>
+                      </Link>
+                    </MotionDiv>
+                    <TooltipContent
+                      className="caption-8 border border-white-border bg-white-100 text-dark-700 dark:border-dark-border dark:bg-dark-800 dark:text-white-300"
+                      align="center"
+                    >
+                      {member.user.username}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </React.Fragment>
+            ))
+          ) : (
+            <MotionDiv
+              key={randomUUID()}
+              whileHover={{
+                scale: 1.2,
+              }}
+              transition={{
+                duration: 0.2,
+                ease: "linear",
+              }}
+              className="flex cursor-pointer"
+            >
+              <ProfilePlaceholder size={40} className="shrink-0" />
+            </MotionDiv>
+          )}
         </div>
       </section>
 
@@ -134,16 +156,17 @@ const GroupRightSidebar = async ({
           </p>
         </div>
         <div className="mt-5 flex flex-col justify-between gap-4">
-          {group.groupUsers.map((admin) => {
-            return (
-              <GroupMembersCard
-                key={admin.user.id}
-                member={admin.user}
-                loggedInUser={user as GroupLoggedInUser}
-                isMemberAdmin={true}
-              />
-            );
-          })}
+          {groupAdmins &&
+            groupAdmins.map((admin) => {
+              return (
+                <GroupMembersCard
+                  key={admin.user.id}
+                  member={admin.user}
+                  loggedInUser={loggedIn}
+                  isMemberAdmin={true}
+                />
+              );
+            })}
         </div>
       </section>
     </section>

@@ -2,17 +2,31 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { GroupContent } from "@/lib/types.d";
 import { ImagePlaceholder } from "../ui";
-import { getTopRankGroups } from "@/lib/actions/group.actions";
 import { singularOrPlural } from "@/lib/utils";
 import MotionDiv from "../shared/MotionDiv";
 import GroupAboutSection from "./GroupAboutSection";
+import { GroupDetails, TopRankGroups } from "@/lib/actions/shared.types";
 
-const GroupLeftSidebar = async ({ group }: { group: GroupContent }) => {
-  const topRankedGroups = await getTopRankGroups();
+interface GroupLeftSidebarProps {
+  topRankedGroups: TopRankGroups[];
 
-  const renderStats = Object.entries(group._count).map(
+  group: Partial<GroupDetails>;
+}
+const GroupLeftSidebar = async ({
+  group,
+
+  topRankedGroups,
+}: GroupLeftSidebarProps) => {
+  const stats = {
+    admins: group.groupUsers?.filter(
+      (user) => user.role === "ADMIN" || user.role === "OWNER"
+    )?.length!,
+    members: group.groupUsers?.length!,
+    posts:
+      group.posts?.length! + group.podcasts?.length! + group.meetups?.length!,
+  };
+  const renderStats = Object.entries(stats).map(
     ([stat, count]: [stat: string, count: number]) => {
       return (
         <p
@@ -76,7 +90,7 @@ const GroupLeftSidebar = async ({ group }: { group: GroupContent }) => {
   return (
     <section className="flex w-full flex-col gap-y-5">
       <div className="max-md-a:hidden">
-        <GroupAboutSection about={group.about} />
+        <GroupAboutSection about={group.about!} />
       </div>
       <section className="paragraph-2-medium flex flex-col rounded-lg bg-white-100 p-4 text-white-400 max-md-a:order-1 dark:bg-dark-800">
         <h1 className="paragraph-2-bold text-dark-800 dark:text-white-200">

@@ -34,6 +34,7 @@ export const UserProfileUpdateSchema = z.object({
 
   socialMedia: z.array(SocialMediaSchema).optional(),
 });
+
 export type IUserProfileUpdateSchema = z.infer<typeof UserProfileUpdateSchema>;
 export const IUserSocials = UserSchema.pick({ socials: true });
 

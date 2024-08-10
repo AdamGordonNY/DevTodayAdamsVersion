@@ -45,7 +45,8 @@ model GroupUser {
   role      Role     @default(MEMBER)
   createdAt DateTime @default(now())
 
-  @@unique([id,groupId, userId])
+  @@unique([groupId, userId])
+
 }
 
 model Post {
@@ -184,6 +185,7 @@ model Like {
   @@unique([clerkId, podcastId])
   @@unique([clerkId, commentId])
   @@unique([clerkId, meetupId])
+  
 }
 
 enum Platform {

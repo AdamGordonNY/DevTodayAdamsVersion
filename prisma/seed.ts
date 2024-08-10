@@ -50,18 +50,30 @@ async function main() {
     });
     groupIds.push(group.id);
 
-    const adminIds = faker.helpers.arrayElements(userIds, 3);
-    const memberIds = faker.helpers.arrayElements(userIds, 7);
+    const usedUserIds = new Set();
+    usedUserIds.add(authorId);
+
+    const adminIds = faker.helpers.arrayElements(
+      userIds.filter((id) => !usedUserIds.has(id)),
+      3
+    );
+    adminIds.forEach((id: unknown) => usedUserIds.add(id));
+
+    const memberIds = faker.helpers.arrayElements(
+      userIds.filter((id) => !usedUserIds.has(id)),
+      7
+    );
+    memberIds.forEach((id: unknown) => usedUserIds.add(id));
 
     await prisma.groupUser.createMany({
       data: [
         { groupId: group.id, userId: authorId, role: Role.OWNER },
-        ...adminIds.map((userId: number) => ({
+        ...adminIds.map((userId: any) => ({
           groupId: group.id,
           userId,
           role: Role.ADMIN,
         })),
-        ...memberIds.map((userId: number) => ({
+        ...memberIds.map((userId: any) => ({
           groupId: group.id,
           userId,
           role: Role.MEMBER,

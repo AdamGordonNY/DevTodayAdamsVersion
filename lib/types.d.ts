@@ -10,7 +10,7 @@ import {
   GroupUser,
   Role,
 } from "@prisma/client";
-import { UserWithProfileContent } from "./actions/shared.types";
+import { Totals, UserWithProfileContent } from "./actions/shared.types";
 export enum Theme {
   LIGHT = "light",
   DARK = "dark",
@@ -118,22 +118,44 @@ export type GroupCardContent = {
     meetups: number;
     groupUsers: number;
   };
-  createdByUser: {
-    id: number;
-    firstName: string;
-    lastName: string;
-    image: string | null;
-  };
   groupUsers: {
     id: number;
     image: string | null;
     role: string;
+    username: string;
   }[];
 };
+export type GroupOverviewContent = {
+  id: number;
+  name: string;
+  coverImage: string;
+  about: string;
+  _count: {
+    posts: number;
+    podcasts: number;
+    meetups: number;
+    groupUsers: number;
+  };
+  totals: Totals;
+  groupUsers: {
+    id: number;
+    image: string | null;
+    role: string;
+    username: string;
+  }[];
+  user: User & { role: Role };
+};
+export type GroupUserAndRole = {
+  user: User;
+  following: User[];
+  followers: User[];
+  role: Role;
+};
+
 export type GroupContent = Prisma.GroupGetPayload<{
   include: {
     createdBy: true;
-    groupUsers: { select: { user: true; role: true } };
+    groupUsers: { include: { user: true; role: true; image: true } }[];
     _count: {
       select: {
         posts: true;
@@ -147,6 +169,23 @@ export type GroupContent = Prisma.GroupGetPayload<{
     meetups: true;
   };
 }>;
+export type GroupLoggedInUser = User & {
+  following: User[];
+  followers: User[];
+  role: Role;
+};
+export type GroupRightSidebarContent = {
+  meetups: Meetup[];
+  groupUsers: {
+    userId: number;
+    user: User;
+    role: Role;
+    image: string | null;
+  }[];
+
+  user: User;
+  role: Role;
+};
 
 export type GroupUserContent = Prisma.GroupUserGetPayload<{
   include: {
@@ -173,10 +212,6 @@ export type SelectedGroupUsers = {
   lastName: string;
   id: number;
   image?: string;
-};
-
-export type GroupLoggedInUser = User & {
-  following: User[];
 };
 
 export type ContentMetrics = {

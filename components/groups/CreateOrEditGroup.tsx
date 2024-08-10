@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 
 import { createGroup, updateGroup } from "@/lib/actions/group.actions";
 import { IGroupSchema, GroupSchema } from "@/lib/validations/group.validations";
-import { GroupContent } from "@/lib/types.d";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,15 +17,23 @@ import { Label } from "@/components/ui/label";
 import ContentImageUpload from "../contentTypes/ContentImageUpload";
 import GroupProfileImageUpload from "./GroupProfileImageUpload";
 import GroupMemberTags from "./GroupMemberTags";
+import { GroupDetails } from "@/lib/actions/shared.types";
 
 const CreateOrEditGroup = ({
   group,
   loggedInUserId,
 }: {
-  group?: GroupContent;
+  group?: GroupDetails;
   loggedInUserId?: number;
 }) => {
   const router = useRouter();
+
+  const admins =
+    group?.groupUsers.filter(
+      (user) => user.role === "ADMIN" || user.role === "OWNER"
+    ) || [];
+  const members =
+    group?.groupUsers.filter((user) => user.role === "MEMBER") || [];
 
   const useFormHelpers = useForm<IGroupSchema>({
     defaultValues: {
@@ -33,8 +41,8 @@ const CreateOrEditGroup = ({
       about: group?.about ?? "",
       profileImage: group?.profileImage ?? "",
       coverImage: group?.coverImage ?? "",
-      groupAdmins: group?.admins ?? [],
-      groupMembers: group?.members ?? [],
+      admins: admins.map((admin) => admin.user) ?? [],
+      members: members.map((member) => member.user) ?? [],
     },
     resolver: zodResolver(GroupSchema),
   });
@@ -146,14 +154,14 @@ const CreateOrEditGroup = ({
       <GroupMemberTags
         setValue={setValue}
         formState={formState}
-        defaultValue={formState.groupAdmins}
+        defaultValue={admins.map((admin) => admin.user)}
         memberType="admins"
       />
 
       <GroupMemberTags
         setValue={setValue}
         formState={formState}
-        defaultValue={formState.groupMembers}
+        defaultValue={members.map((member) => member.user)}
         memberType="members"
       />
 
