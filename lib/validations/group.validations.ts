@@ -19,10 +19,22 @@ export const GroupSchema = z.object({
     .min(20, { message: "Group bio must contain at least 20 characters" }),
   profileImage: z.string().optional(),
   coverImage: z.string().optional(),
-  admins: z.array(GroupUserSchema).optional(),
-  members: z
-    .array(GroupUserSchema.omit({ image: true, id: true, groupId: true }))
-    .optional(),
+  admins: z.array(
+    GroupUserSchema.pick({
+      userId: true,
+      username: true,
+      image: true,
+      role: true,
+    })
+  ),
+  members: z.array(
+    GroupUserSchema.pick({
+      userId: true,
+      username: true,
+      image: true,
+      role: true,
+    })
+  ),
 });
 
 export type IGroupSchema = z.infer<typeof GroupSchema>;

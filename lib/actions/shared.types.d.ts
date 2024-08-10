@@ -6,7 +6,7 @@ import {
   User,
   GroupUser,
 } from "@prisma/client";
-import { ContentCategoryEnum } from "../types";
+import { ContentCategoryEnum, RoleEnum } from "../types";
 
 export type Option = {
   key: Levels | Tech | Goals;
@@ -108,9 +108,7 @@ export type LikedContent = {
   likes: number;
   contentCategory: ContentCategoryEnum;
 };
-export interface ParamsProps {
-  params: { id: string };
-}
+
 export interface SearchParamsProps {
   filter: any;
   searchParams: { [key: string]: string | undefined };
@@ -127,36 +125,60 @@ export interface TopRankGroups {
   members?: GroupUser[];
   admins?: GroupUser[];
 }
-export type Totals = {
+export type GroupUserFields = {
   id: number;
-  name: string;
-  coverImage: string;
-  totals: number;
-  admins: number;
-  members: number;
+  username: string | null;
+  image: string | null;
+  followers: User[];
+  following: User[];
+};
+export type GroupDetailsResult = {
+  group: {
+    id: number;
+    createdAt: Date;
+    name: string;
+    coverImage: string | null;
+    profileImage: string | null;
+    about: string;
+    createdBy: number;
+    groupUsers: GroupUserContent[];
+    posts: PostContent[];
+    podcasts: PodcastContent[];
+    meetups: MeetupContent[];
+  };
+  posts: PostContent[];
+  podcasts: PodcastContent[];
+  meetups: MeetupContent[];
+  adminsAndOwners: {
+    id: number;
+    username: string | null;
+    image: string | null;
+    followers: User[];
+    following: User[];
+  }[];
+  members: {
+    id: number;
+    username: string | null;
+    image: string | null;
+    followers: User[];
+    following: User[];
+  }[];
+  totalMembersCount: number;
+  isAdminOrOwner: boolean;
+  loggedInUser: LoggedInUserContent;
+  loggedInUserRole: RoleEnum;
+  owner: GroupOwnerContent;
 };
 
 export type GroupUserContent = {
   id: number;
   groupId: number;
   userId: number;
-  clerkId: string;
   role: string;
   createdAt: Date;
-  user: {
-    id: number;
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    image: string | null;
-  };
-  following: User[];
-  followers: User[];
-  groups: GroupUserContent[];
+  user: GroupUserFields;
 };
 
-// Define the types for the content related to Posts, Podcasts, and Meetups
 export type PostContent = {
   id: number;
   title: string;
@@ -171,7 +193,7 @@ export type PostContent = {
   userId: number;
   user: {
     id: number;
-    username: string;
+    username: string | null;
     image: string | null;
   };
 };
@@ -192,7 +214,7 @@ export type PodcastContent = {
   groupId: number;
   user: {
     id: number;
-    username: string;
+    username: string | null;
     image: string | null;
   };
 };
@@ -211,25 +233,37 @@ export type MeetupContent = {
   address: string;
   userId: number;
   groupId: number;
+  tags: string[];
   user: {
     id: number;
-    username: string;
+    username: string | null;
     image: string | null;
   };
 };
-
-// Update the GroupDetails type to include the content types for posts, podcasts, and meetups
-export type GroupDetails = {
+export type GroupOwnerContent = {
   id: number;
+  username: string | null;
+  email: string;
+  firstName: string;
+  lastName: string;
+  image: string | null;
+  following: User[];
+  followers: User[];
+};
+
+export type LoggedInUserContent = {
+  id: number;
+  clerkID: string | null;
   createdAt: Date;
-  name: string;
-  coverImage: string | null;
-  profileImage: string | null;
-  about: string;
-  createdBy: number;
-  groupUsers: GroupUserContent[];
-  admins: GroupUserContent[];
-  posts: PostContent[];
-  podcasts: PodcastContent[];
-  meetups: MeetupContent[];
+  username: string | null;
+  email: string;
+  firstName: string;
+  lastName: string;
+  image: string | null;
+  following: {
+    id: number;
+  }[];
+  followers: {
+    id: number;
+  }[];
 };

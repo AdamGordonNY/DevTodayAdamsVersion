@@ -1,5 +1,9 @@
 import { User } from "@prisma/client";
-import { GroupLoggedInUser } from "@/lib/types.d";
+import {
+  GroupUserContent,
+  GroupUserFields,
+  LoggedInUserContent,
+} from "@/lib/actions/shared.types";
 
 import GroupMembersCard from "./GroupMembersCard";
 
@@ -9,8 +13,8 @@ const GroupMembersTab = ({
   isLoggedInUserAdmin,
   isMemberAdmin = false,
 }: {
-  member: User;
-  loggedInUser: GroupLoggedInUser;
+  member: GroupUserFields;
+  loggedInUser: LoggedInUserContent;
   isLoggedInUserAdmin: boolean;
   isMemberAdmin?: boolean;
 }) => {

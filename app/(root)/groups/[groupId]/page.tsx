@@ -1,18 +1,22 @@
 import React from "react";
 
-import { getGroupDetails } from "@/lib/actions/group.actions";
+import {
+  getFullGroupDetails,
+  getGroupDetails,
+} from "@/lib/actions/group.actions";
 
 import ContentNotFound from "@/components/shared/ContentNotFound";
 import GroupOverview from "@/components/groups/GroupOverview";
-import { getUser } from "@/lib/actions/user.actions";
+import { getUser, getUserIdWithClerkID } from "@/lib/actions/user.actions";
 import { auth } from "@clerk/nextjs/server";
 import { GroupUserContent } from "@/lib/actions/shared.types";
 
 const Group = async ({ params }: { params: { groupId: string } }) => {
-  const group = await getGroupDetails(Number(params.groupId));
-
   const { userId } = await auth();
-  const user = await getUser(userId!);
+  const user = await getUserIdWithClerkID();
+  const group = await getFullGroupDetails(Number(params.groupId), user.userId!);
+
+  console.log(group);
   if (!group) return <ContentNotFound contentCategory="Group" />;
   if (!user) return <ContentNotFound contentCategory="User" />;
   return <GroupOverview group={group} />;

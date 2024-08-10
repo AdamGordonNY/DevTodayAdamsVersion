@@ -30,7 +30,7 @@ const SelectedUserCard = ({
         <ProfilePlaceholder size={12} className="shrink-0" />
       )}
       <p className="caption-10 text-center text-white-400 dark:text-white-300">
-        {user.firstName} {user.lastName}
+        {user.username}
       </p>
       <motion.button
         type="button"

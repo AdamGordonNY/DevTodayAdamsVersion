@@ -13,77 +13,36 @@ import MotionDiv from "../shared/MotionDiv";
 import ContentMenu from "../contentTypes/ContentMenu";
 import GroupTabs from "./GroupTabs";
 import GroupAboutSection from "./GroupAboutSection";
-import { GroupDetails, GroupUserContent } from "@/lib/actions/shared.types";
+import {
+  GroupDetailsResult,
+  GroupOwnerContent,
+  GroupUserContent,
+  LoggedInUserContent,
+} from "@/lib/actions/shared.types";
+import { RoleEnum } from "@/lib/types";
 
 const GroupDetailsSection = ({
   group,
   user,
   role,
   owner,
+  isAdmin,
 }: {
-  group: GroupDetails;
-  user: Partial<User> & Partial<GroupUserContent[]>;
-  role: "OWNER" | "ADMIN" | "MEMBER";
-  owner: User;
+  group: GroupDetailsResult;
+  user: LoggedInUserContent;
+  role: RoleEnum;
+  owner: GroupOwnerContent;
+  isAdmin: boolean;
 }) => {
   const [isMember, setIsMember] = useState<Partial<User>[]>([]);
   const [admins, setAdmins] = useState<Partial<User>[]>([]);
   const [isOwner, setIsOwner] = useState<Partial<User>>(owner!);
   const [pending, startTransition] = useTransition();
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  // const { id } = user;
-  // useEffect(() => {
-  //   const assignRoles = async () => {
-  //     const groupAdmins = group.groupUsers.filter((user) => {
-  //       return user.role === "ADMIN" ? user : null;
-  //     });
-  //     groupAdmins.forEach((admin) => {
-  //       if (admin.user.id === user.id) {
-  //         setAdmins([...admins, user]);
-  //       }
-  //     });
-  //     const groupMembers = group.groupUsers.filter((user) => {
-  //       return user.role === "MEMBER" ? user : null;
-  //     });
-  //     groupMembers.forEach((member) => {
-  //       if (member.id === user.id) {
-  //         setIsMember([...isMember, user]);
-  //       }
-  //     });
-  //     const groupOwner = group.groupUsers.filter((user) => {
-  //       return user.role === "OWNER" ? user : null;
-  //     });
-  //     groupOwner.forEach((owner) => {
-  //       if (owner.id === user.id) {
-  //         setIsOwner(user);
-  //       }
-  //     });
-  //   };
-  //   assignRoles();
-  // }, [
-  //   admins,
-  //   group.createdBy,
-  //   group.groupUsers,
-  //   isAdmin,
-  //   isMember,
-  //   user,
-  //   user.id,
-  // ]);
+
   useEffect(() => {
-    const checkSelfRole = async () => {
-      const role = group.groupUsers.find(
-        (grpUser) =>
-          (grpUser.id === user.id && grpUser.role === "ADMIN") ||
-          grpUser.role === "OWNER"
-      );
-      if (role?.role.includes("ADMIN") || role?.role.includes("OWNER")) {
-        setIsAdmin(true);
-      } else {
-        setIsAdmin(false);
-      }
-    };
-    checkSelfRole();
+    const assignStates = async () => {};
   });
+
   const handleAddOrdRemove = async () => {
     startTransition(async () => {
       // await addOrRemoveGroupUser(group.id, user.id);
@@ -93,10 +52,10 @@ const GroupDetailsSection = ({
   return (
     <section className="flex w-full flex-col gap-y-5">
       <div className="rounded-lg bg-white-100 p-3 text-white-400 dark:bg-dark-800">
-        {group.coverImage ? (
+        {group.group.coverImage ? (
           <div className="relative h-[174px]">
             <Image
-              src={group.coverImage}
+              src={group.group.coverImage}
               alt="group-cover-image"
               fill
               className="rounded-2xl object-cover"
@@ -113,10 +72,10 @@ const GroupDetailsSection = ({
 
         <div className="mt-3 flex w-full items-center gap-x-6 p-3">
           <div className="flex">
-            {group.profileImage ? (
+            {group.group.profileImage ? (
               <div className="relative size-[70px]">
                 <Image
-                  src={group.profileImage}
+                  src={group.group.profileImage}
                   alt="group-cover-image"
                   fill
                   className="rounded-full"
@@ -130,7 +89,7 @@ const GroupDetailsSection = ({
           <div className="flex w-full justify-between">
             <div className="flex flex-col">
               <h1 className="display-2-bold dark:text-white-100">
-                {group.name ?? "Missing Post Title!"}
+                {group?.group?.name! ?? "Missing Post Title!"}
               </h1>
               <p className="mt-1 flex">Created by{isOwner.username};</p>
             </div>
@@ -186,19 +145,23 @@ const GroupDetailsSection = ({
               )}
 
               {isAdmin && (
-                <ContentMenu contentId={group.id} contentCategory="Group" />
+                <ContentMenu
+                  contentId={group.group.id}
+                  contentCategory="Group"
+                />
               )}
             </div>
           </div>
         </div>
       </div>
       <div className="md-a:hidden">
-        <GroupAboutSection about={group.about} />
+        <GroupAboutSection about={group.group.about} />
       </div>
       <GroupTabs
-        group={group as GroupDetails}
-        user={user}
-        isAdmin={role === "ADMIN" || role === "OWNER"}
+        members={group.members!}
+        group={group as GroupDetailsResult}
+        user={group.loggedInUser}
+        isAdmin={isAdmin}
       />
     </section>
   );

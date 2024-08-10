@@ -33,7 +33,7 @@ const CreateOrEditGroup = ({
       (user) => user.role === "ADMIN" || user.role === "OWNER"
     ) || [];
   const members =
-    group?.groupUsers.filter((user) => user.role === "MEMBER") || [];
+    group?.groupUsers.filter((user) => user.role !== "ADMIN") || [];
 
   const useFormHelpers = useForm<IGroupSchema>({
     defaultValues: {
@@ -41,8 +41,18 @@ const CreateOrEditGroup = ({
       about: group?.about ?? "",
       profileImage: group?.profileImage ?? "",
       coverImage: group?.coverImage ?? "",
-      admins: admins.map((admin) => admin.user) ?? [],
-      members: members.map((member) => member.user) ?? [],
+      admins:
+        admins.map((admin) => ({
+          userId: admin.user.id,
+          image: admin.user.image!,
+          username: admin.user.username,
+        })) ?? [],
+      members:
+        members.map((member) => ({
+          userId: member.user.id,
+          image: member.user.image!,
+          username: member.user.username,
+        })) ?? [],
     },
     resolver: zodResolver(GroupSchema),
   });

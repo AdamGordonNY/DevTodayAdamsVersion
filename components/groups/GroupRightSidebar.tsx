@@ -13,37 +13,53 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ProfilePlaceholder } from "../ui";
-import { GroupContent, MeetupContent } from "@/lib/types.d";
+import { MeetupContent } from "@/lib/types.d";
 import GroupMeetupCard from "./GroupMeetupCard";
 import GroupMembersCard from "./GroupMembersCard";
 import MotionDiv from "../shared/MotionDiv";
 import { randomUUID } from "crypto";
-import { GroupDetails, GroupUserContent } from "@/lib/actions/shared.types";
+import {
+  GroupDetailsResult,
+  GroupUserFields,
+  LoggedInUserContent,
+} from "@/lib/actions/shared.types";
 
 const GroupRightSidebar = ({
   group,
   loggedIn,
   users,
+  admins,
 }: {
-  group: GroupDetails;
-  loggedIn: User;
-  users: GroupUserContent[];
+  group: GroupDetailsResult;
+  loggedIn: LoggedInUserContent;
+  users: {
+    id: number;
+    username: string | null;
+    image: string | null;
+    followers: User[];
+    following: User[];
+  }[];
+  admins: {
+    id: number;
+    username: string | null;
+    image: string | null;
+    followers: User[];
+    following: User[];
+  }[];
 }) => {
   const [meets, setMeets] = React.useState<MeetupContent[]>([]);
-  const [groupMembers, setGroupMembers] = React.useState<any[]>(users);
-  const [groupAdmins, setGroupAdmins] = React.useState<any[]>([]);
-  const { groupUsers } = group;
-
+  const [groupMembers, setGroupMembers] = React.useState<GroupUserFields[]>([]);
+  const [groupAdmins, setGroupAdmins] = React.useState<GroupUserFields[]>([]);
+  console.log(users);
   useEffect(() => {
     const roleAssign = async () => {
-      const admins = groupUsers.filter((user) =>
-        user.role === "ADMIN" || user.role === "OWNER" ? user : null
-      );
-      const allMembers = groupUsers.map((user) => user.user);
-      setGroupAdmins(admins);
+      const grpAdmins = admins.map((admin) => admin);
+      const allMembers = users.map((member) => member);
+      setGroupAdmins(grpAdmins);
       setGroupMembers(allMembers);
     };
-  });
+    roleAssign();
+  }, [admins, users]);
   const renderMeetups =
     group?.meetups?.length > 0 ? (
       group?.meetups?.map((meetup, idx) => {
@@ -58,7 +74,7 @@ const GroupRightSidebar = ({
               ease: "linear",
             }}
           >
-            <GroupMeetupCard meetup={meetup as MeetupContent} />
+            <GroupMeetupCard meetup={meetup} />
           </MotionDiv>
         );
       })
@@ -105,12 +121,12 @@ const GroupRightSidebar = ({
                       className="flex"
                     >
                       <Link
-                        href={`/profile/${member.user.id!}`}
+                        href={`/profile/${member.id!}`}
                         className="relative size-10"
                       >
                         <TooltipTrigger>
                           <Image
-                            src={member.user.image!}
+                            src={member.image!}
                             alt="members-profile-image"
                             fill
                             className="rounded-full"
@@ -122,7 +138,7 @@ const GroupRightSidebar = ({
                       className="caption-8 border border-white-border bg-white-100 text-dark-700 dark:border-dark-border dark:bg-dark-800 dark:text-white-300"
                       align="center"
                     >
-                      {member.user.username}
+                      {member.username}
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -130,7 +146,6 @@ const GroupRightSidebar = ({
             ))
           ) : (
             <MotionDiv
-              key={randomUUID()}
               whileHover={{
                 scale: 1.2,
               }}
@@ -160,8 +175,8 @@ const GroupRightSidebar = ({
             groupAdmins.map((admin) => {
               return (
                 <GroupMembersCard
-                  key={admin.user.id}
-                  member={admin.user}
+                  key={admin.id}
+                  member={admin}
                   loggedInUser={loggedIn}
                   isMemberAdmin={true}
                 />

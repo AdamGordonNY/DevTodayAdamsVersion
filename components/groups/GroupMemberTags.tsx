@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef, useTransition } from "react";
 
-import { User } from "@prisma/client";
+import { User, Role } from "@prisma/client";
 import useOutsideClickHandler from "@/lib/useOutsideClickHandler";
 import { SelectedGroupUsers } from "@/lib/types.d";
 import { findUsers } from "@/lib/actions/search.actions";
@@ -20,7 +20,7 @@ const GroupMemberTags = ({
 }: {
   setValue: any;
   formState: any;
-  defaultValue?: SelectedGroupUsers[];
+  defaultValue?: any[];
   memberType: "admins" | "members";
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -29,8 +29,7 @@ const GroupMemberTags = ({
   const [searchResults, setSearchResults] = useState<User[]>();
   const [filteredSearchResults, setFilteredSearchResults] = useState<User[]>();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedUsers, setSelectedUsers] =
-    useState<SelectedGroupUsers[]>(defaultValue);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>(defaultValue);
 
   useOutsideClickHandler(ref, () => {
     setIsOpen(false);
@@ -101,21 +100,19 @@ const GroupMemberTags = ({
     selectedUsers?.forEach((selectedUser) => {
       if (selectedUser.id !== user.id) {
         updatedSelectedUsers.push({
-          firstName: selectedUser.firstName,
-          lastName: selectedUser.lastName,
+          username: selectedUser.username,
           id: selectedUser.id,
           image: selectedUser.image,
         });
       }
     });
     updatedSelectedUsers.push({
-      firstName: user.firstName,
-      lastName: user.lastName,
+      username: user.username,
       id: user.id,
       image: user.image,
     });
 
-    setSelectedUsers(updatedSelectedUsers as SelectedGroupUsers[]);
+    setSelectedUsers([...selectedUsers, updatedSelectedUsers!]);
     setSearchTerm("");
   };
 
@@ -168,7 +165,11 @@ const GroupMemberTags = ({
           selectedUsers.length > 0 &&
           selectedUsers.map((user) => (
             <SelectedUserCard
-              user={user}
+              user={{
+                id: user.id,
+                username: user.username!,
+                image: user.image!,
+              }}
               handleDelete={handleDelete}
               key={user.id}
             />

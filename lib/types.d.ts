@@ -52,6 +52,22 @@ export enum ContentCategoryEnum {
   MEETUP,
   COMMENT,
 }
+export enum RoleEnum {
+  MEMBER,
+  ADMIN,
+  OWNER,
+}
+export type UserContent = Prisma.UserGetPayload<{
+  include: {
+    posts: true;
+    meetups: true;
+    podcasts: true;
+    followers: true;
+    following: true;
+    groups: true;
+    groupRoles: true;
+  };
+}>;
 
 export type PostContent = Prisma.PostGetPayload<{
   include: {
@@ -120,8 +136,8 @@ export type GroupCardContent = {
   };
   groupUsers: {
     id: number;
-    image: string | null;
-    role: string;
+    image: string | null | undefined;
+    role: Role;
     username: string;
   }[];
 };
@@ -169,31 +185,7 @@ export type GroupContent = Prisma.GroupGetPayload<{
     meetups: true;
   };
 }>;
-export type GroupLoggedInUser = User & {
-  following: User[];
-  followers: User[];
-  role: Role;
-};
-export type GroupRightSidebarContent = {
-  meetups: Meetup[];
-  groupUsers: {
-    userId: number;
-    user: User;
-    role: Role;
-    image: string | null;
-  }[];
 
-  user: User;
-  role: Role;
-};
-
-export type GroupUserContent = Prisma.GroupUserGetPayload<{
-  include: {
-    user: true;
-    group: true;
-    role: true;
-  };
-}>[];
 export type ContentType = PostContent | MeetupContent | PodcastContent;
 
 export type GroupTabContent = GroupContent & {
@@ -208,8 +200,7 @@ export type MemberIsAdmin = {
 } & User;
 
 export type SelectedGroupUsers = {
-  firstName: string;
-  lastName: string;
+  username: string;
   id: number;
   image?: string;
 };

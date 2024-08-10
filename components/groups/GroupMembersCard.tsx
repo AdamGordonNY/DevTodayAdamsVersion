@@ -12,7 +12,10 @@ import { followUser } from "@/lib/actions/user.actions";
 import { ProfilePlaceholder } from "../ui";
 import MotionDiv from "../shared/MotionDiv";
 import GroupMembersMenu from "./GroupMembersMenu";
-import { GroupUserContent } from "@/lib/actions/shared.types";
+import {
+  GroupUserContent,
+  LoggedInUserContent,
+} from "@/lib/actions/shared.types";
 
 const GroupMembersCard = ({
   member,
@@ -20,14 +23,20 @@ const GroupMembersCard = ({
   isLoggedInUserAdmin = false,
   isMemberAdmin = false,
 }: {
-  member: GroupUserContent;
-  loggedInUser: User & { following: User[]; followers: User[] };
+  member: {
+    id: number;
+    username: string | null;
+    image: string | null;
+    followers: User[];
+    following: User[];
+  };
+  loggedInUser: LoggedInUserContent;
   isLoggedInUserAdmin?: boolean;
   isMemberAdmin?: boolean;
 }) => {
   const { following, clerkID } = loggedInUser;
   const [pending, startTransition] = useTransition();
-  const isFollowing = following.some((follow: User) => follow.id === member.id);
+  const isFollowing = following.some((follow) => follow.id === member.id);
 
   const handleFollow = async () => {
     startTransition(async () => {
@@ -51,10 +60,10 @@ const GroupMembersCard = ({
           href={`/profile/${member.id}`}
           className="flex items-center gap-x-2"
         >
-          {member.user.image ? (
+          {member.image ? (
             <div className="relative size-[30px]">
               <Image
-                src={member.user.image}
+                src={member.image!}
                 alt="member-image"
                 fill
                 className="rounded-full"
@@ -67,7 +76,7 @@ const GroupMembersCard = ({
           )}
 
           <p className="paragraph-3-medium text-dark-700 dark:text-white-300">
-            {member.user.username}
+            {member.username}
           </p>
         </Link>
       </MotionDiv>
