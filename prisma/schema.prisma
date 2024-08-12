@@ -238,4 +238,5 @@ enum Role {
   OWNER
   ADMIN
   MEMBER
+  GUEST
 }

@@ -10,11 +10,8 @@ import PodcastCard from "@/components/profile/posts/PodcastCard";
 import GroupMembersTab from "./GroupMembersTab";
 import {
   GroupDetailsResult,
-  GroupUserFields,
-  PodcastContent,
-  PostContent,
+  GroupUserWithFollowDetails,
 } from "@/lib/actions/shared.types";
-import { GroupUser, User } from "@prisma/client";
 
 const GroupTabs = ({
   group,
@@ -23,10 +20,10 @@ const GroupTabs = ({
   members,
 }: {
   group: GroupDetailsResult;
-  user: GroupUserFields;
+  user: GroupUserWithFollowDetails;
   isAdmin: boolean;
 
-  members: Partial<GroupUserFields>[];
+  members: GroupUserWithFollowDetails[];
 }) => {
   const [tabValue, setTabValue] = React.useState<string>("Posts");
   const tabsList = ["Posts", "Meetups", "Podcasts", "Members"];
@@ -57,14 +54,13 @@ const GroupTabs = ({
           value="Posts"
           className="mt-4 flex w-full flex-col gap-y-5 "
         >
-          {group.posts?.map((post: PostContent, index: number) => (
+          {group.posts?.map((post: any, index: number) => (
             <PostCard
               key={index}
               userData={post.user}
               post={{
+                postCount: post.postCount,
                 ...post,
-                commentCount: post.commentCount,
-                tags: post.tags,
               }}
             />
           ))}
@@ -82,7 +78,7 @@ const GroupTabs = ({
           className="mt-4 flex w-full flex-col gap-y-5 "
         >
           <div className="columns-2 space-y-4 max-lg:mt-4 max-lg:columns-1">
-            {group.podcasts?.map((podcast: PodcastContent, index: number) => (
+            {group.podcasts?.map((podcast: any, index: number) => (
               <div
                 key={index}
                 className="rounded-[16px] bg-white-200 dark:bg-dark-800"
@@ -105,8 +101,17 @@ const GroupTabs = ({
             {allMembers?.map((member, index: any) => (
               <div key={index} className="rounded-[16px]">
                 <GroupMembersTab
-                  member={member!}
-                  loggedInUser={member!}
+                  member={
+                    {
+                      id: member.id,
+                      followers: member.followers,
+                      following: member.following,
+                      username: member.username,
+                      image: member.image,
+                      groupRoles: member.role,
+                    }!
+                  }
+                  loggedInUser={user}
                   isLoggedInUserAdmin={isAdmin}
                   isMemberAdmin={isAdmin}
                 />

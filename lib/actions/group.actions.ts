@@ -5,7 +5,7 @@ import { prisma } from "@/db";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { auth } from "@clerk/nextjs";
 
-import { TopRankGroups } from "./shared.types.d";
+import { GroupDetailsResult, TopRankGroups } from "./shared.types.d";
 
 import { getUserIdWithClerkID } from "./user.actions";
 import { Group } from "@prisma/client";
@@ -309,9 +309,6 @@ export const grabGroupToEdit = async (id: string) => {
         about: true,
         coverImage: true,
         groupUsers: { include: { user: true } },
-        posts: true,
-        podcasts: true,
-        meetups: true,
       },
     });
     return group as Partial<Group>;
@@ -350,7 +347,7 @@ export const getActiveGroups = async () => {
     ORDER BY "postCount" DESC
     LIMIT 5
   `;
-    console.log(topGroups);
+
     return topGroups;
   } catch (error) {
     console.error("Error fetching active groups:", error);
@@ -418,148 +415,22 @@ export const getJoinedGroupCount = async () => {
     return 0;
   }
 };
-export const getLoggedInUserRole = async (groupId: number) => {
-  try {
-    const { userId } = await getUserIdWithClerkID();
-    if (userId) {
-      const groupUser = await prisma.groupUser.findUnique({
-        where: {
-          groupId_userId: {
-            groupId,
-            userId,
-          },
-        },
-      });
-      return { role: groupUser?.role, error: null };
-    } else {
-      return { error: "User Not Logged In, Please Log In" };
-    }
-  } catch (error) {
-    console.error("Error fetching user role:", error);
-    return null;
-  }
-};
-export async function getGroupWithUsers(groupId: number) {
-  try {
-    const group = await prisma.group.findUnique({
-      where: {
-        id: groupId,
-      },
-      include: {
-        groupUsers: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-                email: true,
-                firstName: true,
-                lastName: true,
-                image: true,
-              },
-            },
-          },
-        },
-      },
-    });
 
-    if (!group) {
-      throw new Error(`Group with ID ${groupId} not found.`);
-    }
-
-    return group;
-  } catch (error) {
-    console.error("Error fetching group with users:", error);
-    throw error;
-  }
-}
-
-export async function getGroupDetails(groupId: number) {
-  try {
-    const group = await prisma.group.findUnique({
-      where: {
-        id: groupId,
-      },
-      include: {
-        groupUsers: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-                image: true,
-              },
-            },
-          },
-        },
-        posts: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-                image: true,
-              },
-            },
-          },
-        },
-        podcasts: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-                image: true,
-              },
-            },
-          },
-        },
-        meetups: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-                image: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!group) {
-      throw new Error(`Group with ID ${groupId} not found.`);
-    }
-
-    return {
-      posts: group.posts,
-      podcasts: group.podcasts,
-      meetups: group.meetups,
-      groupUsers: group.groupUsers,
-      group: group,
-      coverImage: group.coverImage,
-      about: group.about,
-      createdBy: group.createdBy,
-      createdAt: group.createdAt,
-      id: group.id,
-      name: group.name,
-      profileImage: group.profileImage,
-    };
-  } catch (error) {
-    console.error("Error fetching group details:", error);
-    throw error;
-  }
-}
-export async function getFullGroupDetails(
+export const getFullGroupDetails = async (
   groupId: number,
   loggedInUserId: number
-) {
+): Promise<GroupDetailsResult> => {
   const group = await prisma.group.findUnique({
     where: { id: groupId },
     include: {
       posts: {
         include: {
+          _count: {
+            select: {
+              comment: true,
+            },
+          },
+          comment: true,
           user: {
             select: {
               id: true,
@@ -571,6 +442,12 @@ export async function getFullGroupDetails(
       },
       podcasts: {
         include: {
+          comment: true,
+          _count: {
+            select: {
+              comment: true,
+            },
+          },
           user: {
             select: {
               id: true,
@@ -582,6 +459,11 @@ export async function getFullGroupDetails(
       },
       meetups: {
         include: {
+          _count: {
+            select: {
+              comment: true,
+            },
+          },
           user: {
             select: {
               id: true,
@@ -594,10 +476,7 @@ export async function getFullGroupDetails(
       groupUsers: {
         include: {
           user: {
-            select: {
-              id: true,
-              username: true,
-              image: true,
+            include: {
               followers: true,
               following: true,
             },
@@ -607,7 +486,6 @@ export async function getFullGroupDetails(
     },
   });
 
-  // Fetch the group owner separately
   const owner = await prisma.user.findUnique({
     where: { id: group?.createdBy },
     select: {
@@ -624,73 +502,95 @@ export async function getFullGroupDetails(
     throw new Error(`Owner with ID ${group?.createdBy} not found.`);
   }
 
-  const adminsAndOwners = group?.groupUsers.filter((groupUser) => {
-    return groupUser.role === "ADMIN" || groupUser.role === "OWNER";
-  });
+  const adminsAndOwners = group?.groupUsers
+    .filter(
+      (groupUser) => groupUser.role === "ADMIN" || groupUser.role === "OWNER"
+    )
+    .map((groupUser) => ({
+      id: groupUser.user.id,
+      username: groupUser.user.username,
+      image: groupUser.user.image,
+      following: groupUser.user.following,
+      followers: groupUser.user.followers,
+    }));
+
   const loggedInUserRole =
     group?.groupUsers.find((groupUser) => groupUser.userId === loggedInUserId)
       ?.role || null;
-  const members = group?.groupUsers.filter((groupUser) => {
-    return groupUser.role === "MEMBER";
-  });
+
+  const members = group?.groupUsers
+    .filter((groupUser) => groupUser.role === "MEMBER")
+    .map((groupUser) => ({
+      id: groupUser.user.id,
+      username: groupUser.user.username,
+      image: groupUser.user.image,
+      following: groupUser.user.following,
+      followers: groupUser.user.followers,
+    }));
 
   const loggedInUser = await prisma.user.findUnique({
     where: { id: loggedInUserId },
     include: {
       following: {
-        select: {
-          id: true,
-        },
+        select: { id: true },
       },
       followers: {
-        select: {
-          id: true,
-        },
+        select: { id: true },
       },
       groupRoles: {
-        where: {
-          groupId,
-        },
-        select: {
-          role: true,
-        },
+        where: { groupId },
+        select: { role: true },
       },
     },
   });
+
   if (!loggedInUser) {
     throw new Error(`User with ID ${loggedInUserId} not found.`);
   }
 
   const isAdminOrOwner = adminsAndOwners?.some(
-    (groupUser) => groupUser.userId === loggedInUserId
+    (groupUser) => groupUser.id === loggedInUserId
   );
 
   return {
-    group,
-    posts: group?.posts,
-    podcasts: group?.podcasts,
-    meetups: group?.meetups,
-    adminsAndOwners: adminsAndOwners?.map((groupUser) => ({
-      id: groupUser.user.id,
-      username: groupUser.user.username,
-      image: groupUser.user.image,
-      following: groupUser.user.following,
-      followers: groupUser.user.followers,
-    })),
-    members: members?.map((groupUser) => ({
-      id: groupUser.user.id,
-      username: groupUser.user.username,
-      image: groupUser.user.image,
-      following: groupUser.user.following,
-      followers: groupUser.user.followers,
-    })),
+    group: group
+      ? {
+          id: group.id,
+          createdAt: group.createdAt,
+          name: group.name,
+          coverImage: group.coverImage,
+          profileImage: group.profileImage,
+          about: group.about,
+          createdBy: group.createdBy,
+          posts: group.posts,
+          podcasts: group.podcasts,
+          meetups: group.meetups,
+          groupUsers: group.groupUsers,
+        }
+      : null,
+    posts: group?.posts || null,
+    podcasts: group?.podcasts || null,
+    meetups: group?.meetups || null,
+    adminsAndOwners: adminsAndOwners || null,
+    members: members || null,
     totalMembersCount: group?.groupUsers.length,
     isAdminOrOwner,
-    loggedInUser,
+    loggedInUser: loggedInUser
+      ? {
+          id: loggedInUser.id,
+          username: loggedInUser.username || "",
+          image: loggedInUser.image,
+          following: loggedInUser.following,
+          followers: loggedInUser.followers,
+          isAdmin: isAdminOrOwner!,
+          clerkID: loggedInUser.clerkID || null,
+          groupRoles: loggedInUser.groupRoles,
+        }
+      : null,
     owner,
     loggedInUserRole,
   };
-}
+};
 export const _getFullGroupDetails = unstable_cache(
   getFullGroupDetails,
   ["getFullGroupDetails"],

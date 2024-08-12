@@ -4,7 +4,7 @@ import React, { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 
-import { Role, User } from "@prisma/client";
+import { User } from "@prisma/client";
 // import { addOrRemoveGroupUser } from "@/lib/actions/group.actions";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import ConfirmationModal from "../shared/ConfirmationModal";
@@ -16,7 +16,6 @@ import GroupAboutSection from "./GroupAboutSection";
 import {
   GroupDetailsResult,
   GroupOwnerContent,
-  GroupUserContent,
   LoggedInUserContent,
 } from "@/lib/actions/shared.types";
 import { RoleEnum } from "@/lib/types";
@@ -30,7 +29,7 @@ const GroupDetailsSection = ({
 }: {
   group: GroupDetailsResult;
   user: LoggedInUserContent;
-  role: RoleEnum;
+  role: "ADMIN" | "OWNER" | "MEMBER" | "GUEST";
   owner: GroupOwnerContent;
   isAdmin: boolean;
 }) => {
@@ -40,8 +39,25 @@ const GroupDetailsSection = ({
   const [pending, startTransition] = useTransition();
 
   useEffect(() => {
-    const assignStates = async () => {};
-  });
+    const assignStates = async () => {
+      const members = group.members!.map((member) => ({
+        id: member.id,
+        username: member.username,
+        image: member.image,
+      }));
+      const admins = group.adminsAndOwners!.filter((member) => ({
+        id: member.id,
+        username: member.username,
+        image: member.image,
+      }));
+      setIsMember(members);
+      setAdmins(admins);
+      if (isOwner.id === user.id) {
+        setIsOwner(user);
+      }
+    };
+    assignStates().then();
+  }, [group.members, group.adminsAndOwners, isOwner, user.id, user]);
 
   const handleAddOrdRemove = async () => {
     startTransition(async () => {
@@ -52,7 +68,7 @@ const GroupDetailsSection = ({
   return (
     <section className="flex w-full flex-col gap-y-5">
       <div className="rounded-lg bg-white-100 p-3 text-white-400 dark:bg-dark-800">
-        {group.group.coverImage ? (
+        {group?.group?.coverImage ? (
           <div className="relative h-[174px]">
             <Image
               src={group.group.coverImage}
@@ -72,10 +88,10 @@ const GroupDetailsSection = ({
 
         <div className="mt-3 flex w-full items-center gap-x-6 p-3">
           <div className="flex">
-            {group.group.profileImage ? (
+            {group?.group?.profileImage ? (
               <div className="relative size-[70px]">
                 <Image
-                  src={group.group.profileImage}
+                  src={group?.group?.profileImage!}
                   alt="group-cover-image"
                   fill
                   className="rounded-full"
@@ -91,7 +107,7 @@ const GroupDetailsSection = ({
               <h1 className="display-2-bold dark:text-white-100">
                 {group?.group?.name! ?? "Missing Post Title!"}
               </h1>
-              <p className="mt-1 flex">Created by{isOwner.username};</p>
+              <p className="mt-1 flex">Created by{isOwner.username}</p>
             </div>
 
             <div className="flex gap-x-2">
@@ -146,7 +162,7 @@ const GroupDetailsSection = ({
 
               {isAdmin && (
                 <ContentMenu
-                  contentId={group.group.id}
+                  contentId={group?.group?.id!}
                   contentCategory="Group"
                 />
               )}
@@ -155,10 +171,10 @@ const GroupDetailsSection = ({
         </div>
       </div>
       <div className="md-a:hidden">
-        <GroupAboutSection about={group.group.about} />
+        <GroupAboutSection about={group?.group?.about!} />
       </div>
       <GroupTabs
-        members={group.members!}
+        members={isMember!}
         group={group as GroupDetailsResult}
         user={group.loggedInUser}
         isAdmin={isAdmin}

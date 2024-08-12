@@ -30,7 +30,7 @@ export const getLoggedInUser = async () => {
         },
       });
     }
-    return { user: user };
+    return { user };
   } catch (error) {
     console.log(error);
     return { error: "There was an error fetching the user." };

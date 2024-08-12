@@ -12,10 +12,7 @@ import { followUser } from "@/lib/actions/user.actions";
 import { ProfilePlaceholder } from "../ui";
 import MotionDiv from "../shared/MotionDiv";
 import GroupMembersMenu from "./GroupMembersMenu";
-import {
-  GroupUserContent,
-  LoggedInUserContent,
-} from "@/lib/actions/shared.types";
+import { LoggedInUserContent } from "@/lib/actions/shared.types";
 
 const GroupMembersCard = ({
   member,
@@ -34,7 +31,7 @@ const GroupMembersCard = ({
   isLoggedInUserAdmin?: boolean;
   isMemberAdmin?: boolean;
 }) => {
-  const { following, clerkID } = loggedInUser;
+  const { following, followers, id, username, image, clerkID } = loggedInUser;
   const [pending, startTransition] = useTransition();
   const isFollowing = following.some((follow) => follow.id === member.id);
 

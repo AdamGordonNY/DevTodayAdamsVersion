@@ -5,8 +5,10 @@ import {
   SocialMedia,
   User,
   GroupUser,
+  Prisma,
+  Like,
 } from "@prisma/client";
-import { ContentCategoryEnum, RoleEnum } from "../types";
+import { ContentCategoryEnum } from "../types";
 
 export type Option = {
   key: Levels | Tech | Goals;
@@ -117,6 +119,7 @@ export interface URLProps {
   params: { id: string };
   searchParams: { [key: string]: string | undefined };
 }
+
 export interface TopRankGroups {
   id: number;
   name: string;
@@ -125,93 +128,123 @@ export interface TopRankGroups {
   members?: GroupUser[];
   admins?: GroupUser[];
 }
-export type GroupUserFields = {
+
+export type GroupWithDetails = Prisma.GroupGetPayload<{
+  include: {
+    posts: {
+      include: {
+        comment: true;
+        _count: {
+          select: {
+            comment: true;
+          };
+        };
+        user: {
+          select: {
+            id: true;
+            username: true;
+            image: true;
+          };
+        };
+      };
+    };
+    podcasts: {
+      include: {
+        comment: true;
+        _count: {
+          select: {
+            comment: true;
+          };
+        };
+        user: {
+          select: {
+            id: true;
+            username: true;
+            image: true;
+          };
+        };
+      };
+    };
+    meetups: {
+      include: {
+        comment: true;
+        _count: {
+          select: {
+            comment: true;
+          };
+          user: {
+            select: {
+              id: true;
+              username: true;
+              image: true;
+            };
+          };
+        };
+      };
+      groupUsers: {
+        include: {
+          user: {
+            select: {
+              id: true;
+              username: true;
+              image: true;
+              followers: true;
+              following: true;
+            };
+          };
+        };
+      };
+    };
+  };
+}>;
+export type GroupUserWithFollowDetails = {
   id: number;
   username: string | null;
   image: string | null;
-  followers: User[];
   following: User[];
-};
-export type GroupDetailsResult = {
-  group: {
-    id: number;
-    createdAt: Date;
-    name: string;
-    coverImage: string | null;
-    profileImage: string | null;
-    about: string;
-    createdBy: number;
-    groupUsers: GroupUserContent[];
-    posts: PostContent[];
-    podcasts: PodcastContent[];
-    meetups: MeetupContent[];
-  };
-  posts: PostContent[];
-  podcasts: PodcastContent[];
-  meetups: MeetupContent[];
-  adminsAndOwners: {
-    id: number;
-    username: string | null;
-    image: string | null;
-    followers: User[];
-    following: User[];
-  }[];
-  members: {
-    id: number;
-    username: string | null;
-    image: string | null;
-    followers: User[];
-    following: User[];
-  }[];
-  totalMembersCount: number;
-  isAdminOrOwner: boolean;
-  loggedInUser: LoggedInUserContent;
-  loggedInUserRole: RoleEnum;
-  owner: GroupOwnerContent;
-};
-
-export type GroupUserContent = {
-  id: number;
-  groupId: number;
-  userId: number;
+  followers: User[];
   role: string;
-  createdAt: Date;
-  user: GroupUserFields;
 };
 
 export type PostContent = {
+  [x: string]: number;
   id: number;
   title: string;
   body: string;
   createdAt: Date;
-  updatedAt: Date | null;
-  likes: number;
-  views: number;
-  image: string | null;
-  tags: string[];
-  commentCount: number;
-  userId: number;
+  _count: {
+    comment: number;
+  };
+  postCount: number;
   user: {
     id: number;
     username: string | null;
     image: string | null;
   };
 };
-
+export type GroupUserContent = {
+  id: number;
+  groupId: number;
+  userId: number;
+  role: string;
+  createdAt: Date;
+  user: {
+    id: number;
+    username: string | null;
+    image: string | null;
+    followers: { id: number }[];
+    following: { id: number }[];
+  };
+};
 export type PodcastContent = {
   id: number;
   title: string;
   body: string;
   createdAt: Date;
-  updatedAt: Date | null;
-  likes: number;
-  views: number;
-  image: string | null;
-  tags: string[];
-  commentCount: number;
-  audio: string;
-  userId: number;
-  groupId: number;
+  audioTitle: string;
+  _count: {
+    comment: number;
+  };
   user: {
     id: number;
     username: string | null;
@@ -224,22 +257,28 @@ export type MeetupContent = {
   title: string;
   body: string;
   createdAt: Date;
-  updatedAt: Date | null;
-  likes: number;
-  views: number;
-  image: string | null;
-  commentCount: number;
+  _count: {
+    comment: number;
+  };
   startTime: Date | null;
+  endTime: Date | null;
+  image: string;
   address: string;
-  userId: number;
+  comment: Comment[];
+  likes: number;
   groupId: number;
+  userId: number;
+  likedBy: Like[];
+  longitude: number;
+  latitude: number;
   tags: string[];
-  user: {
+  user?: {
     id: number;
     username: string | null;
     image: string | null;
   };
 };
+
 export type GroupOwnerContent = {
   id: number;
   username: string | null;
@@ -247,23 +286,155 @@ export type GroupOwnerContent = {
   firstName: string;
   lastName: string;
   image: string | null;
-  following: User[];
-  followers: User[];
 };
 
 export type LoggedInUserContent = {
   id: number;
-  clerkID: string | null;
-  createdAt: Date;
   username: string | null;
-  email: string;
-  firstName: string;
-  lastName: string;
   image: string | null;
-  following: {
+  following: { id: number }[];
+  followers: { id: number }[];
+  clerkID: string;
+};
+export type GroupDetailsResult = {
+  group: {
     id: number;
-  }[];
-  followers: {
+    createdAt: Date;
+    name: string;
+    coverImage: string | null;
+    profileImage: string | null;
+    about: string;
+    createdBy: number;
+    posts: {
+      id: number;
+      title: string;
+      body: string;
+      createdAt: Date;
+      _count: {
+        comment: number;
+      };
+      user: {
+        id: number;
+        username: string | null;
+        image: string | null;
+      };
+    }[];
+    podcasts: {
+      id: number;
+      title: string;
+      body: string;
+      createdAt: Date;
+      _count: {
+        comment: number;
+      };
+      user: {
+        id: number;
+        username: string | null;
+        image: string | null;
+      };
+    }[];
+    meetups: {
+      id: number;
+      title: string;
+      body: string;
+      createdAt: Date;
+      startTime: Date | null;
+      endTime: Date | null;
+      address: string;
+      _count: {
+        comment: number;
+      };
+      user: {
+        id: number;
+        username: string | null;
+        image: string | null;
+      };
+    }[];
+    groupUsers: GroupUserContent[];
+  } | null;
+  posts:
+    | {
+        id: number;
+        title: string;
+        body: string;
+        createdAt: Date;
+        _count: {
+          comment: number;
+        };
+        user: {
+          id: number;
+          username: string | null;
+          image: string | null;
+        };
+      }[]
+    | null;
+  podcasts:
+    | {
+        id: number;
+        title: string;
+        body: string;
+        createdAt: Date;
+        _count: {
+          comment: number;
+        };
+        user: {
+          id: number;
+          username: string | null;
+          image: string | null;
+        };
+      }[]
+    | null;
+  meetups:
+    | {
+        id: number;
+        title: string;
+        body: string;
+        createdAt: Date;
+        startTime: Date | null;
+        endTime: Date | null;
+        address: string;
+        _count: {
+          comment: number;
+        };
+        user: {
+          id: number;
+          username: string | null;
+          image: string | null;
+        };
+      }[]
+    | null;
+  adminsAndOwners:
+    | {
+        id: number;
+        username: string | null;
+        image: string | null;
+        following: { id: number }[];
+        followers: { id: number }[];
+      }[]
+    | null;
+  members:
+    | {
+        id: number;
+        username: string | null;
+        image: string | null;
+        following: { id: number }[];
+        followers: { id: number }[];
+      }[]
+    | null;
+  totalMembersCount: number | undefined;
+  isAdminOrOwner: boolean | undefined;
+  loggedInUser: {
     id: number;
-  }[];
+    clerkID: string | null;
+    username: string;
+    image: string | null;
+    following: { id: number }[];
+    followers: { id: number }[];
+    groupRoles: {
+      role: string;
+    }[];
+    isAdmin: boolean;
+  } | null;
+  owner: GroupOwnerContent | null;
+  loggedInUserRole: string | null | undefined;
 };

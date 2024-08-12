@@ -29,10 +29,12 @@ const GroupOverview = async ({ group }: { group: GroupDetailsResult }) => {
       <div className="flex min-w-[350px] flex-1 flex-col max-md-a:-order-1">
         <GroupDetailsSection
           group={group}
-          user={loggedInUser}
-          role={loggedInUserRole}
-          owner={owner}
-          isAdmin={isAdminOrOwner}
+          user={loggedInUser!}
+          role={
+            (loggedInUserRole! as "ADMIN") || "OWNER" || "MEMBER" || "GUEST"
+          }
+          owner={owner!}
+          isAdmin={isAdminOrOwner!}
         />
       </div>
 

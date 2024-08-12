@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MeetupContent } from "@/lib/actions/shared.types";
 
-const GroupMeetupCard = ({ meetup }: { meetup: MeetupContent }) => {
+const GroupMeetupCard = ({ meetup }: { meetup: Partial<MeetupContent> }) => {
   const startMonth =
     format(new Date(meetup.startTime as Date), "MMM") ?? "No date found";
   const startDay =
@@ -43,8 +43,8 @@ const GroupMeetupCard = ({ meetup }: { meetup: MeetupContent }) => {
           </p>
         </div>
         <div className="mt-2 flex items-center gap-x-1 group-hover:pb-1">
-          {meetup.tags.length > 0 &&
-            meetup.tags.map((tag: string) => {
+          {meetup?.tags?.length! > 0 &&
+            meetup?.tags!.map((tag: string) => {
               return (
                 <div
                   key={tag}

@@ -1,0 +1,216 @@
+{
+group: {
+id: 20,
+createdAt: 2024-08-08T19:45:33.852Z,
+name: 'Accendo urbanus venia derelinquo.',
+coverImage: 'https://picsum.photos/seed/ephSJzR2T/640/480',
+profileImage: 'https://avatars.githubusercontent.com/u/7116491',
+about: 'Studio conculco astrum blandior sublime annus tergum ambulo sub contego. Suspendo sto quia tumultus alter spargo.',
+createdBy: 5,
+posts: [ [Object], [Object], [Object], [Object] ],
+podcasts: [],
+meetups: [ [Object] ],
+groupUsers: [
+[Object], [Object],
+[Object], [Object],
+[Object], [Object],
+[Object], [Object],
+[Object], [Object],
+[Object]
+]
+},
+posts: [
+{
+id: 4,
+createdAt: 2024-08-08T19:45:34.522Z,
+updatedAt: 2024-08-10T11:51:01.678Z,
+title: 'Cibus bis correptius debeo baiulus suffragium nulla voluptates tracto cumque.',
+body: 'Comitatus at cornu. Deprimo communis vis caecus at repellendus.',
+likes: 217,
+views: 414,
+userId: 3,
+image: 'https://loremflickr.com/640/480?lock=1926530250833920',
+tags: [Array],
+groupId: 20,
+\_count: [Object],
+comment: [Array],
+user: [Object]
+},
+{
+id: 22,
+createdAt: 2024-08-08T19:45:37.613Z,
+updatedAt: 2024-08-08T19:45:37.613Z,
+title: 'Surgo colo adsidue.',
+body: 'Vestrum tenax accusantium cruentus textor ver ver aestivus. Ara eveniet rerum comptus placeat tabella tertius ambulo.',
+likes: 399,
+views: 969,
+userId: 19,
+image: 'https://picsum.photos/seed/pd0QsvmK/640/480',
+tags: [Array],
+groupId: 20,
+\_count: [Object],
+comment: [Array],
+user: [Object]
+},
+{
+id: 16,
+createdAt: 2024-08-08T19:45:36.578Z,
+updatedAt: 2024-08-10T11:15:05.302Z,
+title: 'Textilis cavus admitto spes cena cuius cedo aurum despecto dolorem.',
+body: 'Accedo campana canto arma absum abstergo. Depopulo cerno depraedor excepturi.',
+likes: 119,
+views: 244,
+userId: 7,
+image: 'https://picsum.photos/seed/wLkZg0Ll/640/480',
+tags: [Array],
+groupId: 20,
+\_count: [Object],
+comment: [],
+user: [Object]
+},
+{
+id: 45,
+createdAt: 2024-08-08T19:45:41.589Z,
+updatedAt: 2024-08-08T19:45:41.589Z,
+title: 'Nam capio vehemens nam vallum audax sui speciosus.',
+body: 'Sint chirographum aro trepide cattus substantia. Blandior terebro quibusdam aurum.',
+likes: 138,
+views: 131,
+userId: 1,
+image: 'https://picsum.photos/seed/cvHUgUdbz/640/480',
+tags: [Array],
+groupId: 20,
+\_count: [Object],
+comment: [],
+user: [Object]
+}
+],
+podcasts: [],
+meetups: [
+{
+id: 15,
+createdAt: 2024-08-08T19:45:45.106Z,
+updatedAt: null,
+title: 'Est adulescens demonstro armarium colo corrupti.',
+body: 'Decretum perferendis ducimus aranea infit caries. Carmen tristis virtus cinis somnus ut.',
+startTime: 2025-01-10T04:31:38.840Z,
+endTime: 2024-08-08T20:45:45.109Z,
+address: '348 S Center Street Cassinchester, WA 90531-1887',
+latitude: 56.7745,
+longitude: -45.4882,
+likes: 373,
+views: 731,
+image: 'https://loremflickr.com/640/480?lock=8700916419002368',
+tags: [Array],
+groupId: 20,
+userId: 1,
+\_count: [Object],
+user: [Object]
+}
+],
+adminsAndOwners: [
+{
+id: 5,
+username: 'Autumn60',
+image: 'https://avatars.githubusercontent.com/u/93899875',
+following: [],
+followers: [Array]
+},
+{
+id: 10,
+username: 'Elena10',
+image: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/73.jpg',
+following: [],
+followers: [Array]
+},
+{
+id: 12,
+username: 'Jairo_Upton',
+image: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/249.jpg',
+following: [],
+followers: [Array]
+},
+{
+id: 15,
+username: 'Precious28',
+image: 'https://avatars.githubusercontent.com/u/58363692',
+following: [],
+followers: []
+}
+],
+members: [
+{
+id: 3,
+username: 'Ethel59',
+image: 'https://avatars.githubusercontent.com/u/51221719',
+following: [],
+followers: [Array]
+},
+{
+id: 7,
+username: 'Ayden60',
+image: 'https://avatars.githubusercontent.com/u/52335084',
+following: [],
+followers: []
+},
+{
+id: 11,
+username: 'Boris.Shanahan15',
+image: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/207.jpg',
+following: [],
+followers: []
+},
+{
+id: 13,
+username: 'Nannie68',
+image: 'https://avatars.githubusercontent.com/u/20003239',
+following: [],
+followers: []
+},
+{
+id: 14,
+username: 'Israel10',
+image: 'https://avatars.githubusercontent.com/u/7857426',
+following: [],
+followers: []
+},
+{
+id: 18,
+username: 'Muriel63',
+image: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1062.jpg',
+following: [],
+followers: []
+},
+{
+id: 20,
+username: 'Albertha.Kling',
+image: 'https://avatars.githubusercontent.com/u/63682981',
+following: [],
+followers: []
+}
+],
+totalMembersCount: 11,
+isAdminOrOwner: false,
+loggedInUser: {
+id: 21,
+username: 'adamgordon119',
+image: 'https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvb2F1dGhfZ29vZ2xlL2ltZ18ya09IYjI5bzNDZ0E5R1JEVE04V3VwWHBYeVUifQ',
+following: [
+[Object], [Object],
+[Object], [Object],
+[Object], [Object],
+[Object]
+],
+followers: [],
+groupRoles: []
+},
+owner: {
+id: 5,
+username: 'Autumn60',
+email: 'Deontae.Leffler96@example.com',
+firstName: 'Erik',
+lastName: 'Kilback',
+image: 'https://avatars.githubusercontent.com/u/93899875'
+},
+loggedInUserRole: null
+}

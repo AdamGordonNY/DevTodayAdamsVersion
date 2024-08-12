@@ -13,15 +13,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ProfilePlaceholder } from "../ui";
-import { MeetupContent } from "@/lib/types.d";
 import GroupMeetupCard from "./GroupMeetupCard";
 import GroupMembersCard from "./GroupMembersCard";
 import MotionDiv from "../shared/MotionDiv";
-import { randomUUID } from "crypto";
+
 import {
   GroupDetailsResult,
-  GroupUserFields,
+  GroupUserWithFollowDetails,
   LoggedInUserContent,
+  MeetupContent,
 } from "@/lib/actions/shared.types";
 
 const GroupRightSidebar = ({
@@ -31,13 +31,16 @@ const GroupRightSidebar = ({
   admins,
 }: {
   group: GroupDetailsResult;
-  loggedIn: LoggedInUserContent;
+  loggedIn: LoggedInUserContent & {
+    role: "GUEST";
+  };
   users: {
     id: number;
     username: string | null;
     image: string | null;
     followers: User[];
     following: User[];
+    role: "MEMBER";
   }[];
   admins: {
     id: number;
@@ -45,11 +48,15 @@ const GroupRightSidebar = ({
     image: string | null;
     followers: User[];
     following: User[];
+    role: "ADMIN" | "OWNER";
   }[];
 }) => {
-  const [meets, setMeets] = React.useState<MeetupContent[]>([]);
-  const [groupMembers, setGroupMembers] = React.useState<GroupUserFields[]>([]);
-  const [groupAdmins, setGroupAdmins] = React.useState<GroupUserFields[]>([]);
+  const [groupMembers, setGroupMembers] = React.useState<
+    GroupUserWithFollowDetails[]
+  >([]);
+  const [groupAdmins, setGroupAdmins] = React.useState<
+    GroupUserWithFollowDetails[]
+  >([]);
   console.log(users);
   useEffect(() => {
     const roleAssign = async () => {
@@ -60,9 +67,28 @@ const GroupRightSidebar = ({
     };
     roleAssign();
   }, [admins, users]);
+  useEffect(() => {
+    if (group?.meetups) {
+      const meetupArray = group.meetups.map((meetup) => {
+        return meetup;
+      });
+      console.log(meetupArray);
+    }
+  }, [group.meetups]);
   const renderMeetups =
-    group?.meetups?.length > 0 ? (
-      group?.meetups?.map((meetup, idx) => {
+    group?.meetups?.length! > 0 ? (
+      group?.meetups!.map((meetup, idx) => {
+        const { user } = meetup;
+        const meetupCard = {
+          id: meetup.id,
+          title: meetup.title,
+          startTime: new Date(meetup.startTime! || undefined),
+          endTime: new Date(meetup.endTime! || undefined),
+          address: meetup.address,
+          createdAt: meetup.createdAt,
+          body: meetup.body,
+          user,
+        };
         return (
           <MotionDiv
             key={idx}
@@ -74,7 +100,7 @@ const GroupRightSidebar = ({
               ease: "linear",
             }}
           >
-            <GroupMeetupCard meetup={meetup} />
+            <GroupMeetupCard meetup={meetupCard as MeetupContent} />
           </MotionDiv>
         );
       })

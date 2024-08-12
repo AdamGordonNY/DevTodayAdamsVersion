@@ -6,12 +6,12 @@ import { ImagePlaceholder } from "../ui";
 import { singularOrPlural } from "@/lib/utils";
 import MotionDiv from "../shared/MotionDiv";
 import GroupAboutSection from "./GroupAboutSection";
-import { GroupDetails, TopRankGroups } from "@/lib/actions/shared.types";
+import { GroupDetailsResult, TopRankGroups } from "@/lib/actions/shared.types";
 
 interface GroupLeftSidebarProps {
   topRankedGroups: TopRankGroups[];
 
-  group: Partial<GroupDetails>;
+  group: Partial<GroupDetailsResult>;
 }
 const GroupLeftSidebar = async ({
   group,
@@ -19,10 +19,8 @@ const GroupLeftSidebar = async ({
   topRankedGroups,
 }: GroupLeftSidebarProps) => {
   const stats = {
-    admins: group.groupUsers?.filter(
-      (user) => user.role === "ADMIN" || user.role === "OWNER"
-    )?.length!,
-    members: group.groupUsers?.length!,
+    admins: group.adminsAndOwners?.length!,
+    members: group.totalMembersCount!,
     posts:
       group.posts?.length! + group.podcasts?.length! + group.meetups?.length!,
   };
@@ -90,7 +88,7 @@ const GroupLeftSidebar = async ({
   return (
     <section className="flex w-full flex-col gap-y-5">
       <div className="max-md-a:hidden">
-        <GroupAboutSection about={group.about!} />
+        <GroupAboutSection about={group.group?.about!} />
       </div>
       <section className="paragraph-2-medium flex flex-col rounded-lg bg-white-100 p-4 text-white-400 max-md-a:order-1 dark:bg-dark-800">
         <h1 className="paragraph-2-bold text-dark-800 dark:text-white-200">
