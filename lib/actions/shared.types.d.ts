@@ -14,6 +14,16 @@ export type Option = {
   key: Levels | Tech | Goals;
   value: string;
 };
+export type UserContent = Prisma.UserGetPayload<{
+  include: {
+    followers: true;
+    following: true;
+    posts: true;
+    podcasts: true;
+    meetups: true;
+    groups: true;
+  };
+}>;
 
 export type Step = {
   heading: string;
@@ -203,7 +213,7 @@ export type GroupUserWithFollowDetails = {
   image: string | null;
   following: User[];
   followers: User[];
-  role: string;
+  clerkID?: string | null;
 };
 
 export type PostContent = {
@@ -226,7 +236,7 @@ export type GroupUserContent = {
   id: number;
   groupId: number;
   userId: number;
-  role: string;
+  role?: string;
   createdAt: Date;
   user: {
     id: number;
@@ -295,6 +305,7 @@ export type LoggedInUserContent = {
   following: { id: number }[];
   followers: { id: number }[];
   clerkID: string;
+  role: "ADMIN" | "OWNER" | "MEMBER" | "GUEST";
 };
 export type GroupDetailsResult = {
   group: {
@@ -319,6 +330,7 @@ export type GroupDetailsResult = {
         image: string | null;
       };
     }[];
+    groupUsers: GroupUserContent[] | undefined;
     podcasts: {
       id: number;
       title: string;
@@ -350,91 +362,12 @@ export type GroupDetailsResult = {
         image: string | null;
       };
     }[];
-    groupUsers: GroupUserContent[];
-  } | null;
-  posts:
-    | {
-        id: number;
-        title: string;
-        body: string;
-        createdAt: Date;
-        _count: {
-          comment: number;
-        };
-        user: {
-          id: number;
-          username: string | null;
-          image: string | null;
-        };
-      }[]
-    | null;
-  podcasts:
-    | {
-        id: number;
-        title: string;
-        body: string;
-        createdAt: Date;
-        _count: {
-          comment: number;
-        };
-        user: {
-          id: number;
-          username: string | null;
-          image: string | null;
-        };
-      }[]
-    | null;
-  meetups:
-    | {
-        id: number;
-        title: string;
-        body: string;
-        createdAt: Date;
-        startTime: Date | null;
-        endTime: Date | null;
-        address: string;
-        _count: {
-          comment: number;
-        };
-        user: {
-          id: number;
-          username: string | null;
-          image: string | null;
-        };
-      }[]
-    | null;
-  adminsAndOwners:
-    | {
-        id: number;
-        username: string | null;
-        image: string | null;
-        following: { id: number }[];
-        followers: { id: number }[];
-      }[]
-    | null;
-  members:
-    | {
-        id: number;
-        username: string | null;
-        image: string | null;
-        following: { id: number }[];
-        followers: { id: number }[];
-      }[]
-    | null;
+  };
+
+  adminsAndOwners: GroupUserWithFollowDetails[];
+  members: GroupUserWithFollowDetails[];
   totalMembersCount: number | undefined;
   isAdminOrOwner: boolean | undefined;
-  loggedInUser: {
-    id: number;
-    clerkID: string | null;
-    username: string;
-    image: string | null;
-    following: { id: number }[];
-    followers: { id: number }[];
-    groupRoles: {
-      role: string;
-    }[];
-    isAdmin: boolean;
-  } | null;
+  loggedInUser: LoggedInUserContent | null;
   owner: GroupOwnerContent | null;
-  loggedInUserRole: string | null | undefined;
 };

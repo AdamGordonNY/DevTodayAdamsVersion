@@ -30,12 +30,10 @@ const GroupSelector = ({ onChange, value }: { onChange: any; value: any }) => {
   useEffect(() => {
     const getGroups = async () => {
       const groups = await getAllGroups(dbUserId as number);
-      const extractedGroups = groups && groups.extractedGroups;
+      const { adminGroups, memberGroups } = groups;
 
-      if (extractedGroups) {
-        const concatenatedGroups = extractedGroups.adminGroups.concat(
-          extractedGroups.memberGroups
-        );
+      if (adminGroups) {
+        const concatenatedGroups = adminGroups.concat(memberGroups);
 
         setGroups(concatenatedGroups);
       }

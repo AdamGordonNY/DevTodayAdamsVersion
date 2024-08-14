@@ -17,13 +17,13 @@ import { Label } from "@/components/ui/label";
 import ContentImageUpload from "../contentTypes/ContentImageUpload";
 import GroupProfileImageUpload from "./GroupProfileImageUpload";
 import GroupMemberTags from "./GroupMemberTags";
-import { GroupDetails } from "@/lib/actions/shared.types";
+import { GroupOverviewContent } from "@/lib/types";
 
 const CreateOrEditGroup = ({
   group,
   loggedInUserId,
 }: {
-  group?: GroupDetails;
+  group?: GroupOverviewContent;
   loggedInUserId?: number;
 }) => {
   const router = useRouter();
@@ -43,15 +43,15 @@ const CreateOrEditGroup = ({
       coverImage: group?.coverImage ?? "",
       admins:
         admins.map((admin) => ({
-          userId: admin.user.id,
-          image: admin.user.image!,
-          username: admin.user.username,
+          userId: admin.id,
+          image: admin.image!,
+          username: admin.username,
         })) ?? [],
       members:
         members.map((member) => ({
-          userId: member.user.id,
-          image: member.user.image!,
-          username: member.user.username,
+          userId: member.id,
+          image: member.image!,
+          username: member.username,
         })) ?? [],
     },
     resolver: zodResolver(GroupSchema),
@@ -164,14 +164,14 @@ const CreateOrEditGroup = ({
       <GroupMemberTags
         setValue={setValue}
         formState={formState}
-        defaultValue={admins.map((admin) => admin.user)}
+        defaultValue={admins.map((admin) => admin)}
         memberType="admins"
       />
 
       <GroupMemberTags
         setValue={setValue}
         formState={formState}
-        defaultValue={members.map((member) => member.user)}
+        defaultValue={members.map((member) => member)}
         memberType="members"
       />
 

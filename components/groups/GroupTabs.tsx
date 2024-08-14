@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -9,27 +9,55 @@ import PostCard from "@/components/profile/posts/PostCard";
 import PodcastCard from "@/components/profile/posts/PodcastCard";
 import GroupMembersTab from "./GroupMembersTab";
 import {
-  GroupDetailsResult,
   GroupUserWithFollowDetails,
+  LoggedInUserContent,
+  MeetupContent,
+  PodcastContent,
+  PostContent,
 } from "@/lib/actions/shared.types";
+import { GroupContent, GroupTabContent } from "@/lib/types";
 
 const GroupTabs = ({
-  group,
+  podcasts,
+  meetups,
+  posts,
   user,
   isAdmin,
   members,
 }: {
-  group: GroupDetailsResult;
-  user: GroupUserWithFollowDetails;
+  podcasts: PodcastContent[];
+  posts: PostContent[];
+  groupData: GroupContent;
+  user: LoggedInUserContent;
   isAdmin: boolean;
-
   members: GroupUserWithFollowDetails[];
+  meetups?: [];
 }) => {
   const [tabValue, setTabValue] = React.useState<string>("Posts");
+  const [allMembers, setAllMembers] = React.useState<
+    GroupUserWithFollowDetails[]
+  >([]);
   const tabsList = ["Posts", "Meetups", "Podcasts", "Members"];
-
-  const allMembers = members;
-
+  const [content, setContent] = React.useState<GroupTabContent | undefined>(
+    undefined
+  );
+  const [loggedInUserRole, setLoggedInUserRole] = React.useState<
+    string | undefined
+  >(undefined);
+  useEffect(() => {
+    setAllMembers(members);
+    setLoggedInUserRole(user?.role!);
+    console.log("GroupTabs: ", user, isAdmin, members, meetups);
+  }, [
+    members,
+    user?.role,
+    loggedInUserRole,
+    user,
+    podcasts,
+    meetups,
+    posts,
+    isAdmin,
+  ]);
   return (
     <>
       <Tabs
@@ -54,7 +82,7 @@ const GroupTabs = ({
           value="Posts"
           className="mt-4 flex w-full flex-col gap-y-5 "
         >
-          {group.posts?.map((post: any, index: number) => (
+          {posts?.map((post: any, index: number) => (
             <PostCard
               key={index}
               userData={post.user}
@@ -69,7 +97,7 @@ const GroupTabs = ({
           value="Meetups"
           className="mt-4 flex w-full flex-col gap-y-5 "
         >
-          {group.meetups?.map((meetup: any, index: number) => (
+          {meetups?.map((meetup: any, index: number) => (
             <MeetupCard key={index} meetup={meetup} />
           ))}
         </TabsContent>
@@ -78,7 +106,7 @@ const GroupTabs = ({
           className="mt-4 flex w-full flex-col gap-y-5 "
         >
           <div className="columns-2 space-y-4 max-lg:mt-4 max-lg:columns-1">
-            {group.podcasts?.map((podcast: any, index: number) => (
+            {podcasts?.map((podcast: any, index: number) => (
               <div
                 key={index}
                 className="rounded-[16px] bg-white-200 dark:bg-dark-800"
@@ -103,15 +131,22 @@ const GroupTabs = ({
                 <GroupMembersTab
                   member={
                     {
-                      id: member.id,
-                      followers: member.followers,
-                      following: member.following,
-                      username: member.username,
-                      image: member.image,
-                      groupRoles: member.role,
+                      id: member.id!,
+                      followers: member.followers!,
+                      following: member.following!,
+                      username: member.username!,
+                      image: member.image!,
                     }!
                   }
-                  loggedInUser={user}
+                  loggedInUser={{
+                    id: user?.id!,
+                    followers: user.followers!,
+                    following: user.following!,
+                    username: user.username!,
+                    image: user.image!,
+                    role: user.role!,
+                    clerkID: user?.clerkID!,
+                  }}
                   isLoggedInUserAdmin={isAdmin}
                   isMemberAdmin={isAdmin}
                 />

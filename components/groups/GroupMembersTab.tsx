@@ -12,15 +12,21 @@ const GroupMembersTab = ({
   isMemberAdmin = false,
 }: {
   member: GroupUserWithFollowDetails;
-  loggedInUser: LoggedInUserContent;
+  loggedInUser: Partial<LoggedInUserContent>;
   isLoggedInUserAdmin: boolean;
   isMemberAdmin?: boolean;
 }) => {
   return (
     <div className="rounded-lg p-4 dark:bg-dark-800">
       <GroupMembersCard
-        member={member}
-        loggedInUser={loggedInUser}
+        member={{
+          id: member.id!,
+          followers: member.followers,
+          following: member.following,
+          username: member.username,
+          image: member.image,
+        }}
+        loggedInUser={loggedInUser!}
         isLoggedInUserAdmin={isLoggedInUserAdmin}
         isMemberAdmin={isMemberAdmin}
       />

@@ -1,11 +1,8 @@
 "use client";
 import React, { useEffect, useState, useTransition } from "react";
-
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 
-import { User } from "@prisma/client";
-// import { addOrRemoveGroupUser } from "@/lib/actions/group.actions";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import ConfirmationModal from "../shared/ConfirmationModal";
 import { ImagePlaceholder, LeaveGroup, ProfilePlaceholder } from "../ui";
@@ -16,62 +13,96 @@ import GroupAboutSection from "./GroupAboutSection";
 import {
   GroupDetailsResult,
   GroupOwnerContent,
-  LoggedInUserContent,
+  GroupUserWithFollowDetails,
+  MeetupContent,
+  PostContent,
+  PodcastContent,
 } from "@/lib/actions/shared.types";
-import { RoleEnum } from "@/lib/types";
 
 const GroupDetailsSection = ({
-  group,
+  groupData,
   user,
   role,
   owner,
   isAdmin,
+  podcasts,
+  meetups,
+  posts,
 }: {
-  group: GroupDetailsResult;
-  user: LoggedInUserContent;
+  groupData: Partial<GroupDetailsResult>;
+  user: GroupUserWithFollowDetails & {
+    role: "ADMIN" | "OWNER" | "MEMBER" | "GUEST";
+  };
   role: "ADMIN" | "OWNER" | "MEMBER" | "GUEST";
   owner: GroupOwnerContent;
   isAdmin: boolean;
+  podcasts: PodcastContent[];
+  meetups: MeetupContent[];
+  posts: PostContent[];
 }) => {
-  const [isMember, setIsMember] = useState<Partial<User>[]>([]);
-  const [admins, setAdmins] = useState<Partial<User>[]>([]);
-  const [isOwner, setIsOwner] = useState<Partial<User>>(owner!);
+  const { group, members, adminsAndOwners, loggedInUser } = groupData!!;
   const [pending, startTransition] = useTransition();
 
+  const [admins, setAdmins] = useState<Partial<GroupUserWithFollowDetails>[]>(
+    []
+  );
+  const [groupMembers, setGroupMembers] = useState<
+    GroupUserWithFollowDetails[]
+  >([]);
+  const [grpRole, setGrpRole] = useState<
+    "ADMIN" | "OWNER" | "MEMBER" | "GUEST"
+  >("GUEST");
   useEffect(() => {
-    const assignStates = async () => {
-      const members = group.members!.map((member) => ({
-        id: member.id,
-        username: member.username,
-        image: member.image,
-      }));
-      const admins = group.adminsAndOwners!.filter((member) => ({
-        id: member.id,
-        username: member.username,
-        image: member.image,
-      }));
-      setIsMember(members);
-      setAdmins(admins);
-      if (isOwner.id === user.id) {
-        setIsOwner(user);
-      }
-    };
-    assignStates().then();
-  }, [group.members, group.adminsAndOwners, isOwner, user.id, user]);
+    // Initialize the members and admins from the group data
+    const initializeGroupData = () => {
+      const memberList =
+        members?.map((member) => ({
+          id: member.id,
+          username: member.username,
+          image: member.image,
+          followers: member.followers!,
+          following: member.following!,
+        })) || []; // Fallback to empty array if members is undefined or null
 
-  const handleAddOrdRemove = async () => {
+      const adminList =
+        adminsAndOwners?.map((admin) => ({
+          id: admin.id,
+          username: admin.username,
+          image: admin.image,
+          followers: admin.followers!,
+          following: admin.following!,
+        })) || []; // Fallback to empty array if adminsAndOwners is undefined or null
+
+      const loggedInUserRole = loggedInUser?.role || "GUEST"; // Fallback to "GUEST" if role is undefined
+
+      setGrpRole(loggedInUserRole);
+      setGroupMembers(memberList);
+      setAdmins(adminList);
+    };
+
+    initializeGroupData();
+  }, [
+    adminsAndOwners,
+    groupData.adminsAndOwners,
+    groupData.members,
+    loggedInUser?.role,
+    members,
+  ]);
+  const handleAddOrRemoveUser = async () => {
     startTransition(async () => {
-      // await addOrRemoveGroupUser(group.id, user.id);
+      // Call the function to add or remove user from group
+      // await addOrRemoveGroupUser(group.group?.id!, user.id);
     });
   };
 
   return (
     <section className="flex w-full flex-col gap-y-5">
       <div className="rounded-lg bg-white-100 p-3 text-white-400 dark:bg-dark-800">
-        {group?.group?.coverImage ? (
+        {/* Group Cover Image */}
+        {group?.coverImage ? (
           <div className="relative h-[174px]">
             <Image
-              src={group.group.coverImage}
+              src={group?.coverImage!}
               alt="group-cover-image"
               fill
               className="rounded-2xl object-cover"
@@ -86,12 +117,13 @@ const GroupDetailsSection = ({
           </div>
         )}
 
+        {/* Group Profile Image and Details */}
         <div className="mt-3 flex w-full items-center gap-x-6 p-3">
           <div className="flex">
-            {group?.group?.profileImage ? (
+            {group?.profileImage ? (
               <div className="relative size-[70px]">
                 <Image
-                  src={group?.group?.profileImage!}
+                  src={group?.profileImage!}
                   alt="group-cover-image"
                   fill
                   className="rounded-full"
@@ -105,13 +137,14 @@ const GroupDetailsSection = ({
           <div className="flex w-full justify-between">
             <div className="flex flex-col">
               <h1 className="display-2-bold dark:text-white-100">
-                {group?.group?.name! ?? "Missing Post Title!"}
+                {group?.name! ?? "Missing Group Name!"}
               </h1>
-              <p className="mt-1 flex">Created by{isOwner.username}</p>
+              <p className="mt-1 flex">Created by {owner?.username!}</p>
             </div>
 
             <div className="flex gap-x-2">
-              {isMember ? (
+              {/* Join or Leave Group Button */}
+              {loggedInUser?.role !== "GUEST" ? (
                 <Dialog>
                   <DialogTrigger className="flex align-top">
                     <MotionDiv
@@ -132,7 +165,7 @@ const GroupDetailsSection = ({
                   <ConfirmationModal
                     contentCategory="Group"
                     confirmationType="Leave"
-                    onSubmit={handleAddOrdRemove}
+                    onSubmit={handleAddOrRemoveUser}
                     isSubmitting={pending}
                   />
                 </Dialog>
@@ -148,7 +181,7 @@ const GroupDetailsSection = ({
                   <button
                     className="paragraph-4-medium text-white-100"
                     type="button"
-                    onClick={handleAddOrdRemove}
+                    onClick={handleAddOrRemoveUser}
                     disabled={pending}
                   >
                     {pending ? (
@@ -160,9 +193,10 @@ const GroupDetailsSection = ({
                 </MotionDiv>
               )}
 
-              {isAdmin && (
+              {/* Admin Content Menu */}
+              {loggedInUser?.role === "ADMIN" && (
                 <ContentMenu
-                  contentId={group?.group?.id!}
+                  contentId={groupData?.group?.id!}
                   contentCategory="Group"
                 />
               )}
@@ -170,15 +204,34 @@ const GroupDetailsSection = ({
           </div>
         </div>
       </div>
+
+      {/* Group About Section */}
       <div className="md-a:hidden">
-        <GroupAboutSection about={group?.group?.about!} />
+        <GroupAboutSection about={groupData?.group?.about!} />
       </div>
-      <GroupTabs
-        members={isMember!}
-        group={group as GroupDetailsResult}
-        user={group.loggedInUser}
-        isAdmin={isAdmin}
-      />
+
+      {/* Group Tabs */}
+      {members !== undefined && user && groupData?.group! && (
+        <GroupTabs
+          posts={posts}
+          podcasts={podcasts}
+          meetups={meetups}
+          members={members!}
+          group={groupData?.group!}
+          user={{
+            id: user?.id!,
+            followers: user?.followers!,
+            following: user?.following!,
+            username: user?.username!,
+            image: user?.image!,
+            role: loggedInUser?.role!,
+            clerkID: user?.clerkID!,
+          }}
+          isAdmin={
+            loggedInUser?.role === "ADMIN" || loggedInUser?.role === "OWNER"
+          }
+        />
+      )}
     </section>
   );
 };

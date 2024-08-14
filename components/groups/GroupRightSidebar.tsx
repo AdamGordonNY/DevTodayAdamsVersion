@@ -18,29 +18,25 @@ import GroupMembersCard from "./GroupMembersCard";
 import MotionDiv from "../shared/MotionDiv";
 
 import {
-  GroupDetailsResult,
   GroupUserWithFollowDetails,
   LoggedInUserContent,
   MeetupContent,
 } from "@/lib/actions/shared.types";
 
 const GroupRightSidebar = ({
-  group,
+  meetups,
   loggedIn,
   users,
   admins,
 }: {
-  group: GroupDetailsResult;
-  loggedIn: LoggedInUserContent & {
-    role: "GUEST";
-  };
+  meetups: MeetupContent[];
+  loggedIn: LoggedInUserContent;
   users: {
     id: number;
     username: string | null;
     image: string | null;
     followers: User[];
     following: User[];
-    role: "MEMBER";
   }[];
   admins: {
     id: number;
@@ -48,7 +44,6 @@ const GroupRightSidebar = ({
     image: string | null;
     followers: User[];
     following: User[];
-    role: "ADMIN" | "OWNER";
   }[];
 }) => {
   const [groupMembers, setGroupMembers] = React.useState<
@@ -57,7 +52,7 @@ const GroupRightSidebar = ({
   const [groupAdmins, setGroupAdmins] = React.useState<
     GroupUserWithFollowDetails[]
   >([]);
-  console.log(users);
+  const [meets, setMeets] = React.useState<MeetupContent[]>([]);
   useEffect(() => {
     const roleAssign = async () => {
       const grpAdmins = admins.map((admin) => admin);
@@ -68,16 +63,16 @@ const GroupRightSidebar = ({
     roleAssign();
   }, [admins, users]);
   useEffect(() => {
-    if (group?.meetups) {
-      const meetupArray = group.meetups.map((meetup) => {
+    if (meetups) {
+      const meetupArray = meetups.map((meetup) => {
         return meetup;
       });
       console.log(meetupArray);
     }
-  }, [group.meetups]);
+  }, [meetups]);
   const renderMeetups =
-    group?.meetups?.length! > 0 ? (
-      group?.meetups!.map((meetup, idx) => {
+    meetups?.length! > 0 ? (
+      meetups!.map((meetup, idx) => {
         const { user } = meetup;
         const meetupCard = {
           id: meetup.id,

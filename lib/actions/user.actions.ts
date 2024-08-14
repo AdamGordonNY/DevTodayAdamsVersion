@@ -5,9 +5,10 @@ import { prisma } from "@/db";
 import { revalidateTag, unstable_cache as cache } from "next/cache";
 import { IUserProfileUpdateSchema } from "../validations/user.validations";
 
-import { Platform, User } from "@prisma/client";
+import { Platform } from "@prisma/client";
 
 import { auth } from "@clerk/nextjs/server";
+import { GetUserResult } from "../types";
 export const getLoggedInUser = async () => {
   try {
     const { userId: clerkID } = await auth();
@@ -36,7 +37,7 @@ export const getLoggedInUser = async () => {
     return { error: "There was an error fetching the user." };
   }
 };
-export const getUser = async (clerkID: string) => {
+export const getUser = async (clerkID: string): Promise<GetUserResult> => {
   try {
     const user = await prisma.user.findUnique({
       where: { clerkID },
@@ -48,6 +49,7 @@ export const getUser = async (clerkID: string) => {
         groups: true,
       },
     });
+
     if (user?.username === null || user?.username === undefined) {
       const setUserName = user?.email.split("@")[0];
       await prisma.user.update({
@@ -57,10 +59,26 @@ export const getUser = async (clerkID: string) => {
         },
       });
     }
-    return user;
+
+    return {
+      user,
+      socialMedia: user?.SocialMedia || [],
+      followers: user?.followers || [],
+      following: user?.following || [],
+      groupRoles: user?.groupRoles || [],
+      groups: user?.groups || [],
+    };
   } catch (error) {
     console.log(error);
-    return { error: "There was an error fetching the user." };
+    return {
+      user: null,
+      socialMedia: [],
+      followers: [],
+      following: [],
+      groupRoles: [],
+      groups: [],
+      error: "There was an error fetching the user.",
+    };
   }
 };
 
@@ -283,8 +301,8 @@ export const isUserAuthor = async (authorId: number) => {
   if (!clerkID) return { message: "No Logged In User" };
 
   try {
-    const user = (await getUser(clerkID)) as User;
-    const isAuthor = user.id === authorId;
+    const { user } = await getUser(clerkID);
+    const isAuthor = user?.id === authorId;
 
     return { isAuthor, error: null };
   } catch (error) {

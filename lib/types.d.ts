@@ -57,17 +57,25 @@ export enum RoleEnum {
   ADMIN,
   OWNER,
 }
-export type UserContent = Prisma.UserGetPayload<{
+export type UserWithDetails = Prisma.UserGetPayload<{
   include: {
-    posts: true;
-    meetups: true;
-    podcasts: true;
+    SocialMedia: true;
     followers: true;
     following: true;
-    groups: true;
     groupRoles: true;
+    groups: true;
   };
 }>;
+
+export type GetUserResult = {
+  user: UserWithDetails | null;
+  socialMedia: UserWithDetails["SocialMedia"];
+  followers: UserWithDetails["followers"];
+  following: UserWithDetails["following"];
+  groupRoles: UserWithDetails["groupRoles"];
+  groups: UserWithDetails["groups"];
+  error?: string;
+};
 
 export type PostContent = Prisma.PostGetPayload<{
   include: {

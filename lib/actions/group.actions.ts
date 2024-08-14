@@ -5,7 +5,7 @@ import { prisma } from "@/db";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { auth } from "@clerk/nextjs";
 
-import { GroupDetailsResult, TopRankGroups } from "./shared.types.d";
+import { GroupDetailsResult, TopRankGroups } from "./shared.types";
 
 import { getUserIdWithClerkID } from "./user.actions";
 import { Group } from "@prisma/client";
@@ -512,21 +512,22 @@ export const getFullGroupDetails = async (
       image: groupUser.user.image,
       following: groupUser.user.following,
       followers: groupUser.user.followers,
-    }));
+    }))!;
 
   const loggedInUserRole =
     group?.groupUsers.find((groupUser) => groupUser.userId === loggedInUserId)
-      ?.role || null;
+      ?.role || "GUEST";
 
   const members = group?.groupUsers
-    .filter((groupUser) => groupUser.role === "MEMBER")
+    .filter((groupUser) => groupUser?.role === "MEMBER")
     .map((groupUser) => ({
-      id: groupUser.user.id,
-      username: groupUser.user.username,
-      image: groupUser.user.image,
-      following: groupUser.user.following,
-      followers: groupUser.user.followers,
-    }));
+      id: groupUser.user?.id!,
+      username: groupUser.user?.username!,
+      image: groupUser.user?.image!,
+      following: groupUser.user?.following!,
+      followers: groupUser.user?.followers!,
+      clerkID: groupUser.user?.clerkID || "",
+    }))!;
 
   const loggedInUser = await prisma.user.findUnique({
     where: { id: loggedInUserId },
@@ -541,6 +542,7 @@ export const getFullGroupDetails = async (
         where: { groupId },
         select: { role: true },
       },
+      groups: true,
     },
   });
 
@@ -553,42 +555,78 @@ export const getFullGroupDetails = async (
   );
 
   return {
-    group: group
-      ? {
-          id: group.id,
-          createdAt: group.createdAt,
-          name: group.name,
-          coverImage: group.coverImage,
-          profileImage: group.profileImage,
-          about: group.about,
-          createdBy: group.createdBy,
-          posts: group.posts,
-          podcasts: group.podcasts,
-          meetups: group.meetups,
-          groupUsers: group.groupUsers,
-        }
-      : null,
-    posts: group?.posts || null,
-    podcasts: group?.podcasts || null,
-    meetups: group?.meetups || null,
-    adminsAndOwners: adminsAndOwners || null,
-    members: members || null,
-    totalMembersCount: group?.groupUsers.length,
+    group: {
+      id: group?.id!,
+      createdAt: group?.createdAt!,
+      name: group?.name!,
+      coverImage: group?.coverImage! || null,
+      profileImage: group?.profileImage! || null,
+      about: group?.about! || "",
+      createdBy: group?.createdBy!,
+      posts: group?.posts?.map((post) => ({
+        id: post.id,
+        title: post.title,
+        body: post.body,
+        createdAt: post.createdAt,
+        _count: { comment: post._count.comment },
+        user: {
+          id: post.user.id,
+          username: post.user.username,
+          image: post.user.image,
+        },
+      }))!,
+      podcasts: group?.podcasts?.map((podcast) => ({
+        id: podcast.id,
+        title: podcast.title,
+        body: podcast.body,
+        createdAt: podcast.createdAt,
+        _count: { comment: podcast._count.comment },
+        user: {
+          id: podcast.user.id,
+          username: podcast.user.username,
+          image: podcast.user.image,
+        },
+      }))!,
+      meetups: group?.meetups?.map((meetup) => ({
+        id: meetup.id,
+        title: meetup.title,
+        body: meetup.body,
+        createdAt: meetup.createdAt,
+        startTime: meetup.startTime,
+        endTime: meetup.endTime,
+        address: meetup.address,
+        _count: { comment: meetup._count.comment },
+        user: {
+          id: meetup.user?.id!,
+          username: meetup.user?.username!,
+          image: meetup.user?.image!,
+        },
+      }))!,
+      groupUsers: group?.groupUsers?.map((groupUser) => ({
+        groupId: groupUser?.groupId!,
+        userId: groupUser?.userId!,
+        role: groupUser?.role!,
+        user: {
+          id: groupUser?.user?.id!,
+          username: groupUser?.user?.username!,
+          image: groupUser?.user?.image!,
+        },
+      }))!,
+    },
+    adminsAndOwners,
+    members,
+    totalMembersCount: group?.groupUsers?.length,
     isAdminOrOwner,
-    loggedInUser: loggedInUser
-      ? {
-          id: loggedInUser.id,
-          username: loggedInUser.username || "",
-          image: loggedInUser.image,
-          following: loggedInUser.following,
-          followers: loggedInUser.followers,
-          isAdmin: isAdminOrOwner!,
-          clerkID: loggedInUser.clerkID || null,
-          groupRoles: loggedInUser.groupRoles,
-        }
-      : null,
+    loggedInUser: {
+      id: loggedInUser.id,
+      username: loggedInUser.username,
+      image: loggedInUser.image,
+      following: loggedInUser.following,
+      followers: loggedInUser.followers,
+      clerkID: loggedInUser.clerkID || "",
+      role: loggedInUserRole,
+    },
     owner,
-    loggedInUserRole,
   };
 };
 export const _getFullGroupDetails = unstable_cache(

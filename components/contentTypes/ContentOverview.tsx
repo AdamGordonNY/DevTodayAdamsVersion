@@ -6,7 +6,7 @@ import {
 } from "@/lib/types.d";
 import { currentUser } from "@clerk/nextjs";
 
-import { getUser, isUserAuthor } from "@/lib/actions/user.actions";
+import { getLoggedInUser, isUserAuthor } from "@/lib/actions/user.actions";
 import PostDetails from "./PostDetails";
 import MeetupDetails from "./MeetupDetails";
 import PodcastDetails from "./PodcastDetails";
@@ -25,7 +25,7 @@ const ContentOverview = async ({
   contentCategoryEnum: ContentCategoryEnum;
 }) => {
   const clerkUser = await currentUser();
-  const user = clerkUser && (await getUser(clerkUser.id));
+  const { user } = await getLoggedInUser();
   const { isAuthor: isContentAuthor } = await isUserAuthor(
     content.userId as number
   );
@@ -84,7 +84,7 @@ const ContentOverview = async ({
           <Comments
             content={content}
             contentCategory={contentCategoryType}
-            loggedInUserImage={user?.user?.image as string}
+            loggedInUserImage={user?.image!}
           >
             {content.comment.length > 0 &&
               content.comment.map((comment) => {
@@ -103,7 +103,7 @@ const ContentOverview = async ({
       <div className="flex min-w-[330px] max-w-[330px] basis-2/6 max-md-b:order-3 max-md-b:min-w-[275px] max-md-b:max-w-screen-md-b">
         <ContentRightSidebar
           content={content}
-          loggedInUserId={user?.user?.id as number}
+          loggedInUserId={user?.id as number}
           clerkUserId={clerkUser?.id as string}
           isAuthor={isContentAuthor as boolean}
           contentCategory={contentCategoryType}

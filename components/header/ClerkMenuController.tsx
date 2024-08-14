@@ -9,7 +9,6 @@ import { useTheme } from "next-themes";
 import { clerkMenuItems } from "@/lib/constants";
 import { Sun, Moon } from "../ui/icons";
 import { Theme } from "@/lib/types.d";
-
 const MenuItems = () => {
   const { signOut } = useClerk();
   const router = useRouter();

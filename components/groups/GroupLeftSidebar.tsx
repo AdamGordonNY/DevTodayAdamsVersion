@@ -11,18 +11,22 @@ import { GroupDetailsResult, TopRankGroups } from "@/lib/actions/shared.types";
 interface GroupLeftSidebarProps {
   topRankedGroups: TopRankGroups[];
 
-  group: Partial<GroupDetailsResult>;
+  groupData: Partial<GroupDetailsResult>;
 }
 const GroupLeftSidebar = async ({
-  group,
+  groupData,
 
   topRankedGroups,
 }: GroupLeftSidebarProps) => {
+  if (!groupData) return null;
+  const { group, adminsAndOwners, totalMembersCount } = groupData!;
   const stats = {
-    admins: group.adminsAndOwners?.length!,
-    members: group.totalMembersCount!,
+    admins: adminsAndOwners?.length!,
+    members: totalMembersCount!,
     posts:
-      group.posts?.length! + group.podcasts?.length! + group.meetups?.length!,
+      group?.posts?.length! +
+      group?.podcasts?.length! +
+      group?.meetups?.length!,
   };
   const renderStats = Object.entries(stats).map(
     ([stat, count]: [stat: string, count: number]) => {
@@ -88,7 +92,7 @@ const GroupLeftSidebar = async ({
   return (
     <section className="flex w-full flex-col gap-y-5">
       <div className="max-md-a:hidden">
-        <GroupAboutSection about={group.group?.about!} />
+        <GroupAboutSection about={group?.about!} />
       </div>
       <section className="paragraph-2-medium flex flex-col rounded-lg bg-white-100 p-4 text-white-400 max-md-a:order-1 dark:bg-dark-800">
         <h1 className="paragraph-2-bold text-dark-800 dark:text-white-200">
