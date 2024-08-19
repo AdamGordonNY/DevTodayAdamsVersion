@@ -223,7 +223,7 @@ export const incrementPostViews = unstable_cache(
 );
 export async function getDynamicPosts(
   page: number,
-  type: "popular" | "newest" | "following" | undefined,
+  type: "popular" | "newest" | "following" | "joined" | undefined,
   pageSize: number
 ) {
   if (!type) type = "newest";

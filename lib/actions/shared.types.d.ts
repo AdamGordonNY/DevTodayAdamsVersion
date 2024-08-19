@@ -121,3 +121,11 @@ export interface TopRankGroups {
   totalCount: number;
   coverImage?: string;
 }
+export interface TopRankUsers {
+  id: number;
+  username: string;
+  image: string | null;
+  firstName: string;
+  lastName: string;
+  lastActivity: Date;
+}

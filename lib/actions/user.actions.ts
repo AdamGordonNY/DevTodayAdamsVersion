@@ -18,6 +18,7 @@ export const _getUser = async (clerkID: string) => {
         SocialMedia: true,
         followers: true,
         following: true,
+        groups: true,
       },
     });
     if (user?.username === null || user?.username === undefined) {
@@ -306,4 +307,17 @@ export const getFollowerCount = async (id: number | string) => {
   } catch (error) {
     return { error: "There was an error fetching the user." };
   }
+};
+export const getTwelveUsersToFollow = async () => {
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        NOT: {
+          clerkID: auth().userId,
+        },
+      },
+      take: 12,
+    });
+    return users;
+  } catch (error) {}
 };

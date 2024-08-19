@@ -130,7 +130,7 @@ export async function deleteMeetup(id: number) {
 
 export async function getDynamicMeetups(
   page: number,
-  type: "newest" | "popular" | "following",
+  type: "newest" | "popular" | "following" | "joined",
   pageSize?: number
 ) {
   try {

@@ -6,14 +6,21 @@ import { getDynamicMeetups } from "@/lib/actions/meetup.actions";
 import MeetupCard from "../profile/posts/MeetupCard";
 import { getDynamicPodcasts } from "@/lib/actions/podcast.actions";
 import PodcastCard from "../profile/posts/PodcastCard";
-import { getDynamicGroups } from "@/lib/actions/group.actions";
+import {
+  getDynamicGroups,
+  getTopActiveUsers,
+} from "@/lib/actions/group.actions";
 import GroupCard from "../profile/posts/GroupCard";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { getUser } from "@/lib/actions/user.actions";
+import { auth } from "@clerk/nextjs/server";
+import { GroupLoggedInUser } from "@/lib/types";
+import ActiveMemberCard from "./ActiveMembersCard";
 
 interface HomeContentProps {
   type: "meetups" | "posts" | "podcasts" | "groups";
-  query?: "newest" | "popular" | "following";
+  query?: "newest" | "popular" | "following" | "joined";
   currentPage: number;
 }
 const HomeContent = async ({
@@ -25,7 +32,25 @@ const HomeContent = async ({
     type: "meetups" | "posts" | "podcasts" | "groups",
     query: "newest" | "popular" | "following" | "joined"
   ) => {
-    if (type === "posts" && query !== "joined") {
+    const uid = await auth().userId!;
+    const { user } = await getUser(uid);
+    if (query === "following" && user?.following.length === 0) {
+      const { users } = await getTopActiveUsers()!;
+      const loggedInuser = user as GroupLoggedInUser;
+      return (
+        <div className="flex flex-col items-start justify-center">
+          <h1 className="display-1-bold align-top dark:text-white-100">
+            {" "}
+            You are not Following anyone.{" "}
+          </h1>
+          <span> Check out these Active Users for people to follow! </span>
+          {users !== undefined && (
+            <ActiveMemberCard loggedInUser={loggedInuser} />
+          )}
+        </div>
+      );
+    }
+    if (type === "posts" && query !== "following") {
       const { posts, totalPages } = (await getDynamicPosts(
         currentPage,
         query,
@@ -49,7 +74,7 @@ const HomeContent = async ({
         </div>
       );
     }
-    if (type === "meetups" && query !== "joined") {
+    if (type === "meetups" && query !== "following") {
       const meetups = await getDynamicMeetups(currentPage, query, 4);
       return (
         <div className="flex min-h-screen w-full flex-1 flex-col gap-y-[20px]  max-lg:py-5">
@@ -63,6 +88,26 @@ const HomeContent = async ({
               currentPage={currentPage}
             />
           </div>
+        </div>
+      );
+    }
+    if (
+      type === "meetups" &&
+      query === "following" &&
+      user?.following.length === 0
+    ) {
+      const { users } = await getTopActiveUsers()!;
+      const loggedInuser = user as GroupLoggedInUser;
+      return (
+        <div className="flex flex-col items-start justify-center">
+          <h1 className="display-1-bold align-top">
+            {" "}
+            You are not Following anyone.{" "}
+          </h1>
+          <span> Check out these Active Users for people to follow! </span>
+          {users !== undefined && (
+            <ActiveMemberCard loggedInUser={loggedInuser} />
+          )}
         </div>
       );
     }
@@ -91,7 +136,7 @@ const HomeContent = async ({
         </div>
       );
     }
-    if (type === "groups") {
+    if (type === "groups" && query !== "joined") {
       const groupsData = await getDynamicGroups(currentPage, query, 4);
       const formattedGroups = groupsData?.groups?.map((group) => ({
         ...group,
@@ -137,6 +182,16 @@ const HomeContent = async ({
               currentPage={currentPage}
             />
           </div>
+        </div>
+      );
+    }
+    if (type === "groups" && query === "joined" && user?.groups.length === 0) {
+      return (
+        <div className="flex flex-col items-start justify-center">
+          <h1 className="display-1-bold align-top dark:text-white-100">
+            {" "}
+            You are not in Any Groups.{" "}
+          </h1>
         </div>
       );
     }

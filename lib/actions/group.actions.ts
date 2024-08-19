@@ -6,7 +6,7 @@ import { Group, User } from "@prisma/client";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { auth } from "@clerk/nextjs";
 
-import { TopRankGroups } from "./shared.types.d";
+import { TopRankGroups, TopRankUsers } from "./shared.types.d";
 import { IGroupSchema } from "../validations/group.validations";
 import { getUserIdWithClerkID } from "./user.actions";
 
@@ -176,7 +176,17 @@ export async function _getGroupById(id: string) {
             createdAt: "desc",
           },
           take: 5,
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
         },
+
         _count: {
           select: {
             posts: true,
@@ -293,8 +303,8 @@ export async function getDynamicGroups(
               admins: true,
             },
           },
-          admins: { select: { id: true, image: true } },
-          members: { select: { id: true, image: true } },
+          admins: { select: { id: true, image: true, username: true } },
+          members: { select: { id: true, image: true, username: true } },
         },
       });
 
@@ -338,8 +348,8 @@ export async function getDynamicGroups(
               admins: true,
             },
           },
-          admins: { select: { id: true, image: true } },
-          members: { select: { id: true, image: true } },
+          admins: { select: { id: true, image: true, username: true } },
+          members: { select: { id: true, image: true, username: true } },
         },
       });
 
@@ -383,8 +393,8 @@ export async function getDynamicGroups(
               admins: true,
             },
           },
-          admins: { select: { id: true, image: true } },
-          members: { select: { id: true, image: true } },
+          admins: { select: { id: true, image: true, username: true } },
+          members: { select: { id: true, image: true, username: true } },
         },
       });
 
@@ -560,3 +570,51 @@ export async function addOrRemoveGroupUser(groupId: number, userId: number) {
     };
   }
 }
+export const getTopActiveUsers = async () => {
+  try {
+    const topUsers: TopRankUsers[] = await prisma.$queryRaw`
+    SELECT
+      u.id,
+      u.username,
+      u."image",
+      u."firstName",
+      u."lastName",
+      COALESCE(posts.last_activity, '1970-01-01') AS "lastActivity",
+      COALESCE(podcasts.last_activity, '1970-01-01') AS "lastActivity",
+      COALESCE(meetups.last_activity, '1970-01-01') AS "lastActivity"
+    FROM "User" u
+    LEFT JOIN (
+      SELECT "userId", MAX("createdAt") AS last_activity
+      FROM "Post"
+      GROUP BY "userId"
+    ) posts ON posts."userId" = u.id
+    LEFT JOIN (
+      SELECT "userId", MAX("createdAt") AS last_activity
+      FROM "Podcast"
+      GROUP BY "userId"
+    ) podcasts ON podcasts."userId" = u.id
+    LEFT JOIN (
+      SELECT "userId", MAX("createdAt") AS last_activity
+      FROM "Meetup"
+      GROUP BY "userId"
+    ) meetups ON meetups."userId" = u.id
+    WHERE posts.last_activity IS NOT NULL 
+      OR podcasts.last_activity IS NOT NULL 
+      OR meetups.last_activity IS NOT NULL
+    ORDER BY GREATEST(
+      COALESCE(posts.last_activity, '1970-01-01'),
+      COALESCE(podcasts.last_activity, '1970-01-01'),
+      COALESCE(meetups.last_activity, '1970-01-01')
+    ) DESC
+    LIMIT 12;
+  `;
+    console.log(topUsers);
+    return { users: topUsers, error: null };
+  } catch (error) {
+    console.error("Error fetching top active users:", error);
+    return {
+      users: [],
+      error: "An error occurred while fetching top active users.",
+    };
+  }
+};
