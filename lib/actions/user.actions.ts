@@ -319,5 +319,7 @@ export const getTwelveUsersToFollow = async () => {
       take: 12,
     });
     return users;
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 };

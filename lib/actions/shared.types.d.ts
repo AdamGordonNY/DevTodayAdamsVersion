@@ -127,5 +127,8 @@ export interface TopRankUsers {
   image: string | null;
   firstName: string;
   lastName: string;
-  lastActivity: Date;
+  lastActivity?: Date;
 }
+export type FilterType = {
+  filter: "following" | "popular" | "newest" | "joined" | undefined;
+};

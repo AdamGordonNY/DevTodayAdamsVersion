@@ -98,7 +98,7 @@ export const incrementPodcastViews = unstable_cache(
 );
 export async function getDynamicPodcasts(
   page: number,
-  type: "newest" | "popular" | "following",
+  type: "newest" | "popular" | "following" | "joined",
   pageSize?: number
 ) {
   if (!page) {

@@ -4,6 +4,8 @@ import { getDynamicPodcasts } from "@/lib/actions/podcast.actions";
 import RecentItem from "../profile/posts/RecentItem";
 import { getDynamicPosts } from "@/lib/actions/post.actions";
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
+import { getUser } from "@/lib/actions/user.actions";
 
 const BottomRSidebar = async ({
   contentType,
@@ -26,6 +28,15 @@ const BottomRSidebar = async ({
     default:
       typeHeading = "Meetups";
       break;
+  }
+  const uid = await auth().userId!;
+  const { user } = await getUser(uid);
+
+  if (
+    query === "following" &&
+    (!user?.following || user.following.length === 0)
+  ) {
+    query = "newest";
   }
 
   const renderContent = async (contentType: string) => {

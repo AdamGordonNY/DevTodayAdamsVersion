@@ -14,7 +14,7 @@ const Home = async ({
   const page = Number(searchParams.page) || 1;
 
   return (
-    <SharedSidebars contentType="groups" page={page} filter={filter!}>
+    <SharedSidebars contentType="groups" filter={filter!}>
       <Suspense
         key={JSON.stringify(searchParams)}
         fallback={<MotionDiv>Loading...</MotionDiv>}

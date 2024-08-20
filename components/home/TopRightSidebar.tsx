@@ -5,14 +5,26 @@ import { getDynamicMeetups } from "@/lib/actions/meetup.actions";
 import { getDynamicPosts } from "@/lib/actions/post.actions";
 import RecentItem from "../profile/posts/RecentItem";
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
+import { getUser } from "@/lib/actions/user.actions";
 
 const TopRightSidebar = async ({
   contentType,
   filter,
 }: {
   contentType: string;
-  filter: "newest" | "popular" | "following";
+  filter: "newest" | "popular" | "following" | "joined";
 }) => {
+  const uid = await auth().userId!;
+  const { user } = await getUser(uid);
+
+  if (
+    filter === "following" &&
+    (!user?.following || user.following.length === 0)
+  ) {
+    filter = "newest";
+  }
+
   const renderContent = async (contentType: string) => {
     if (contentType === "meetups") {
       const posts = await getDynamicPosts(1, filter, 4);
@@ -28,13 +40,13 @@ const TopRightSidebar = async ({
           <div className="flex justify-between">
             {" "}
             <div className="flex flex-col gap-y-5">
-              {posts?.posts.map((post, idx) => (
+              {posts?.posts?.map((post, idx) => (
                 <Link href={`/posts/${post.id}`} key={idx}>
                   <RecentItem
                     key={idx}
                     id={post.id}
                     image={post.image}
-                    author={post.user.username!}
+                    author={post.user?.username!}
                     title={post.title}
                   />
                 </Link>

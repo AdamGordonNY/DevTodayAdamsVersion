@@ -6,6 +6,7 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { Post } from "@prisma/client";
 import { IPostSchema } from "../validations/post.validations";
+
 export async function createPost(data: any) {
   const { userId } = auth();
 
@@ -223,7 +224,7 @@ export const incrementPostViews = unstable_cache(
 );
 export async function getDynamicPosts(
   page: number,
-  type: "popular" | "newest" | "following" | "joined" | undefined,
+  type: "newest" | "popular" | "following" | "joined",
   pageSize: number
 ) {
   if (!type) type = "newest";
@@ -242,6 +243,12 @@ export async function getDynamicPosts(
         },
       });
       const followingIds = user?.following.map((follow) => follow.id);
+      if (followingIds?.length === 0) {
+        return {
+          error: "No Followers",
+          message: "You are not following anyone.",
+        };
+      }
       const mostRecentPosts = await prisma.post.findMany({
         where: {
           userId: {
@@ -270,6 +277,7 @@ export async function getDynamicPosts(
         totalPages: newTotal,
       };
     }
+
     const mostRecentPosts = await prisma.post.findMany({
       orderBy: {
         ...(type === "popular" && { likes: "desc" }),
@@ -293,6 +301,9 @@ export async function getDynamicPosts(
     };
   } catch (error) {
     console.error("Error fetching recent posts:", error);
+    return {
+      message: "An unexpected error occurred while fetching recent posts.",
+    };
   }
 }
 // export const getRecentPosts = unstable_cache(_getRecentPosts, ["Post"], {
