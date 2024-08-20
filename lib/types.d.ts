@@ -50,7 +50,17 @@ export enum ContentCategoryEnum {
   MEETUP,
   COMMENT,
 }
-
+export type FollowingUserContent = Prisma.UserGetPayload<{
+  include: {
+    following: true;
+    SocialMedia: true;
+    posts: true;
+    meetups: true;
+    podcasts: true;
+    groups: true;
+    notifications: true;
+  };
+}>;
 export type PostContent = Prisma.PostGetPayload<{
   include: {
     comment: {
@@ -108,7 +118,7 @@ export type PodcastContent = Prisma.PodcastGetPayload<{
 export type GroupCardContent = {
   id: number;
   name: string;
-  coverImage: string;
+  coverImage: string | null;
   about: string;
   _count: {
     posts: number;
@@ -122,7 +132,7 @@ export type GroupCardContent = {
   users: {
     id: number;
     image: string | null;
-    role: string;
+    username: string | null;
   }[];
 };
 export type GroupContent = Prisma.GroupGetPayload<{

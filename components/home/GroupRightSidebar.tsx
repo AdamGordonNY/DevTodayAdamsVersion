@@ -7,7 +7,7 @@ import Link from "next/link";
 
 interface GroupSidebarProps {
   type: "groups";
-  filter: "newest" | "popular" | "following";
+  filter: "newest" | "popular" | "following" | "joined";
 }
 const GroupSidebar = async ({ type, filter }: GroupSidebarProps) => {
   const podcasts = await getDynamicPodcasts(1, filter, 3);

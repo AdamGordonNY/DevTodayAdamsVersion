@@ -12,13 +12,12 @@ import GroupLeftSidebar from "../home/GroupLeftSidebar";
 const SharedSidebars = async ({
   children,
   filter,
-  page,
+
   contentType,
 }: {
   contentType?: "meetups" | "posts" | "podcasts" | "groups";
   children: React.ReactNode;
-  filter: "newest" | "popular" | "following";
-  page: number;
+  filter: "newest" | "popular" | "following" | "joined";
 }) => {
   return (
     <section className="layout-wrapper max-lg:flex-1 max-lg:justify-center ">

@@ -12,7 +12,7 @@ const Home = async ({
   const page = Number(searchParams.page) || 1;
 
   return (
-    <SharedSidebars contentType="posts" filter={filter} page={page}>
+    <SharedSidebars contentType="posts" filter={filter}>
       <Suspense
         key={JSON.stringify(searchParams)}
         fallback={<div>Loading...</div>}
