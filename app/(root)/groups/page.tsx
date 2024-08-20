@@ -10,7 +10,8 @@ const Home = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
   const filter =
-    (searchParams.filter as "newest" | "popular" | "following") || "newest";
+    (searchParams.filter as "newest" | "popular" | "following" | "joined") ||
+    "newest";
   const page = Number(searchParams.page) || 1;
 
   return (

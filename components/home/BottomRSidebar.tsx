@@ -12,7 +12,7 @@ const BottomRSidebar = async ({
   query,
 }: {
   contentType: string;
-  query: "newest" | "popular" | "following";
+  query: "newest" | "popular" | "following" | "joined";
 }) => {
   const pageSize = 5;
   let typeHeading;
