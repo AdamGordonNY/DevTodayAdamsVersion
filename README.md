@@ -18,8 +18,6 @@ DevToday is a content creation platform for developers. It offers a feed of dev 
 
 ## ✨ Features
 
-If your project has a lot of features, list them here.
-
 - Content Creation Platform — DevToday provides users with tools and resources to create and share content easily, allowing knowledge sharing and expression within the community.
 - Content Interaction Features — The app encourages engagement through likes, follows, and even communicating with other like-minded people through the content’s comment section.
 - Community Building — DevToday allows users to create groups of like-minded individuals, professionals, and enthusiasts in the tech space.
@@ -27,7 +25,7 @@ If your project has a lot of features, list them here.
 - Onboarding
 - Sort & Filters
 - Collection & Pagination
-- Global Command Search
+- Global Command K Search
 - Image Uploads
 - Profile Management
 - Follows, Views, Likes
