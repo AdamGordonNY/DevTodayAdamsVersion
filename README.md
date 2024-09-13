@@ -1,7 +1,7 @@
 # Dev Today
 
 [![Latest release](https://gitnote.s3.us-east-2.amazonaws.com/tsconfig.png)](https://dev-today.adam-gordon.info)
-[![GitHub commits](https://github.com/adamgordonny/devtodayadamsversion.git)](https://jsmastery.pro)
+
 
 ## 🌐 Demo
 
@@ -14,7 +14,7 @@ DevToday is a content creation platform for developers. It offers a feed of dev 
 - Motivation: To test my skills and put together a user friendly, developer focused social media site.
 - Why I Built This Project: Alot of "Developer" social media is scattered, I wanted to centralize it.
 - Problem Solved: Developers can arrange to meetup, record podcasts/audio to share informaation across multiple modes of communication, or just post.
-- What I Learned: Using both browser API's and NextJS packages,
+- What I Learned: With a business like attitude and a good team even of small size, when working together and being humble and open to feedback, as well as accountable to each other, it is possible to put together a comprehensive site with complex features such as the site-wide audio player that doesn't shut off when you navigate away from the page, having a seperate socket.io server to handle instant updates and enable live communication and notification.  Designing for mobile first is the best way to go in this era, and taking that approach makes designing for regular and larger screens easier.  Framer motion is best used to enhance an already crisp and functional layout, and things like color pallette, spacing, and other UX design "yes's" can make a good website great, or make a good website bad depending on whether you follow proven UX patterns.  I also learned how to use Prisma and PostgresQL with typescript and zod to easy type and validate incoming and outgoing data.  Using relative/absolute combos with flexboxes can help scale images while maintaining the desired look of the site.
 
 ## ✨ Features
 
@@ -37,7 +37,7 @@ DevToday is a content creation platform for developers. It offers a feed of dev 
 - Content preview
 - Content Management CRUD (3 post types)
 - Group Management (CRUD)
-- Comment Thread
+- Comment Threads
 - Light & Dark mode
 
 ## Components
@@ -73,13 +73,13 @@ We need to install or make sure that these tools are pre-installed on your machi
 1. Clone the Repository
 
    ```bash
-   git clone https://github.com/username/repository.git
+   git clone https://github.com/adamgordonnny/devtodayadamsversion.git
    ```
 
 2. Navigate into the project directory
 
    ```bash
-   cd repository
+   cd devtodayadamsversion
    ```
 
 3. Install dependencies
@@ -149,25 +149,25 @@ If you'd like to request a new function, feel free to do so by opening an issue 
 ### ✅ To-do
 
 - [ ] Enable Admins/Users to remove a user or assign a user the admin role in the Member's Tab.
-- [x] Delete Functionality cleanup
 - [ ] Sweep for bugs.
 - [ ] A proper Case Study.
+- [ ] connecting a socket.io server to handle notifications and enable IMing.
 
 ## 📜 Credits
-
-List your collaborators, if any, with links to their GitHub profiles.
-
 I'd like to acknowledge my collaborators, who contributed to the success of this project. Below are links to their GitHub profiles.
+[@darshin](https://github.com/DDVVPP) - co-lead developer
+https://github.com/brandonetter - Code Reviewer and Mentor
+adrianhajdin Adrian Hajdin - JS Mastery - Mentor extraordinaire
 
-Furthermore, I utilized certain third-party assets that require attribution. Find the creators' links in this section.
 
-If I followed tutorials during development, I'd include the links to those as well.
 
-👩 Darshin Von Parijs <br>
-Github: @DDVVPP
+
+
+
 
 ## 📞 Contact Me
 
 Adam Gordon <br />
 Email : adam@adam-gordon.info
 Github : @AdamGordonNY
+LinkedIn : adam-gordon119
