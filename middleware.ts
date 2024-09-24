@@ -13,6 +13,7 @@ export default authMiddleware({
     "/api/uploadthing",
     "/sign-in",
     "/sign-up",
+    "/groups/22",
   ],
 
   afterAuth: async (auth, req: NextRequest) => {
