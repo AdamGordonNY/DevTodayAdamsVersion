@@ -10,8 +10,8 @@ import GroupOverview from "@/components/groups/GroupOverview";
 const Group = async ({ params }: { params: { groupId: string } }) => {
   const { group, error } = await getGroupById(params.groupId);
 
-  if (!group) return <ContentNotFound contentCategory="Meetup" />;
-  if (error) return <Error contentCategory="Meetup" error={error} />;
+  if (!group) return <ContentNotFound contentCategory="Group" />;
+  if (error) return <Error contentCategory="Group" error={error} />;
 
   return <GroupOverview group={group} />;
 };
