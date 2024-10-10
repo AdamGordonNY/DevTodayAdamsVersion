@@ -49,7 +49,7 @@ const GoogleMap = ({
   };
 
   return (
-    <APIProvider apiKey={process.env.NEXT_PUBLIC_GMAPSKEY!}>
+    <APIProvider apiKey={process.env.NEXT_PUBLIC_GMAPS_KEY!}>
       <Map
         style={{
           width: "100%",
