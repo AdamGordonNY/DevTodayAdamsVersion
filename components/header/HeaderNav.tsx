@@ -18,6 +18,7 @@ const HeaderNav = () => {
           <Link
             key={key}
             href={`/${key}`}
+            aria-label={key}
             className={
               isSelected
                 ? "rounded-md bg-primary-500 p-3"
