@@ -35,7 +35,7 @@ const CreateButton = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   return (
     <Popover key={"menuPopover" + isMobile}>
-      <PopoverTrigger className="bg-inherit">
+      <PopoverTrigger className="bg-inherit" aria-label="CreateButton">
         <Plus />
       </PopoverTrigger>
       <PopoverContent className="flex w-full justify-start rounded-lg border border-white-border bg-white-100 p-2 shadow-xl dark:border-dark-700 dark:bg-dark-800">
