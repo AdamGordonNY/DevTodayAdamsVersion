@@ -23,13 +23,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://devtoday.adam-gordon.info",
-    description: "A Developer Focused Social Media site ",
+    description: "A Developer Focused Social Media site",
     siteName: "Dev Today",
     images: [
       {
-        url: "/faviconLight.svg",
-        width: 800,
-        height: 600,
+        url: "/logoLight.svg",
+        width: 640,
+        height: 480,
         alt: "Dev Today",
       },
     ],
