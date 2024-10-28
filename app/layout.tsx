@@ -18,6 +18,22 @@ export const metadata: Metadata = {
   icons: {
     icon: "/faviconLight.svg",
   },
+  generator: "nextjs, developer social media, ",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://devtoday.adam-gordon.info",
+    description: "A Developer Focused Social Media site ",
+    siteName: "Dev Today",
+    images: [
+      {
+        url: "/faviconLight.svg",
+        width: 800,
+        height: 600,
+        alt: "Dev Today",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

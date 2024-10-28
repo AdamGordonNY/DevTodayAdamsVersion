@@ -2,19 +2,7 @@ import { authMiddleware } from "@clerk/nextjs";
 import { redirectToSignIn } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 export default authMiddleware({
-  publicRoutes: [
-    "/",
-    "/posts",
-    "/meetups",
-    "/podcasts",
-    "/groups",
-    "/api/webhooks",
-    "/onboarding",
-    "/api/uploadthing",
-    "/sign-in",
-    "/sign-up",
-    "/groups/22",
-  ],
+  publicRoutes: ["/*"],
 
   afterAuth: async (auth, req: NextRequest) => {
     const { userId, sessionClaims } = auth;
