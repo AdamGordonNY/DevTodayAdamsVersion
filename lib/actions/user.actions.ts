@@ -12,25 +12,29 @@ import { auth } from "@clerk/nextjs/server";
 
 export const _getUser = async (clerkID: string) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { clerkID },
-      include: {
-        SocialMedia: true,
-        followers: true,
-        following: true,
-        groups: true,
-      },
-    });
-    if (user?.username === null || user?.username === undefined) {
-      const setUserName = user?.email.split("@")[0];
-      await prisma.user.update({
+    if (clerkID) {
+      const user = await prisma.user.findUnique({
         where: { clerkID },
-        data: {
-          username: setUserName,
+        include: {
+          SocialMedia: true,
+          followers: true,
+          following: true,
+          groups: true,
         },
       });
+      if (user?.username === null || user?.username === undefined) {
+        const setUserName = user?.email.split("@")[0];
+        await prisma.user.update({
+          where: { clerkID },
+          data: {
+            username: setUserName,
+          },
+        });
+      }
+      return { user };
+    } else {
+      return { error: "No Clerk ID" };
     }
-    return { user };
   } catch (error) {
     console.log(error);
     return { error: "There was an error fetching the user." };
