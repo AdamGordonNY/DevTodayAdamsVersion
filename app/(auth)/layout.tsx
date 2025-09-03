@@ -1,6 +1,6 @@
 import React from "react";
 
-import sitelogo from "@/public/logo.png";
+import siteLogo from "@/public/logo.png";
 import Image from "next/image";
 import SignUpItems from "@/components/auth/SignUpItems";
 
@@ -15,7 +15,7 @@ interface AuthLayoutProps {
 const AuthLayout = async ({ children }: AuthLayoutProps) => {
   let step;
   let dbUser;
-  const { userId, sessionClaims } = auth();
+  const { userId, sessionClaims } = await auth();
   if (userId) {
     dbUser = await getUser(userId);
     step = dbUser.user?.onboardingStep?.toString();
@@ -27,7 +27,7 @@ const AuthLayout = async ({ children }: AuthLayoutProps) => {
     <OnboardingProvider defaultStep={step!}>
       <main className="flex min-h-screen   max-w-full  bg-dark-800">
         <div className=" w-1/2 p-11 max-lg:hidden  ">
-          <Image src={sitelogo} alt="logo" className="max-lg:hidden" />
+          <Image src={siteLogo} alt="logo" className="max-lg:hidden" />
           <div className="flex flex-col items-center justify-center">
             <SignUpItems />
           </div>
