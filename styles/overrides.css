@@ -1,3 +1,29 @@
+/* CLERK v6+ COMMON OVERRIDES */
+/* User button popover alignment and width */
+.cl-userButtonPopoverRoot,
+.cl-userButtonPopoverCard,
+.cl-userButtonPopover {
+  @apply left-auto right-0 w-fit min-w-[220px] max-w-[320px] !important;
+}
+
+/* Hide or style new footer in sign-in/sign-up */
+.cl-cardFooter,
+.cl-footer {
+  display: none !important;
+}
+
+/* Optionally, style the new footer if you want to keep it visible */
+/*
+.cl-cardFooter, .cl-footer {
+  @apply bg-white-100 dark:bg-dark-800 border-t border-white-200 dark:border-dark-700;
+}
+*/
+
+/* Fix for new Clerk v6+ popover arrow misalignment */
+.cl-userButtonPopoverArrow {
+  left: auto !important;
+  right: 1.5rem !important;
+}
 /* CLERK */
 .cl-providerIcon__github {
   @apply invert;
