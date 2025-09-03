@@ -4,7 +4,7 @@ import {
   ContentCategoryType,
   ContentType,
 } from "@/lib/types.d";
-import { currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 
 import { getUser, isUserAuthor } from "@/lib/actions/user.actions";
 import PostDetails from "./PostDetails";

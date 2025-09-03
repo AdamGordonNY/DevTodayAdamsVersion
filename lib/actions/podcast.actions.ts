@@ -115,7 +115,7 @@ export async function getDynamicPodcasts(
     if (type === "following") {
       const user = await prisma.user.findUnique({
         where: {
-          clerkID: auth().userId!,
+          clerkID: (await auth()).userId!,
         },
         include: {
           following: true,
@@ -186,7 +186,7 @@ export async function getDynamicPodcasts(
   }
 }
 export const createPodcast = async (data: IPodcastSchema) => {
-  const { userId } = auth();
+  const { userId } = await auth();
   const { audio, group, title, tags, image, body, audioTitle } = data;
   try {
     if (data as Partial<Podcast>) {

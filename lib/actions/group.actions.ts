@@ -4,7 +4,7 @@ import { prisma } from "@/db";
 import { Group, User } from "@prisma/client";
 // eslint-disable-next-line camelcase
 import { revalidateTag, unstable_cache } from "next/cache";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 import { TopRankGroups, TopRankUsers } from "./shared.types.d";
 import { IGroupSchema } from "../validations/group.validations";
@@ -271,7 +271,7 @@ export async function getDynamicGroups(
     if (type === "joined") {
       const user = await prisma.user.findUnique({
         where: {
-          clerkID: auth().userId!,
+          clerkID: (await auth()).userId!,
         },
         include: {
           memberGroups: true,
@@ -507,7 +507,7 @@ export const getJoinedGroupCount = async () => {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        clerkID: auth().userId!,
+        clerkID: (await auth()).userId!,
       },
       include: {
         memberGroups: true,

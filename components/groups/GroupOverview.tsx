@@ -1,7 +1,7 @@
 import React from "react";
 
 import { getUser } from "@/lib/actions/user.actions";
-import { currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 
 import { User } from "@prisma/client";
 import { GroupContent } from "@/lib/types.d";
