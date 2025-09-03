@@ -312,7 +312,7 @@
   }
 
   .audio-player {
-    @apply fixed left-0 right-0 z-50 bg-white-200 dark:bg-dark-900 flex flex-col items-center justify-between shadow-md px-2.5 py-5 flex flex-col items-center justify-between;
+    @apply fixed left-0 right-0 z-50 bg-white-200 dark:bg-dark-900 flex flex-col items-center justify-between shadow-md px-2.5 py-5;
   }
 
   .progress-bar-container {
