@@ -40,6 +40,40 @@
 .cl-userButtonPopoverCard {
   @apply bg-white-100 dark:bg-dark-800 w-fit;
 }
+
+/* User Button Menu layout adjustments */
+.cl-userButtonPopoverCard,
+.cl-userButtonPopover,
+.cl-userButtonPopoverRoot {
+  @apply p-0 rounded-2xl shadow-lg;
+}
+.cl-userButtonPopoverMain {
+  @apply p-0 bg-white-100 dark:bg-dark-800; /* Ensure uniform background in both modes */
+}
+#menu-items {
+  @apply pt-5 pb-4 px-0 flex flex-col gap-2; /* Added top padding + even gaps */
+}
+#menu-items > button {
+  @apply py-2; /* Even vertical spacing for each action */
+}
+#menu-items > button p {
+  @apply text-dark-800 dark:text-white-200 transition-colors; /* Consistent text colors */
+}
+#menu-items > button svg {
+  @apply fill-dark-800 dark:fill-white-200 transition-colors; /* Consistent icon colors */
+}
+#menu-items > button:hover p {
+  @apply text-primary-500; /* Hover accent */
+}
+#menu-items > button:hover svg {
+  @apply fill-primary-500; /* Hover accent */
+}
+#menu-items hr {
+  @apply my-2; /* Consistent divider spacing */
+}
+#menu-items .heading-2-medium {
+  @apply mt-1 mb-2 text-dark-800 dark:text-white-200; /* Balance spacing + consistent heading color */
+}
 .cl-userPreview {
   @apply hidden;
 }
@@ -47,7 +81,7 @@
   @apply hidden;
 }
 .cl-userButtonPopoverActionButtonText {
-  @apply text-dark-800 text-[14px] font-medium leading-[20px];
+  @apply text-dark-800 dark:text-white-200 text-[14px] font-medium leading-[20px];
 }
 .cl-userButtonOuterIdentifier {
   @apply text-dark-800 dark:text-white-200 text-[16px] font-medium leading-[24px];
