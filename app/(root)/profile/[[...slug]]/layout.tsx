@@ -12,7 +12,7 @@ const Layout = async ({
   children: React.ReactNode;
   params: { slug: string[] };
 }) => {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) return null;
 
   const { slug } = params;

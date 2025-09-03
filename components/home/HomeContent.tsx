@@ -29,7 +29,7 @@ const HomeContent = async ({
   query = "newest",
   currentPage,
 }: HomeContentProps) => {
-  const uid = await auth().userId!;
+  const uid = await (await auth()).userId!;
   const { user } = await getUser(uid);
 
   const renderNotFollowing = async () => {

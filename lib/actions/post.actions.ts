@@ -8,7 +8,7 @@ import { Post } from "@prisma/client";
 import { IPostSchema } from "../validations/post.validations";
 
 export async function createPost(data: any) {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   try {
     if (data as Post) {
@@ -236,7 +236,7 @@ export async function getDynamicPosts(
     if (type === "following") {
       const user = await prisma.user.findUnique({
         where: {
-          clerkID: auth().userId!,
+          clerkID: (await auth()).userId!,
         },
         include: {
           following: true,

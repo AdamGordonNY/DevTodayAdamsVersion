@@ -8,7 +8,7 @@ import { Meetup } from "@prisma/client";
 import { IMeetupSchema } from "../validations/meetup.validations";
 
 export async function createMeetup(data: any) {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   try {
     if (data as Meetup) {
@@ -140,7 +140,7 @@ export async function getDynamicMeetups(
     if (type === "following") {
       const user = await prisma.user.findUnique({
         where: {
-          clerkID: auth().userId!,
+          clerkID: (await auth()).userId!,
         },
         include: {
           following: true,

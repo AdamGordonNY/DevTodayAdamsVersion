@@ -270,7 +270,7 @@ export const getUserWithContent = cache(
 );
 
 export const getUserIdWithClerkID = async () => {
-  const { userId: clerkID } = auth();
+  const { userId: clerkID } = await auth();
 
   if (!clerkID) return { message: "No Logged In User" };
   try {
@@ -286,7 +286,7 @@ export const getUserIdWithClerkID = async () => {
 };
 
 export const isUserAuthor = async (authorId: number) => {
-  const { userId: clerkID } = auth();
+  const { userId: clerkID } = await auth();
   if (!clerkID) return { message: "No Logged In User" };
 
   try {
@@ -317,7 +317,7 @@ export const getTwelveUsersToFollow = async () => {
     const users = await prisma.user.findMany({
       where: {
         NOT: {
-          clerkID: auth().userId,
+          clerkID: (await auth()).userId,
         },
       },
       take: 12,

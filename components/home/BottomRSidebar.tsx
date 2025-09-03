@@ -29,7 +29,7 @@ const BottomRSidebar = async ({
       typeHeading = "Meetups";
       break;
   }
-  const uid = await auth().userId!;
+  const uid = await (await auth()).userId!;
   const { user } = await getUser(uid);
 
   if (

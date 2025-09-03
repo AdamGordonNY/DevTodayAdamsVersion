@@ -10,7 +10,7 @@ export async function createNotification(data: {
   ownerId?: number;
   postId?: number;
 }) {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) return { message: "No Logged In User" };
   try {
     const { ownerId, type, postId } = data;
@@ -96,7 +96,7 @@ export async function getNotifications(
 export async function updateNotifications(
   data: NotificationWithActionByAndPost[]
 ) {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) return { message: "No Logged In User" };
 
   try {

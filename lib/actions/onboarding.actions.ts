@@ -9,7 +9,7 @@ export const completeOnboarding = async ({
   step: string;
   option: Tech[];
 }) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     return { message: "No Logged In User" };
@@ -29,7 +29,8 @@ export const completeOnboarding = async ({
       },
     });
     if (updatedUser) {
-      const res = await clerkClient.users.updateUser(userId, {
+      const client = await clerkClient();
+      const res = await client.users.updateUser(userId, {
         publicMetadata: {
           onboardingComplete: true,
         },
@@ -79,8 +80,8 @@ export const createUserFromHook = async (userData: Prisma.UserCreateInput) => {
         },
       },
     });
-
-    await clerkClient.users.updateUser(clerkID!, {
+    const client = await clerkClient();
+    await client.users.updateUser(clerkID!, {
       publicMetadata: {
         onboardingComplete: false,
       },
@@ -99,7 +100,7 @@ export const updateUserOnboardingStep = async ({
   step: string;
   option: Levels | Goals | Tech[];
 }) => {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return { message: "No Logged In User" };
   }

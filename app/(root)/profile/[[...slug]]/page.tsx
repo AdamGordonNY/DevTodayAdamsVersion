@@ -11,7 +11,7 @@ import React from "react";
 
 const Profile = async ({ params }: { params: { slug: string } }) => {
   const { slug } = params;
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) return null;
 

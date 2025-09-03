@@ -15,7 +15,7 @@ const TopRightSidebar = async ({
   contentType: string;
   filter: "newest" | "popular" | "following" | "joined";
 }) => {
-  const uid = await auth().userId!;
+  const uid = await (await auth()).userId!;
   const { user } = await getUser(uid);
 
   if (
