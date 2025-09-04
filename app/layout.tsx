@@ -125,6 +125,13 @@ export default function RootLayout({
     >
       <html lang="en" suppressHydrationWarning>
         <body className={plex.className}>
+          {/* Skip link for keyboard users */}
+          <a
+            href="#main-content"
+            className="focus:text-white sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-primary-500 focus:px-4 focus:py-2"
+          >
+            Skip to main content
+          </a>
           <ThemeProvider>{children}</ThemeProvider>
           <Toaster position="bottom-right" />
         </body>

@@ -27,7 +27,7 @@ const PostDetails = ({
           <div className="relative h-64">
             <Image
               src={image}
-              alt="post-image"
+              alt={title ? `${title} featured image` : "Post featured image"}
               fill
               className="rounded-2xl object-cover"
             />
@@ -48,19 +48,18 @@ const PostDetails = ({
           {isAuthor && <ContentMenu contentId={id} contentCategory="Post" />}
         </div>
 
-        <div className="flex gap-x-4">
-          {tags.length > 0 &&
-            tags.map((tag) => {
-              return (
-                <div
-                  key={tag}
-                  className="caption-10 rounded-full bg-white-100 p-2 uppercase text-white-400 dark:bg-dark-700 dark:text-white-300"
-                >
-                  {tag}
-                </div>
-              );
-            })}
-        </div>
+        {tags.length > 0 && (
+          <ul className="flex gap-x-4" aria-label="Tags">
+            {tags.map((tag) => (
+              <li
+                key={tag}
+                className="caption-10 rounded-full bg-white-100 p-2 uppercase text-white-400 dark:bg-dark-700 dark:text-white-300"
+              >
+                {tag}
+              </li>
+            ))}
+          </ul>
+        )}
 
         {body && (
           <div

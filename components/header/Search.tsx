@@ -57,12 +57,15 @@ const Search = () => {
   return (
     <>
       {/* SearchIcon in the Header */}
-      <div
-        className=" cursor-pointer bg-white-200 dark:bg-dark-700"
+      <button
+        type="button"
+        aria-label={open ? "Close search dialog" : "Open search dialog"}
+        className="rounded-md bg-white-200 p-2 transition outline-none hover:bg-white-100 focus-visible:ring-2 focus-visible:ring-primary-500 dark:bg-dark-700 dark:hover:bg-dark-600"
         onClick={() => setOpen((open) => !open)}
       >
-        <SearchIcon />
-      </div>
+        <SearchIcon aria-hidden="true" />
+        <span className="sr-only">Search (Press Cmd+K)</span>
+      </button>
 
       <SearchCommandDialog open={open} onOpenChange={setOpen}>
         <SearchCommandInput

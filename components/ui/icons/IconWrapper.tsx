@@ -6,6 +6,14 @@ const IconWrapper = (OriginalComponent: React.ComponentType<any>) => {
     className,
     fill,
     status = "none",
+    decorative = true,
+    statusLabelMap = {
+      online: "Online",
+      away: "Away",
+      offline: "Offline",
+      newWithBorder: "New",
+      newWithoutBorder: "New",
+    },
     ...rest
   }: {
     size?: number;
@@ -18,6 +26,8 @@ const IconWrapper = (OriginalComponent: React.ComponentType<any>) => {
       | "away"
       | "offline"
       | "none";
+    decorative?: boolean;
+    statusLabelMap?: Record<string, string>;
   }) => {
     const colorMap = {
       newWithBorder: "bg-primary-500 border-primary-100 border",
@@ -29,6 +39,7 @@ const IconWrapper = (OriginalComponent: React.ComponentType<any>) => {
     };
     const statusColor = colorMap[status];
 
+    const label = status !== "none" ? statusLabelMap[status] : undefined;
     return (
       <div
         className={`flex ${className} ${fill || "fill-white-400 dark:fill-white-300"} ${status !== "none" && "relative"}`}
@@ -36,12 +47,21 @@ const IconWrapper = (OriginalComponent: React.ComponentType<any>) => {
           width: `${size}px`,
           height: `${size}px`,
         }}
+        role={!decorative ? "img" : undefined}
+        aria-label={!decorative && label ? label : undefined}
+        aria-hidden={decorative ? true : undefined}
       >
-        <OriginalComponent {...rest} />
+        <OriginalComponent
+          aria-hidden={decorative ? true : undefined}
+          {...rest}
+        />
         {status !== "none" && (
           <div
             className={`size-2.5 ${statusColor} absolute right-0 top-0 rounded-full`}
-          ></div>
+            aria-hidden="true"
+          >
+            {!decorative && label && <span className="sr-only">{label}</span>}
+          </div>
         )}
       </div>
     );

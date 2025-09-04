@@ -17,24 +17,28 @@ const Header = async () => {
 
   return (
     <>
-      <header className="sticky flex h-20 items-center justify-between bg-white-100 px-8 dark:bg-dark-800">
-        <Image
-          priority
-          src={logoLight}
-          alt="LogoLight"
-          className="-mt-1.5 block dark:hidden"
-        />
+      <header className="sticky flex h-20 items-center justify-between bg-white-100 px-8 dark:bg-dark-800" role="banner">
+        <Link href="/" className="flex items-center" aria-label="Dev Today home">
+          <Image
+            priority
+            src={logoLight}
+            alt="Dev Today"
+            className="-mt-1.5 block dark:hidden"
+          />
+          <Image
+            priority
+            src={logoDark}
+            alt="Dev Today"
+            className="-mt-1.5 hidden dark:block"
+          />
+        </Link>
 
-        <Image
-          priority
-          src={logoDark}
-          alt="LogoDark"
-          className="-mt-1.5 hidden dark:block"
-        />
-
-        <section className="flex gap-x-7 px-3 max-md:hidden">
+        <nav
+          className="flex gap-x-7 px-3 max-md:hidden"
+          aria-label="Primary"
+        >
           <HeaderNav />
-        </section>
+        </nav>
 
         <section className="flex items-center gap-x-4">
           <div className="rounded-md bg-white-200 p-3 dark:bg-dark-700">
@@ -59,9 +63,12 @@ const Header = async () => {
       </header>
 
       {/* MOBILE VIEW */}
-      <footer className="fixed bottom-0 z-20 flex h-20 w-full items-center justify-between bg-white-100 px-8 md:hidden dark:bg-dark-800">
+      <nav
+        className="fixed bottom-0 z-20 flex h-20 w-full items-center justify-between bg-white-100 px-8 md:hidden dark:bg-dark-800"
+        aria-label="Primary mobile"
+      >
         <HeaderNav />
-      </footer>
+      </nav>
 
       <ClerkMenuController />
     </>
