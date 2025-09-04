@@ -6,13 +6,14 @@ import { Loader2 } from "lucide-react";
 const PodcastUpload = ({
   id,
   onChange,
-
   errors,
+  inputId,
 }: {
   onChange: (file: string) => void;
   value: string;
   errors: any;
   id: number;
+  inputId?: string;
 }) => {
   const { toast } = useToast();
 
@@ -21,6 +22,7 @@ const PodcastUpload = ({
       <UploadButton
         endpoint="contentAudio"
         className="podcast-button"
+        aria-label="Upload podcast audio file"
         onUploadError={() => {
           toast({
             description: "Failed to upload audio",

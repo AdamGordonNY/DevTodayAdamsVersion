@@ -5,16 +5,16 @@
 
 ## 🌐 Demo
 
-Here is a working live demo: https://adam-gordon.info/posts
+Here is a working live demo: <https://adam-gordon.info/posts>
 
 ## 📝 Description
 
 DevToday is a content creation platform for developers. It offers a feed of dev news, podcasts, and events, keeping you up-to-date with the latest tech. It has interactive features like podcast audio playback, meetup maps, and more. You can think of it as the go-to developer community hub.
 
 - Motivation: To test my skills and put together a user friendly, developer focused social media site.
-- Why I Built This Project: Alot of "Developer" social media is scattered, I wanted to centralize it.
+- Why I Built This Project: A lot of "developer" social media is scattered; I wanted to centralize it.
 - Problem Solved: Developers can arrange to meetup, record podcasts/audio to share informaation across multiple modes of communication, or just post.
-- What I Learned: With a business like attitude and a good team even of small size, when working together and being humble and open to feedback, as well as accountable to each other, it is possible to put together a comprehensive site with complex features such as the site-wide audio player that doesn't shut off when you navigate away from the page, having a seperate socket.io server to handle instant updates and enable live communication and notification.  Designing for mobile first is the best way to go in this era, and taking that approach makes designing for regular and larger screens easier.  Framer motion is best used to enhance an already crisp and functional layout, and things like color pallette, spacing, and other UX design "yes's" can make a good website great, or make a good website bad depending on whether you follow proven UX patterns.  I also learned how to use Prisma and PostgresQL with typescript and zod to easy type and validate incoming and outgoing data.  Using relative/absolute combos with flexboxes can help scale images while maintaining the desired look of the site.
+ - What I Learned: With a business-like attitude and a good team (even a small one), when collaborating while staying humble, open to feedback, and accountable, it's possible to build a comprehensive site with complex features (e.g., a site-wide audio player that persists across navigation, a separate `socket.io` service for instant updates, live communication, and notifications). Designing mobile-first simplifies scaling to larger screens. Framer Motion works best as a progressive enhancement on a solid layout; fundamentals like color palette, spacing, and consistent UX patterns make or break quality. I also refined skills using a modern TypeScript-friendly ORM, PostgreSQL, TypeScript, and `zod` for typed validation. Thoughtful layout techniques (relative/absolute positioning plus modern flex utilities) help scale images while preserving intent.
 
 ## ✨ Features
 
@@ -40,20 +40,62 @@ DevToday is a content creation platform for developers. It offers a feed of dev 
 - Comment Threads
 - Light & Dark mode
 
+## ♿ Accessibility
+
+This project includes an ongoing accessibility (a11y) initiative to meet WCAG 2.1 AA where practical.
+
+Key Improvements Implemented:
+- Landmarks: Single `<main id="main-content">`, semantic `<header>` / `<nav>` separation, skip link for keyboard users.
+- Keyboard Navigation: All interactive icons converted to `<button>` or given proper roles; consistent focus styles via utilities.
+- Forms: Inputs now have explicit `id`/`htmlFor` links; validation messages use `role="alert"` + `aria-describedby`.
+- Dialogs & Menus: Radix primitives leveraged; added labeling (`aria-label`, listbox semantics for group selector, notification menu labeling).
+- Live Regions: Toast notifications wrapped in `aria-live="polite" aria-atomic="true"` region.
+- Media: Meaningful `alt` text for logos and content images; decorative icons marked `aria-hidden` by default.
+- Tags & Status: Tags rendered as semantic lists; status indicators (icons) can expose text alternatives when `decorative={false}`.
+- Color & Focus: Introduced reusable focus ring utilities; future contrast audits guided by design tokens.
+
+Utilities (Tailwind layer):
+- `.focus-ring` – Adds accessible focus outline (`ring-2` + offset) for keyboard users.
+- `.focus-inset-ring` – Variant without offset for tighter components.
+- `.sr-only` – Hides text visually while keeping it for assistive tech.
+- `.icon-button` – Consistent styling (hover, focus) for small icon-only buttons.
+
+Usage Examples:
+```tsx
+<button className="icon-button" aria-label="Open search">…</button>
+<div className="focus-ring" role="button" tabIndex={0}>Custom Control</div>
+<span className="sr-only">Online</span>
+```
+
+Authoring Guidelines:
+1. Always provide an accessible name (visible text or `aria-label`).
+2. Associate errors with fields using `aria-describedby`.
+3. Prefer semantic HTML over ARIA; add ARIA only when semantics are insufficient.
+4. Ensure newly added interactive elements include a visible or programmatic focus indicator.
+5. Avoid relying solely on color to convey state (include text or icon shape changes).
+
+Planned / Next Steps:
+- Contrast token verification and adjustments.
+- Add jest-axe for automated component accessibility regression tests.
+- Reduced motion handling for animated transitions.
+- Extend focus utilities to any newly added components.
+
+If you spot an accessibility issue, please open an issue with the label `a11y`.
+
 ## Components
 
 1. Language - [Typescript](https://www.typescriptlang.org/)
 2. **Framework -** [Next.js](https://nextjs.org/)
 3. **Libraries:**
    - Authentication - [Clerk](https://clerk.com/) or [Next Auth](https://next-auth.js.org/)
-   - Styling - [Tailwindcss](https://tailwindcss.com/) with [Shadcn](https://ui.shadcn.com/) _or your favorite UX library_
-   - Media Management - [Uploadthing](https://uploadthing.com/) or [Next Cloudinary](https://next.cloudinary.dev/)
+   - Styling - [Tailwind CSS](https://tailwindcss.com/) with [`shadcn/ui`](https://ui.shadcn.com/) _or your favorite UX library_
+   - Media Management - [UploadThing](https://uploadthing.com/) or [Next Cloudinary](https://next.cloudinary.dev/)
    - Rich text editor - WYSIWYG editor - TinyMCE
    - Rich text parser - [html-react-parser](https://www.npmjs.com/package/html-react-parser)
-   - Date picker - [react-datepicker](https://reactdatepicker.com/)
-   - Database - [Mongodb](https://www.mongodb.com/) + [Mongoose](https://mongoosejs.com/docs/) or [Postgres](https://www.postgresql.org/) **+** [Prisma](https://www.prisma.io/)
-   - Validation - [zod](https://zod.dev/)
-   - Interactive map - [@vis.gl/react-google-maps](<[https://react-leaflet.js.org/](https://visgl.github.io/react-google-maps/)>) _or other libraries you wish to use_
+   - Date picker - [`react-datepicker`](https://reactdatepicker.com/)
+   - Database - [MongoDB](https://www.mongodb.com/) + [Mongoose](https://mongoosejs.com/docs/) or [PostgreSQL](https://www.postgresql.org/) **+** [Prisma ORM](https://www.prisma.io/)
+   - Validation - [`zod`](https://zod.dev/)
+   - Interactive map - [`@vis.gl/react-google-maps`](https://visgl.github.io/react-google-maps/) _or other libraries you wish to use_
 
 ## 🛠️ Setup Project
 
@@ -151,13 +193,13 @@ If you'd like to request a new function, feel free to do so by opening an issue 
 - [ ] Enable Admins/Users to remove a user or assign a user the admin role in the Member's Tab.
 - [ ] Sweep for bugs.
 - [ ] A proper Case Study.
-- [ ] connecting a socket.io server to handle notifications and enable IMing.
+- [ ] Connect a `socket.io` server to handle notifications and enable instant messaging.
 
 ## 📜 Credits
 I'd like to acknowledge my collaborators, who contributed to the success of this project. Below are links to their GitHub profiles.
-[@darshin](https://github.com/DDVVPP) - co-lead developer
+[@darshin](https://github.com/DDVVPP) - Co-lead developer
 https://github.com/brandonetter - Code Reviewer and Mentor
-adrianhajdin Adrian Hajdin - JS Mastery - Mentor extraordinaire
+Adrian H. - JS Mastery - Mentor
 
 
 

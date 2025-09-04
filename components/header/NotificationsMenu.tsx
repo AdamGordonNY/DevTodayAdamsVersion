@@ -143,7 +143,10 @@ const NotificationsMenu = ({ userId }: { userId: string }) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center rounded-md bg-white-200 p-3 dark:bg-dark-700">
+      <DropdownMenuTrigger
+        className="focus-ring flex items-center rounded-md bg-white-200 p-3 dark:bg-dark-700"
+        aria-label="Notifications"
+      >
         <Bell
           status={
             (notifications?.unreadNotifications ?? []).length > 0

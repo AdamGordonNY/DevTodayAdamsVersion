@@ -16,10 +16,17 @@ const MarkReadButton = ({
 }) => {
   return (
     <button
-      className="mark-all-read"
+      className="mark-all-read focus-ring"
       type="button"
       onClick={setUpdateNotifications}
       disabled={isUpdating || unreadNotifications.length === 0}
+      aria-label={
+        isUpdating
+          ? "Marking notifications as read"
+          : unreadNotifications.length === 0
+            ? "No unread notifications"
+            : `Mark ${unreadNotifications.length} notifications as read`
+      }
     >
       {isUpdating ? (
         <Loader2 className="animate-spin" />

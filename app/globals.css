@@ -77,3 +77,37 @@
     @apply dark:bg-dark-900  text-foreground;
   }
 }
+
+/* Accessible utility classes */
+@layer utilities {
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-dark-900 rounded-md transition-shadow;
+  }
+  .focus-inset-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded-md transition-shadow;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  .not-sr-only:focus,
+  .not-sr-only:active {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+  .icon-button {
+    @apply rounded-md bg-white-200 p-2 transition hover:bg-white-100 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:bg-dark-700 dark:hover:bg-dark-600;
+  }
+}

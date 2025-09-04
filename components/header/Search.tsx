@@ -60,7 +60,7 @@ const Search = () => {
       <button
         type="button"
         aria-label={open ? "Close search dialog" : "Open search dialog"}
-        className="rounded-md bg-white-200 p-2 transition outline-none hover:bg-white-100 focus-visible:ring-2 focus-visible:ring-primary-500 dark:bg-dark-700 dark:hover:bg-dark-600"
+  className="icon-button"
         onClick={() => setOpen((open) => !open)}
       >
         <SearchIcon aria-hidden="true" />

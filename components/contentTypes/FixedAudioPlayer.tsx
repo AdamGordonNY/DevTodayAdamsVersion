@@ -109,7 +109,7 @@ const FixedAudioPlayer = ({ className }: { className?: string }) => {
             <div className="audio-controls">
               <Button
                 onClick={handlePlayPause}
-                className="play-pause-button w-[100px] gap-x-2.5 bg-primary-500 p-2"
+                className="play-pause-button focus-ring w-[100px] gap-x-2.5 bg-primary-500 p-2"
                 aria-label={isPlaying ? "Pause audio" : "Play audio"}
               >
                 {isPlaying ? <Pause /> : <Play />}
@@ -133,7 +133,7 @@ const FixedAudioPlayer = ({ className }: { className?: string }) => {
               <Button
                 onClick={() => setOpen(false)}
                 aria-label="Close player"
-                className="flex items-center justify-center bg-white-200 p-2 dark:bg-dark-900"
+                className="focus-ring flex items-center justify-center bg-white-200 p-2 dark:bg-dark-900"
               >
                 <X className="fill-dark-900 stroke-dark-900 dark:fill-white-100 dark:stroke-white-100" />
               </Button>

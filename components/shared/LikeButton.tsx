@@ -83,11 +83,19 @@ const LikeButton = ({
   return (
     <div>
       <button
-        className={`flex size-[30px] items-center justify-center gap-x-2.5  ${heartBackground[heartBgType]} ${
+        className={`focus-ring flex size-[30px] items-center justify-center gap-x-2.5 ${heartBackground[heartBgType]} ${
           isPending ? "opacity-50" : "opacity-100"
         }`}
         onClick={handleToggle}
         disabled={isPending}
+        aria-pressed={!!isLiked}
+        aria-label={
+          isLiked === null
+            ? "Loading like status"
+            : isLiked
+              ? "Unlike"
+              : "Like"
+        }
       >
         <Heart
           size={size}

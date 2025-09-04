@@ -101,7 +101,10 @@ const CreateOrEditMeetup = ({ meetup }: { meetup?: MeetupContent }) => {
       className="m-4 flex w-[840px] flex-col gap-y-8 max-md:mb-24"
     >
       <section className="w-full flex-col">
-        <Label className="paragraph-3-medium text-dark-800 dark:text-white-200">
+        <Label
+          htmlFor="meetup-title"
+          className="paragraph-3-medium text-dark-800 dark:text-white-200"
+        >
           Title
         </Label>
         <Controller
@@ -109,9 +112,12 @@ const CreateOrEditMeetup = ({ meetup }: { meetup?: MeetupContent }) => {
           name="title"
           render={({ field: { onChange, value } }) => (
             <Input
+              id="meetup-title"
               className="paragraph-3-regular mt-3 bg-white-100 dark:border-dark-border dark:bg-dark-800 dark:text-white-200 dark:placeholder:text-white-400"
               placeholder="Write the title of the meetup"
               value={value}
+              aria-invalid={!!errors.title}
+              aria-describedby={errors.title ? "meetup-title-error" : undefined}
               onChange={(event) => {
                 onChange(event);
               }}
@@ -120,7 +126,11 @@ const CreateOrEditMeetup = ({ meetup }: { meetup?: MeetupContent }) => {
         />
 
         {errors.title && (
-          <span className="paragraph-3-regular ml-3 text-destructive-error">
+          <span
+            id="meetup-title-error"
+            role="alert"
+            className="paragraph-3-regular ml-3 text-destructive-error"
+          >
             {errors.title.message}
           </span>
         )}
@@ -151,14 +161,18 @@ const CreateOrEditMeetup = ({ meetup }: { meetup?: MeetupContent }) => {
 
       <section className="flex w-full flex-wrap justify-between gap-4">
         <div className="align-center mb-2 flex min-w-fit flex-1 flex-col space-y-2">
-          <span className="paragraph-3-medium text-dark-800 dark:text-white-200">
+          <Label
+            htmlFor="meetup-start"
+            className="paragraph-3-medium text-dark-800 dark:text-white-200"
+          >
             Start Date & Time
-          </span>
+          </Label>
           <Controller
             control={control}
             name="startTime"
             render={({ field }) => (
               <ReactDatePicker
+                id="meetup-start"
                 className="paragraph-3-regular h-10 w-full rounded-md border border-white-border bg-white-100 !px-10 dark:border-dark-border dark:bg-dark-800 dark:text-white-200"
                 onChange={(e) => {
                   field.onChange(e);
@@ -184,14 +198,18 @@ const CreateOrEditMeetup = ({ meetup }: { meetup?: MeetupContent }) => {
           />
         </div>
         <div className="align-center mb-2 flex min-w-fit flex-1 flex-col space-y-2">
-          <span className="paragraph-3-medium text-dark-800 dark:text-white-200">
+          <Label
+            htmlFor="meetup-end"
+            className="paragraph-3-medium text-dark-800 dark:text-white-200"
+          >
             End Date & Time
-          </span>
+          </Label>
           <Controller
             control={control}
             name="endTime"
             render={({ field }) => (
               <ReactDatePicker
+                id="meetup-end"
                 className="paragraph-3-regular h-10 w-full rounded-md border border-white-border bg-white-100 !px-10 dark:border-dark-border dark:bg-dark-800 dark:text-white-200"
                 onChange={(e) => field.onChange(e)}
                 selected={field.value}

@@ -73,7 +73,10 @@ const CreateOrEditGroup = ({
       onSubmit={handleSubmit(onSubmit)}
     >
       <section className="flex w-full flex-col">
-        <Label className="paragraph-3-medium text-dark-800 dark:text-white-200">
+        <Label
+          htmlFor="group-name"
+          className="paragraph-3-medium text-dark-800 dark:text-white-200"
+        >
           Group name
         </Label>
         <Controller
@@ -81,9 +84,12 @@ const CreateOrEditGroup = ({
           name="name"
           render={({ field: { onChange, value } }) => (
             <Input
+              id="group-name"
               className="paragraph-3-regular mt-3 bg-white-100 dark:border-dark-border dark:bg-dark-800 dark:text-white-200 dark:placeholder:text-white-400"
               placeholder="Write the name of the group"
               value={value}
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? "group-name-error" : undefined}
               onChange={(event) => {
                 onChange(event);
               }}
@@ -92,7 +98,11 @@ const CreateOrEditGroup = ({
         />
 
         {errors.name && (
-          <span className="paragraph-3-regular ml-3 text-destructive-error">
+          <span
+            id="group-name-error"
+            role="alert"
+            className="paragraph-3-regular ml-3 text-destructive-error"
+          >
             {errors.name.message}
           </span>
         )}
@@ -117,7 +127,10 @@ const CreateOrEditGroup = ({
       />
 
       <section>
-        <Label className="paragraph-3-medium text-dark-800 dark:text-white-200">
+        <Label
+          htmlFor="group-bio"
+          className="paragraph-3-medium text-dark-800 dark:text-white-200"
+        >
           Group bio
         </Label>
 
@@ -126,9 +139,12 @@ const CreateOrEditGroup = ({
           name="about"
           render={({ field: { onChange, value } }) => (
             <Textarea
+              id="group-bio"
               className="paragraph-3-regular mt-3 border bg-white-100 dark:border-dark-border dark:bg-dark-800 dark:text-white-200 dark:placeholder:text-white-400"
               placeholder="Write a short description of the group..."
               value={value}
+              aria-invalid={!!errors.about}
+              aria-describedby={errors.about ? "group-bio-error" : undefined}
               onChange={(event) => {
                 onChange(event);
               }}
@@ -137,7 +153,11 @@ const CreateOrEditGroup = ({
         />
 
         {errors.about && (
-          <span className="paragraph-3-regular ml-3 text-destructive-error">
+          <span
+            id="group-bio-error"
+            role="alert"
+            className="paragraph-3-regular ml-3 text-destructive-error"
+          >
             {errors.about.message}
           </span>
         )}

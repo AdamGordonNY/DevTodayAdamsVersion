@@ -97,7 +97,10 @@ const CommentMenu = ({
           heartBgType="none"
         />
         <DropdownMenu>
-          <DropdownMenuTrigger className="rounded transition duration-300 hover:bg-white-200 dark:hover:bg-dark-700">
+          <DropdownMenuTrigger
+            className="focus-ring rounded transition duration-300 hover:bg-white-200 dark:hover:bg-dark-700"
+            aria-label="Comment actions menu"
+          >
             <TripleDot size={16} fill="fill-white-300" />
           </DropdownMenuTrigger>
 
@@ -117,8 +120,9 @@ const CommentMenu = ({
 
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger
-                className="flex cursor-pointer items-center gap-x-3 p-3 hover:rounded hover:bg-white-200 hover:p-3 dark:hover:bg-dark-700"
+                className="focus-ring flex cursor-pointer items-center gap-x-3 p-3 hover:rounded hover:bg-white-200 hover:p-3 dark:hover:bg-dark-700"
                 onClick={() => setOpen((open) => !open)}
+                aria-label="Delete comment"
               >
                 <Trash
                   size={18}

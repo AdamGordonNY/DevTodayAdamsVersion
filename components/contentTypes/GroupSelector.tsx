@@ -48,7 +48,7 @@ const GroupSelector = ({ onChange, value }: { onChange: any; value: any }) => {
     <section className="flex w-full gap-3 max-md:flex-col">
       <DropdownMenu onOpenChange={() => setCaretDown((curr: boolean) => !curr)}>
         <DropdownMenuTrigger
-          className="content-dropdown-trigger w-full justify-between bg-white-100 px-3 dark:bg-dark-800 dark:disabled:bg-dark-900"
+          className="content-dropdown-trigger focus-ring w-full justify-between bg-white-100 px-3 dark:bg-dark-800 dark:disabled:bg-dark-900"
           onClick={() => setCaretDown((curr: boolean) => !curr)}
           disabled={groups.length === 0}
           aria-label="Choose a group"

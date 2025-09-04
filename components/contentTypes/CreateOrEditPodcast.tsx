@@ -83,7 +83,10 @@ const CreateOrEditPodcast = ({ podcast }: { podcast?: PodcastContent }) => {
       className="m-4 flex w-[840px] flex-col gap-y-8 max-md:mb-24"
     >
       <section className="w-full flex-col">
-        <Label className="paragraph-3-medium text-dark-800 dark:text-white-200">
+        <Label
+          htmlFor="podcast-title"
+          className="paragraph-3-medium text-dark-800 dark:text-white-200"
+        >
           Title
         </Label>
         <Controller
@@ -91,9 +94,14 @@ const CreateOrEditPodcast = ({ podcast }: { podcast?: PodcastContent }) => {
           name="title"
           render={({ field: { onChange, value } }) => (
             <Input
+              id="podcast-title"
               className="paragraph-3-regular mt-3 bg-white-100 dark:border-dark-border dark:bg-dark-800 dark:text-white-200 dark:placeholder:text-white-400"
               placeholder="Write the title of the podcast"
               value={value}
+              aria-invalid={!!errors.title}
+              aria-describedby={
+                errors.title ? "podcast-title-error" : undefined
+              }
               onChange={(event) => {
                 onChange(event);
               }}
@@ -102,7 +110,11 @@ const CreateOrEditPodcast = ({ podcast }: { podcast?: PodcastContent }) => {
         />
 
         {errors.title && (
-          <span className="paragraph-3-regular ml-3 text-destructive-error">
+          <span
+            id="podcast-title-error"
+            role="alert"
+            className="paragraph-3-regular ml-3 text-destructive-error"
+          >
             {errors.title.message}
           </span>
         )}
@@ -131,7 +143,10 @@ const CreateOrEditPodcast = ({ podcast }: { podcast?: PodcastContent }) => {
         )}
       />
       <section className="flex w-full flex-col gap-y-4 rounded-md">
-        <Label className="paragraph-3-medium text-dark-800 dark:text-white-200">
+        <Label
+          htmlFor="podcast-audio"
+          className="paragraph-3-medium text-dark-800 dark:text-white-200"
+        >
           Podcast Audio File
         </Label>
         <div className="flex w-full gap-x-2.5  rounded-md bg-white-200 px-5 py-3 dark:bg-dark-800">
@@ -146,6 +161,7 @@ const CreateOrEditPodcast = ({ podcast }: { podcast?: PodcastContent }) => {
                 onChange={onChange}
                 value={value ?? ""}
                 id={podcast?.id || 0}
+                inputId="podcast-audio"
               />
             )}
           />
@@ -158,14 +174,20 @@ const CreateOrEditPodcast = ({ podcast }: { podcast?: PodcastContent }) => {
             )}
           </div>
           {errors.audio && (
-            <span className="paragraph-3-regular text-destructive-error">
+            <span
+              role="alert"
+              className="paragraph-3-regular text-destructive-error"
+            >
               {errors.audio.message}
             </span>
           )}
         </div>
       </section>
       <section className="flex w-full flex-col gap-y-4">
-        <Label className="paragraph-3-medium text-dark-800 dark:text-white-200">
+        <Label
+          htmlFor="podcast-audio-title"
+          className="paragraph-3-medium text-dark-800 dark:text-white-200"
+        >
           Audio Title
         </Label>
         <div className="flex w-full  dark:bg-dark-800">
@@ -174,16 +196,25 @@ const CreateOrEditPodcast = ({ podcast }: { podcast?: PodcastContent }) => {
             name="audioTitle"
             render={({ field: { onChange, value } }) => (
               <Input
+                id="podcast-audio-title"
                 onChange={onChange}
                 value={value}
                 placeholder="Enter the title of the Episode. Ex: Podcast Name | Episode 1"
                 className="paragraph-3-regular  bg-white-100 dark:border-dark-border dark:bg-dark-800 dark:text-white-200 dark:placeholder:text-white-400"
+                aria-invalid={!!errors.audioTitle}
+                aria-describedby={
+                  errors.audioTitle ? "podcast-audio-title-error" : undefined
+                }
               />
             )}
           />
 
           {errors.audioTitle && (
-            <span className="paragraph-3-regular text-destructive-error">
+            <span
+              id="podcast-audio-title-error"
+              role="alert"
+              className="paragraph-3-regular text-destructive-error"
+            >
               {errors.audioTitle.message}
             </span>
           )}
