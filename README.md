@@ -4,7 +4,7 @@
 
 ## 🌐 Demo
 
-Here is a working live demo: <https://adam-gordon.info/posts>
+Here is a working live demo: <https://adam-gordon.dev/posts>
 
 ## 📝 Description
 
@@ -208,6 +208,6 @@ Adrian H. - JS Mastery - Mentor
 ## 📞 Contact Me
 
 Adam Gordon <br />
-Email : adam@adam-gordon.info
+Email : connect@adam-gordon.dev
 Github : @AdamGordonNY
 LinkedIn : adam-gordon119
