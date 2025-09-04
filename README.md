@@ -2,7 +2,6 @@
 
 [![Latest release](https://gitnote.s3.us-east-2.amazonaws.com/tsconfig.png)](https://dev-today.adam-gordon.info)
 
-
 ## 🌐 Demo
 
 Here is a working live demo: <https://adam-gordon.info/posts>
@@ -14,7 +13,7 @@ DevToday is a content creation platform for developers. It offers a feed of dev 
 - Motivation: To test my skills and put together a user friendly, developer focused social media site.
 - Why I Built This Project: A lot of "developer" social media is scattered; I wanted to centralize it.
 - Problem Solved: Developers can arrange to meetup, record podcasts/audio to share informaation across multiple modes of communication, or just post.
- - What I Learned: With a business-like attitude and a good team (even a small one), when collaborating while staying humble, open to feedback, and accountable, it's possible to build a comprehensive site with complex features (e.g., a site-wide audio player that persists across navigation, a separate `socket.io` service for instant updates, live communication, and notifications). Designing mobile-first simplifies scaling to larger screens. Framer Motion works best as a progressive enhancement on a solid layout; fundamentals like color palette, spacing, and consistent UX patterns make or break quality. I also refined skills using a modern TypeScript-friendly ORM, PostgreSQL, TypeScript, and `zod` for typed validation. Thoughtful layout techniques (relative/absolute positioning plus modern flex utilities) help scale images while preserving intent.
+- What I Learned: With a business-like attitude and a good team (even a small one), when collaborating while staying humble, open to feedback, and accountable, it's possible to build a comprehensive site with complex features (e.g., a site-wide audio player that persists across navigation, a separate `socket.io` service for instant updates, live communication, and notifications). Designing mobile-first simplifies scaling to larger screens. Framer Motion works best as a progressive enhancement on a solid layout; fundamentals like color palette, spacing, and consistent UX patterns make or break quality. I also refined skills using a modern TypeScript-friendly ORM, PostgreSQL, TypeScript, and `zod` for typed validation. Thoughtful layout techniques (relative/absolute positioning plus modern flex utilities) help scale images while preserving intent.
 
 ## ✨ Features
 
@@ -45,6 +44,7 @@ DevToday is a content creation platform for developers. It offers a feed of dev 
 This project includes an ongoing accessibility (a11y) initiative to meet WCAG 2.1 AA where practical.
 
 Key Improvements Implemented:
+
 - Landmarks: Single `<main id="main-content">`, semantic `<header>` / `<nav>` separation, skip link for keyboard users.
 - Keyboard Navigation: All interactive icons converted to `<button>` or given proper roles; consistent focus styles via utilities.
 - Forms: Inputs now have explicit `id`/`htmlFor` links; validation messages use `role="alert"` + `aria-describedby`.
@@ -55,12 +55,14 @@ Key Improvements Implemented:
 - Color & Focus: Introduced reusable focus ring utilities; future contrast audits guided by design tokens.
 
 Utilities (Tailwind layer):
+
 - `.focus-ring` – Adds accessible focus outline (`ring-2` + offset) for keyboard users.
 - `.focus-inset-ring` – Variant without offset for tighter components.
 - `.sr-only` – Hides text visually while keeping it for assistive tech.
 - `.icon-button` – Consistent styling (hover, focus) for small icon-only buttons.
 
 Usage Examples:
+
 ```tsx
 <button className="icon-button" aria-label="Open search">…</button>
 <div className="focus-ring" role="button" tabIndex={0}>Custom Control</div>
@@ -68,6 +70,7 @@ Usage Examples:
 ```
 
 Authoring Guidelines:
+
 1. Always provide an accessible name (visible text or `aria-label`).
 2. Associate errors with fields using `aria-describedby`.
 3. Prefer semantic HTML over ARIA; add ARIA only when semantics are insufficient.
@@ -75,6 +78,7 @@ Authoring Guidelines:
 5. Avoid relying solely on color to convey state (include text or icon shape changes).
 
 Planned / Next Steps:
+
 - Contrast token verification and adjustments.
 - Add jest-axe for automated component accessibility regression tests.
 - Reduced motion handling for animated transitions.
@@ -131,7 +135,6 @@ We need to install or make sure that these tools are pre-installed on your machi
    ```
 
 4. Set up environment variables (if necessary)
-
    - Create a .env file in the root directory.
    - Add environment-specific variables as needed.
 
@@ -196,16 +199,11 @@ If you'd like to request a new function, feel free to do so by opening an issue 
 - [ ] Connect a `socket.io` server to handle notifications and enable instant messaging.
 
 ## 📜 Credits
+
 I'd like to acknowledge my collaborators, who contributed to the success of this project. Below are links to their GitHub profiles.
 [@darshin](https://github.com/DDVVPP) - Co-lead developer
 https://github.com/brandonetter - Code Reviewer and Mentor
 Adrian H. - JS Mastery - Mentor
-
-
-
-
-
-
 
 ## 📞 Contact Me
 

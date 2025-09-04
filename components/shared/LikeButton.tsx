@@ -90,11 +90,7 @@ const LikeButton = ({
         disabled={isPending}
         aria-pressed={!!isLiked}
         aria-label={
-          isLiked === null
-            ? "Loading like status"
-            : isLiked
-              ? "Unlike"
-              : "Like"
+          isLiked === null ? "Loading like status" : isLiked ? "Unlike" : "Like"
         }
       >
         <Heart

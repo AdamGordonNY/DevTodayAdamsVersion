@@ -60,7 +60,7 @@ const Search = () => {
       <button
         type="button"
         aria-label={open ? "Close search dialog" : "Open search dialog"}
-  className="icon-button"
+        className="icon-button"
         onClick={() => setOpen((open) => !open)}
       >
         <SearchIcon aria-hidden="true" />
