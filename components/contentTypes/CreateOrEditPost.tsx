@@ -115,11 +115,7 @@ const CreateOrEditPost = ({ post }: { post?: PostContent }) => {
           control={control}
           name="group"
           render={({ field: { onChange, value } }) => (
-            <GroupSelector
-              onChange={onChange}
-              value={value.name}
-              aria-label="Select group for post"
-            />
+            <GroupSelector onChange={onChange} value={value.name} />
           )}
         />
         {errors.group && (

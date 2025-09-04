@@ -60,7 +60,7 @@ const IconWrapper = (OriginalComponent: React.ComponentType<any>) => {
             className={`size-2.5 ${statusColor} absolute right-0 top-0 rounded-full`}
             aria-hidden="true"
           >
-            {!decorative && label && <span className="sr-only">{label}</span>}
+            {/* Removed redundant screen reader label to avoid duplicate announcements */}
           </div>
         )}
       </div>
