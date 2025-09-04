@@ -75,7 +75,10 @@ const CreateOrEditPost = ({ post }: { post?: PostContent }) => {
       className="m-4 flex w-[840px] flex-col gap-y-8 max-md:mb-24"
     >
       <section className="w-full flex-col">
-        <Label className="paragraph-3-medium text-dark-800 dark:text-white-200">
+        <Label
+          htmlFor="post-title"
+          className="paragraph-3-medium text-dark-800 dark:text-white-200"
+        >
           Title
         </Label>
         <Controller
@@ -83,9 +86,12 @@ const CreateOrEditPost = ({ post }: { post?: PostContent }) => {
           name="title"
           render={({ field: { onChange, value } }) => (
             <Input
+              id="post-title"
               className="paragraph-3-regular mt-3 bg-white-100 dark:border-dark-border dark:bg-dark-800 dark:text-white-200 dark:placeholder:text-white-400"
               placeholder="Write the title of the post"
               value={value}
+              aria-invalid={!!errors.title}
+              aria-describedby={errors.title ? "post-title-error" : undefined}
               onChange={(event) => {
                 onChange(event);
               }}
@@ -94,22 +100,33 @@ const CreateOrEditPost = ({ post }: { post?: PostContent }) => {
         />
 
         {errors.title && (
-          <span className="paragraph-3-regular ml-3 text-destructive-error">
+          <span
+            id="post-title-error"
+            role="alert"
+            className="paragraph-3-regular ml-3 text-destructive-error"
+          >
             {errors.title.message}
           </span>
         )}
       </section>
 
-      <section>
+      <section aria-live="polite">
         <Controller
           control={control}
           name="group"
           render={({ field: { onChange, value } }) => (
-            <GroupSelector onChange={onChange} value={value.name} />
+            <GroupSelector
+              onChange={onChange}
+              value={value.name}
+              aria-label="Select group for post"
+            />
           )}
         />
         {errors.group && (
-          <span className="paragraph-3-regular ml-3 text-destructive-error">
+          <span
+            role="alert"
+            className="paragraph-3-regular ml-3 text-destructive-error"
+          >
             {errors.group.name?.message}
           </span>
         )}
@@ -123,7 +140,7 @@ const CreateOrEditPost = ({ post }: { post?: PostContent }) => {
         )}
       />
 
-      <section className="w-full">
+      <section className="w-full" aria-live="polite">
         <Controller
           control={control}
           name="body"
@@ -132,16 +149,22 @@ const CreateOrEditPost = ({ post }: { post?: PostContent }) => {
           )}
         />
         {errors.body && (
-          <span className="paragraph-3-regular text-destructive-error">
+          <span
+            role="alert"
+            className="paragraph-3-regular text-destructive-error"
+          >
             {errors.body.message}
           </span>
         )}
       </section>
 
-      <section className="w-full flex-col gap-y-4">
+      <section className="w-full flex-col gap-y-4" aria-live="polite">
         <Tags setValue={setValue} defaultValueTags={formState.tags} />
         {errors.tags && (
-          <span className="paragraph-3-regular text-destructive-error">
+          <span
+            role="alert"
+            className="paragraph-3-regular text-destructive-error"
+          >
             {errors.tags.message}
           </span>
         )}

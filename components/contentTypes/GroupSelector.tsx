@@ -51,6 +51,9 @@ const GroupSelector = ({ onChange, value }: { onChange: any; value: any }) => {
           className="content-dropdown-trigger w-full justify-between bg-white-100 px-3 dark:bg-dark-800 dark:disabled:bg-dark-900"
           onClick={() => setCaretDown((curr: boolean) => !curr)}
           disabled={groups.length === 0}
+          aria-label="Choose a group"
+          aria-haspopup="listbox"
+          aria-expanded={isCaretDown}
         >
           {groups.length === 0 ? (
             <p className="paragraph-3-regular flex animate-pulse text-white-400">
@@ -75,6 +78,8 @@ const GroupSelector = ({ onChange, value }: { onChange: any; value: any }) => {
         <DropdownMenuContent
           className="paragraph-3-medium mt-1 flex w-[calc(100vw-50px)] max-w-[840px] flex-col gap-y-1 bg-white-100 py-2 text-dark-700 dark:bg-dark-800 dark:text-white-200 "
           align="start"
+          role="listbox"
+          aria-label="Groups"
         >
           {groups.length > 0 &&
             groups.map((group) => {
@@ -84,6 +89,8 @@ const GroupSelector = ({ onChange, value }: { onChange: any; value: any }) => {
                   key={id}
                   className="flex items-center gap-x-3 p-2 dark:text-white-200"
                   textValue={value}
+                  role="option"
+                  aria-selected={value === name}
                   onSelect={() => onChange({ name, id })}
                 >
                   {coverImage ? (
